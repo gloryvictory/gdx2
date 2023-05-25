@@ -326,7 +326,10 @@ async def with_connect(function):
     # note that for any other backend than sqlite you actually need to
     # connect to the database to perform db operations
     async with database:
+        print(f"database.is_connected {database.is_connected}")
         await function()
+
+
 
     # note that if you use framework like `fastapi` you shouldn't connect
     # in your endpoints but have a global connection pool
