@@ -1,5 +1,5 @@
 import asyncio
-from asyncio omport sleep 
+from asyncio import sleep 
 import asyncpg
 
 QUERY = """"INSERT INTO some test table VALUES ($1,$2,$3)"""
