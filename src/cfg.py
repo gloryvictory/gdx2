@@ -11,17 +11,21 @@ SERVER_PORT = os.getenv("SERVER_PORT", 8001)
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", 5432)
-DB_NAME = os.getenv("DB_NAME", "geodex2")
-DB_SCHEMA = os.getenv("DB_SCHEMA", "public")
-DB_USER = os.getenv("DB_USER", "geodex2")
-DB_PASS = os.getenv("DB_PASS", "geodex2pwd")
+DB_NAME = os.getenv("DB_NAME", "gdx2")
+DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")
+DB_USER = os.getenv("DB_USER", "gdx2")
+DB_PASS = os.getenv("DB_PASS", "gdx2pwd")
 DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 # print(DATABASE_URL)
 
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+
+
 DATETIME_CURRENT = str(strftime("%Y-%m-%d-%H-%M-%S"))
 
-FILE_LOG_NAME = 'fastapi-files'
+FILE_LOG_NAME = 'gdx2'
 FILE_LOG = DATETIME_CURRENT + '_' + FILE_LOG_NAME + '.log'
 FILE_LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 FOLDER_OUT = 'log'
-FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\fastapi-files\\src")
+FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")
