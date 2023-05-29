@@ -1,13 +1,11 @@
-from src import cfg
-from src.files.models import FILES_M
-import asyncpg
+from src.models import FILE_M
 
 
 async def files_get_all_count():
     content = {"msg": f"Unknown error"}
     # log = set_logger(settings.WELL_FILE_LOG)
     try:
-        all_count = await FILES_M.objects.count()
+        all_count = await FILE_M.objects.count()
         # log.info(f"count load successfuly: {all_count}")
         content = {"msg": "Success", "count": all_count}
         return content

@@ -1,34 +1,58 @@
+# geo is based on example https://github.com/jgriffith23/postgis-tutorial/blob/master/model.py
+# from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, TEXT, BIGINT
 from datetime import datetime
-import ormar
 
-from src.database import database, metadata
+from sqlalchemy import (TIMESTAMP, Boolean, Column, ForeignKey, Integer,
+                        String, Table, TEXT, BigInteger, Float)
+from sqlalchemy.dialects.postgresql import TSVECTOR
 
+# from geoalchemy2 import Geometry
 
-class MainMeta(ormar.ModelMeta):
-    metadata = metadata
-    database = database
-
-
-class FILES_M(ormar.Model):
-    class Meta(MainMeta):
-        tablename = "files"
-        pass
-
-    id: int = ormar.Integer(primary_key=True)
-    root_folder: str = ormar.Text()
-    file_path: str = ormar.Text()
-    file_folder: str = ormar.Text()
-    file_name: str = ormar.String(max_length=255)
-    file_ext: str = ormar.String(max_length=11)
-    file_size: str = ormar.BigInteger()
-    file_ctime: str = ormar.DateTime(default=datetime.now)
-    file_mtime: str = ormar.DateTime(default=datetime.now)
-    date_c: str = ormar.String(max_length=11)
-    date_m: str = ormar.String(max_length=11)
-    date_u: str = ormar.String(max_length=11)
-    fpath: str = ormar.Text()
-    fpath_md5: str = ormar.Text()
-    lastupdate: datetime = ormar.DateTime(default=datetime.now)
-    # file_path_fts: str = ormar_postgres_full_text.TSVector()
+from src.database import Base
 
 
+class FILE_M(Base):
+    """A file table, including geospatial data for each file."""
+
+    __tablename__ = "file"
+
+    id: int = Column(Integer, primary_key=True)
+    root_folder: str = Column(TEXT, index=True, )
+    file_path: str = Column(TEXT, index=True, )
+    file_folder: str = Column(TEXT, index=True, )
+    file_name: str = Column(String(length=255), index=True, )
+    file_ext: str = Column(String(length=11), index=True, )
+    file_size: int = Column(BigInteger)
+    file_ctime: str = Column(TIMESTAMP, default=datetime.now)
+    file_mtime: str = Column(TIMESTAMP, default=datetime.now)
+    date_c: str = Column(String(length=11))
+    date_m: str = Column(String(length=11))
+    date_u: str = Column(String(length=11))
+    fpath: str = Column(TEXT)
+    fpath_md5: str = Column(TEXT)
+    file_text: str = Column(TEXT)
+    field: str = Column(String(length=255), index=True, )
+    areaoil: str = Column(String(length=255), index=True, )
+    lu: str = Column(String(length=255), index=True, )
+    well: str = Column(String(length=255), index=True, )
+    lat: float = Column(Float)
+    lon: float = Column(Float)
+    # geo = Column(Geometry(geometry_type="POINT"))
+    report_name: str = Column(TEXT, index=True, )
+    report_text: str = Column(TEXT)
+    report_author: str = Column(TEXT, index=True, )
+    report_year: int = Column(Integer, index=True, )
+    report_tgf: str = Column(TEXT)
+    is_deleted: bool = Column(Boolean, default=False)
+    lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
+    file_path_fts: str = Column(TSVECTOR)
+
+
+class FILE_SRC_M(Base):
+    """A source table"""
+
+    __tablename__ = "file_src"
+
+    id: int = Column(Integer, primary_key=True)
+    folder_src: str = Column(TEXT, index=True, )
+    lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
