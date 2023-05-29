@@ -57,8 +57,11 @@ async def startup() -> None:
     # FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 
-# @app.on_event("shutdown")
-# async def shutdown() -> None:
+@app.on_event("shutdown")
+async def shutdown() -> None:
+    await session.close()
+    await engine.dispose()
+
 #     database_ = app.state.database
 #     if database_.is_connected:
 #         await database_.disconnect()
