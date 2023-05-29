@@ -32,6 +32,7 @@ class FILE_M(Base):
     date_u: str = Column(String(length=11))
     fpath: str = Column(TEXT)
     fpath_md5: str = Column(TEXT)
+    file_text: str = Column(TEXT)
     field: str = Column(String(length=255))
     areaoil: str = Column(String(length=255))
     lu: str = Column(String(length=255))
