@@ -1,4 +1,5 @@
 # geo is based on example https://github.com/jgriffith23/postgis-tutorial/blob/master/model.py
+# https://github.com/alvassin/alembic-quickstart/blob/master/staff/schema.py
 # from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, TEXT, BIGINT
 from datetime import datetime
 

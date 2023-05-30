@@ -13,6 +13,8 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 
 from src.database import metadata
 
+sys.path = ['', '..'] + sys.path[1:]
+
 # sys.path = ['', '..'] + sys.path[1:]
 # # from src.models import FILE_M
 # import src.models
@@ -47,8 +49,9 @@ config.set_section_option(section, "DB_NAME", environ.get("DB_NAME"))
 config.set_section_option(section, "DB_HOST", environ.get("DB_HOST"))
 config.set_section_option(section, "DB_PORT", environ.get("DB_PORT"))
 
-print(
-    f"postgresql+asyncpg://{environ.get('DB_USER')}:{environ.get('DB_PASS')}@{environ.get('DB_HOST')}:{environ.get('DB_PORT')}/{environ.get('DB_NAME')}")
+SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://%(DB_USER)s:%(DB_PASS)s@%(DB_HOST)s:%(DB_PORT)s/%(DB_NAME)s?async_fallback=True"
+# print(f"postgresql+asyncpg://{environ.get('DB_USER')}:{environ.get('DB_PASS')}@{environ.get('DB_HOST')}:{environ.get('DB_PORT')}/{environ.get('DB_NAME')}")
+print(SQLALCHEMY_DATABASE_URL) 
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -96,11 +99,19 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    configuration = config.get_section(config.config_ini_section)
+    configuration['sqlalchemy.url'] = SQLALCHEMY_DATABASE_URL
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
+
+    # connectable = engine_from_config(
+    #     config.get_section(config.config_ini_section, {}),
+    #     prefix="sqlalchemy.",
+    #     poolclass=pool.NullPool,
+    # )
 
     with connectable.connect() as connection:
         context.configure(

@@ -33,5 +33,6 @@ class FILES_S(BaseModel):
     is_deleted: bool
     lastupdate: datetime
 
-
+    class Config:
+        orm_mode=True
 
