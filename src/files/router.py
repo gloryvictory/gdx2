@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import List
+from fastapi import APIRouter
 
 # from src.files.schemas import FILES_S
 from src.files.services import files_get_all_count

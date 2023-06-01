@@ -3,8 +3,15 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class FILES_S(BaseModel):
+class BaseTable(BaseModel):
     id: int
+    lastupdate: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class FILE_S(BaseTable):
     root_folder: str
     file_path: str
     file_folder: str
@@ -31,8 +38,7 @@ class FILES_S(BaseModel):
     report_year: int
     report_tgf: str
     is_deleted: bool
-    lastupdate: datetime
 
-    class Config:
-        orm_mode=True
 
+class FILE_SRC_S(BaseTable):
+    folder_src: str

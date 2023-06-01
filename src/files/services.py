@@ -11,7 +11,7 @@ async def files_get_all_count():
         return content
     except Exception as e:
         str_err = "Exception occurred " + str(e)
-        content = {"msg": f"reload fail. can't read count from table {FILES_M.Meta.tablename}", "err": str(e)}
+        content = {"msg": f"reload fail. can't read count from table {FILE_M.Meta.tablename}", "err": str(e)}
         print(str_err)
         # log.info(str_err)
     return content

@@ -1,15 +1,14 @@
 # geo is based on example https://github.com/jgriffith23/postgis-tutorial/blob/master/model.py
 # https://github.com/alvassin/alembic-quickstart/blob/master/staff/schema.py
+# https://www.learndatasci.com/tutorials/using-databases-python-postgres-sqlalchemy-and-alembic/
 # from sqlalchemy import Table, Column, Integer, String, TIMESTAMP, MetaData, TEXT, BIGINT
 from datetime import datetime
 
-from sqlalchemy import (TIMESTAMP, Boolean, Column, ForeignKey, Integer,
-                        String, Table, TEXT, BigInteger, Float)
+from sqlalchemy import (TIMESTAMP, Boolean, Column, Integer,
+                        String, TEXT, BigInteger, Float)
 from sqlalchemy.dialects.postgresql import TSVECTOR
-
-# from geoalchemy2 import Geometry
-
 from src.database import Base
+# import geoalchemy2
 
 
 class FILE_M(Base):
@@ -38,7 +37,6 @@ class FILE_M(Base):
     well: str = Column(String(length=255), index=True, )
     lat: float = Column(Float)
     lon: float = Column(Float)
-    # geo = Column(Geometry(geometry_type="POINT"))
     report_name: str = Column(TEXT, index=True, )
     report_text: str = Column(TEXT)
     report_author: str = Column(TEXT, index=True, )
@@ -47,6 +45,10 @@ class FILE_M(Base):
     is_deleted: bool = Column(Boolean, default=False)
     lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
     file_path_fts: str = Column(TSVECTOR)
+    # geom = Column(geoalchemy2.types.Geometry(geometry_type='POINT', srid=4326))
+
+
+# the_geom = Column(Geometry(...), index=True)
 
 
 class FILE_SRC_M(Base):

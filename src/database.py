@@ -15,13 +15,16 @@ from typing import AsyncGenerator
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import  declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-from src.cfg import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
+from src.cfg import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, DB_SCHEMA
 
 DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+print(DATABASE_URL)
+
 Base = declarative_base()
 
 # Default naming convention for all indexes and constraints
@@ -42,9 +45,12 @@ convention = {
 }
 
 # Registry for all tables
-metadata = MetaData(naming_convention=convention)
-
 # metadata = MetaData()
+
+
+metadata = MetaData(schema=DB_SCHEMA, naming_convention=convention)
+# Base.metadata = metadata
+
 
 engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

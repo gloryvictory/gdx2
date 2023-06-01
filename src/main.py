@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from src import cfg
+from src.database import get_async_session, engine
 from src.routers import api_router
 
 app = FastAPI(title="GDX2 App")
@@ -59,6 +60,7 @@ async def startup() -> None:
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
+    session = get_async_session()
     await session.close()
     await engine.dispose()
 
