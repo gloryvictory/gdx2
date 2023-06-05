@@ -4,14 +4,12 @@ from pydantic import BaseModel
 
 
 class BaseTable(BaseModel):
-    id: int
-    lastupdate: datetime
-
     class Config:
         orm_mode = True
 
 
 class FILE_S(BaseTable):
+    id: int
     root_folder: str
     file_path: str
     file_folder: str
@@ -38,7 +36,14 @@ class FILE_S(BaseTable):
     report_year: int
     report_tgf: str
     is_deleted: bool
+    lastupdate: datetime
 
 
 class FILE_SRC_S(BaseTable):
+    id: int
+    folder_src: str
+    lastupdate: datetime
+
+
+class FILE_SRC_S_CREATE(BaseTable):
     folder_src: str

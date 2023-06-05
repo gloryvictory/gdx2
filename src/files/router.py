@@ -1,7 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.database import get_async_session
+from src.files.schemas import FILE_SRC_S_CREATE, FILE_SRC_S
 # from src.files.schemas import FILES_S
-from src.files.services import files_get_all_count
+from src.files.services import files_get_all_count, src_add
+from sqlalchemy import select, insert
+
+from src.models import FILE_SRC_M
 
 router_files = APIRouter(
     # prefix="/files",
@@ -18,3 +24,20 @@ async def get_count():
     content = await files_get_all_count()
     return content
 
+
+@router_files.post(path='/source/add',
+                   status_code=200,
+                   name='Добавить источник',
+                   tags=['Файлы'],
+                   description='Добавить источник', )
+async def source_add(folder: str,  session: AsyncSession = Depends(get_async_session)):
+    content = await src_add(folder, session)
+    return content
+
+
+# async def add_specific_operations(src_new: FILE_SRC_S_CREATE, session: AsyncSession = Depends(get_async_session)):
+#     stmt = insert(FILE_SRC_M).values(**src_new.dict())
+#     print(stmt)
+#     await session.execute(stmt)
+#     await session.commit()
+#     return {"status": "success"}
