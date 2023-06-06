@@ -57,5 +57,5 @@ class FILE_SRC_M(Base):
     __tablename__ = "file_src"
 
     id: int = Column(Integer, primary_key=True)
-    folder_src: str = Column(TEXT, index=True, )
+    folder_src: str = Column(TEXT, index=True, unique=True)
     lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)

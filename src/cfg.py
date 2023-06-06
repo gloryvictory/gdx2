@@ -21,6 +21,7 @@ DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 
+NUMBER_PROCESS = os.getenv("NUMBER_PROCESS", "1")
 
 DATETIME_CURRENT = str(strftime("%Y-%m-%d-%H-%M-%S"))
 
@@ -29,3 +30,17 @@ FILE_LOG = DATETIME_CURRENT + '_' + FILE_LOG_NAME + '.log'
 FILE_LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 FOLDER_OUT = 'log'
 FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")
+
+CONVENTION = {
+    'all_column_names': lambda constraint, table: '_'.join([
+        column.name for column in constraint.columns.values()
+    ]),
+    'ix': 'ix__%(table_name)s__%(all_column_names)s',
+    'uq': 'uq__%(table_name)s__%(all_column_names)s',
+    'ck': 'ck__%(table_name)s__%(constraint_name)s',
+    'fk': (
+        'fk__%(table_name)s__%(all_column_names)s__'
+        '%(referred_table_name)s'
+    ),
+    'pk': 'pk__%(table_name)s'
+}

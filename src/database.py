@@ -1,15 +1,16 @@
 # Базу создавать так
-# CREATE USER nsi WITH ENCRYPTED PASSWORD 'nsipwd';
-# CREATE DATABASE nsi WITH OWNER nsi;
-# GRANT ALL PRIVILEGES ON DATABASE nsi TO nsi;
-# \c nsi;
-# CREATE SCHEMA IF NOT EXISTS nsi AUTHORIZATION nsi;
-# SET search_path to nsi;
-
+# CREATE USER gdx2 WITH ENCRYPTED PASSWORD 'gdx2pwd';
+# CREATE DATABASE gdx2 WITH OWNER gdx2;
+# GRANT ALL PRIVILEGES ON DATABASE gdx2 TO gdx2;
+#
+# \c gdx2;
+# ALTER ROLE gdx2 SET client_encoding TO 'utf8';
+# CREATE SCHEMA IF NOT EXISTS gdx2 AUTHORIZATION gdx2;
+# SET search_path to gdx2;
+# CREATE EXTENSION hstore;
+# CREATE EXTENSION postgis;
+# GRANT ALL ON SCHEMA gdx2 TO gdx2;
 # Возможно пригодиться
-# GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nsi;
-# GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO nsi;
-# GRANT ALL PRIVILEGES ON ALL FUNCTIONS  IN SCHEMA public TO nsi;
 
 from typing import AsyncGenerator
 
@@ -19,7 +20,7 @@ from sqlalchemy.ext.declarative import  declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
-from src.cfg import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, DB_SCHEMA
+from src.cfg import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, DB_SCHEMA, CONVENTION
 
 DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
@@ -30,28 +31,12 @@ Base = declarative_base()
 # Default naming convention for all indexes and constraints
 # See why this is important and how it would save your time:
 # https://alembic.sqlalchemy.org/en/latest/naming.html
-convention = {
-    'all_column_names': lambda constraint, table: '_'.join([
-        column.name for column in constraint.columns.values()
-    ]),
-    'ix': 'ix__%(table_name)s__%(all_column_names)s',
-    'uq': 'uq__%(table_name)s__%(all_column_names)s',
-    'ck': 'ck__%(table_name)s__%(constraint_name)s',
-    'fk': (
-        'fk__%(table_name)s__%(all_column_names)s__'
-        '%(referred_table_name)s'
-    ),
-    'pk': 'pk__%(table_name)s'
-}
+
 
 # Registry for all tables
 # metadata = MetaData()
 
-
-metadata = MetaData(schema=DB_SCHEMA, naming_convention=convention)
-# Base.metadata = metadata
-
-
+metadata = MetaData(schema=DB_SCHEMA, naming_convention=CONVENTION)
 engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
