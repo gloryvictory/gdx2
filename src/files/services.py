@@ -41,7 +41,9 @@ async def src_add(folder, session):
             new_src = FILE_SRC_M(folder_src=folder)
             session.add(new_src)
             await session.commit()
+
             folder2p(folder)
+
             all_count = 1
             content = {"msg": "Success", "count": all_count}
         return content
@@ -106,3 +108,6 @@ async def src_get_by_id(_id: int, session):
     return content
 
 
+# async def fetch_all(db: AsyncSession, skip: int = 0, limit: int = 20):
+#     result = await db.execute(select(Task).order_by(Task.time.desc()).limit(20))
+#     return result.scalars().all()

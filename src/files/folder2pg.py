@@ -31,6 +31,8 @@ from src.database import async_session_maker, engine
 from src.models import FILE_SRC_M
 from sqlalchemy.orm import Session
 
+from src.workers.files2pg import Files2DB
+
 global unsearched
 unsearched = Queue()  # queue for hold the next directories for the processes
 
@@ -49,9 +51,9 @@ def explore_path(path):
     return directories
 
 
-def parallel_worker():
+async def parallel_worker():
     while not unsearched.empty():
-        # db_client = Files2DB()
+        db_client = Files2DB()
         # files_stat_db = Files2DB_stat()
 
         # with Session(engine) as session:
@@ -68,7 +70,7 @@ def parallel_worker():
         files_cnt = 0
         for root, dirs, files in os.walk(path):
             for file in files:
-                # db_client.add(root, file)
+                db_client.add(root, file)
                 files_cnt += 1
 
         str_msg = f"Files in folder {path} : {files_cnt}"
