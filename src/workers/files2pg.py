@@ -16,6 +16,7 @@ from src import cfg
 global unsearched
 unsearched = Queue()  # queue for hold the next directories for the processes
 
+global total_files
 total_files = 0  # global total_files
 
 
@@ -42,13 +43,9 @@ async def parallel_worker():
                 # db_client.add(root, file)
                 # await db_insert(root, file)
                 # conn = await asyncpg.connect()
-
                 files_cnt += 1
-
         str_msg = f"Files in folder {path} : {files_cnt}"
-
         # files_stat_db.add(path, files_cnt)
-
         global total_files
         total_files = total_files + files_cnt
         log.info(str_msg)
@@ -57,7 +54,6 @@ async def parallel_worker():
 
 
 async def db_insert(db_pool, root: str, file: str):
-
     # conn = await asyncpg.connect("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
     file_split = os.path.splitext(file)
     file_ext = str(file_split[1]).replace(".", "")
@@ -77,6 +73,7 @@ def folder_get_files_count(path: str):
 
 
 async def folder2pg(folder_in: str):
+    global total_files
     db_pool = await asyncpg.create_pool("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
     paths = explore_path(folder_in)
     chunk = 200
@@ -92,27 +89,17 @@ async def folder2pg(folder_in: str):
                 print(f"{root}\{file}")
                 tasks.append(asyncio.create_task(db_insert(db_pool, root, file)))
                 pended += 1
-                # db_client.add(root, file)
-                # await db_insert(root, file)
-                # conn = await asyncpg.connect()
-                # tasks.append(asyncio.create_task(make_request(db_pool)))
-                files_cnt += 1
+                total_files += 1
                 if len(tasks) == chunk or pended == files_cnt:
                     await asyncio.gather(*tasks)
                     tasks = []
                     print(pended)
 
-    # num_processes = int(cfg.NUMBER_PROCESS)
-    # with Pool(num_processes) as pool:
-    #     for i in range(num_processes):
-    #         pool.apply_async(parallel_worker())
-    # unsearched.join()
 
-
-async def make_request(db_pool):
-    QUERY = "INSERT INTO test VALUES ($1,$2,$3)"
-    await db_pool.fetch(QUERY, 1, "some striing", 3)
-    await sleep(.1)
+# async def make_request(db_pool):
+#     QUERY = "INSERT INTO test VALUES ($1,$2,$3)"
+#     await db_pool.fetch(QUERY, 1, "some striing", 3)
+#     await sleep(.1)
 
 
 async def main():
@@ -123,7 +110,8 @@ async def main():
     str_msg = f"Total files: {total_files}"
     log.info(str_msg)
     print(str_msg)
-    await folder2pg("C:\\TEMP\\Geodex_files\\")
+    # await folder2pg("C:\\TEMP\\Geodex_files\\")
+    await folder2pg("C:\\TEMP")
     # chunk = 200
     # tasks = []
     # pended = 0
@@ -137,6 +125,7 @@ async def main():
     #         print(pended)
 
     time2 = datetime.now()
+    print(f"Total files: {total_files}")
     print('Finishing at :' + str(time2))
     print('Total time : ' + str(time2 - time1))
     print('DONE !!!!')
