@@ -1,12 +1,14 @@
 import asyncio
-from asyncio import sleep 
+from asyncio import sleep
 import asyncpg
 
 QUERY = """"INSERT INTO some test table VALUES ($1,$2,$3)"""
 
+
 async def make_request(db_pool):
-        await db_pool.fetch(QUERY, 1, "some striing", 3)
-        await sleep(.1)
+    await db_pool.fetch(QUERY, 1, "some striing", 3)
+    await sleep(.1)
+
 
 async def main():
     chunk = 200

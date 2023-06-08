@@ -27,11 +27,9 @@ from multiprocessing import JoinableQueue as Queue
 from sqlalchemy import select
 
 from src import cfg
-from src.database import async_session_maker, engine
-from src.models import FILE_SRC_M
-from sqlalchemy.orm import Session
 
-from src.workers.files2pg import Files2DB
+
+from src.workers.files2pg_class import Files2DB
 
 global unsearched
 unsearched = Queue()  # queue for hold the next directories for the processes
