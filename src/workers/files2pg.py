@@ -1,18 +1,17 @@
 import asyncio
 import hashlib
-from asyncio import sleep
 import asyncpg
-
 import os  # Load the Library Module
 import os.path
 from datetime import datetime
-# import csv
 import logging as log
-# from multiprocessing import Lock
-from multiprocessing.pool import Pool
 from multiprocessing import JoinableQueue as Queue
 
-from src import cfg
+# from asyncio import sleep
+# import csv
+# from multiprocessing import Lock
+# from multiprocessing.pool import Pool
+# from src import cfg
 
 global unsearched
 unsearched = Queue()  # queue for hold the next directories for the processes
@@ -57,7 +56,6 @@ async def parallel_worker():
 async def db_insert(db_pool, root_folder: str, root: str, file: str):
     # conn = await asyncpg.connect("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
     try:
-        # root_folder = root_folder
         f_root = root_folder
         f_name = file
         file_split = os.path.splitext(file)
@@ -70,11 +68,10 @@ async def db_insert(db_pool, root_folder: str, root: str, file: str):
         f_size = stat_file.st_size
         f_ctime = datetime.fromtimestamp(stat_file.st_ctime)
         f_mtime = datetime.fromtimestamp(stat_file.st_mtime)
-        f_atime = datetime.fromtimestamp(stat_file.st_mtime)
+        f_atime = datetime.fromtimestamp(stat_file.st_atime)
         hash_object = hashlib.md5(f_path.encode())
         f_path_md5 = hash_object.hexdigest()
         lastupdate = datetime.now()
-        # date_u = datetime.now().strftime('%Y-%m-%d')
 
         QUERY = "INSERT INTO file (f_root, f_path, f_folder, f_name, f_ext, f_size, f_ctime, f_mtime, f_atime, f_path_md5, lastupdate ) VALUES ($1,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
 

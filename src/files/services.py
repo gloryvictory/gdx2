@@ -1,5 +1,5 @@
 from src.database import get_async_session
-from src.files.folder2pg import folder2p
+from src.examples.folder2pg import folder2p
 from src.models import FILE_M, FILE_SRC_M
 from sqlalchemy import select
 
