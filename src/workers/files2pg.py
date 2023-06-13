@@ -161,21 +161,10 @@ async def main():
     log.info(str_msg)
     print(str_msg)
     # await folder2pg("C:\\TEMP\\Geodex_files\\")
-    # global root_folder
-    root_folder = f"C:\\TEMP"
-    await folder2pg(root_folder)
-    # await folder2pg("C:\\")
-    # chunk = 200
-    # tasks = []
-    # pended = 0
 
-    # for x in range(10_000):
-    #     tasks.append(asyncio.create_task(make_request(db_pool)))
-    #     pended += 1
-    #     if len(tasks) == chunk or pended == 10000:
-    #         await asyncio.gather(*tasks)
-    #         tasks = []
-    #         print(pended)
+    # root_folder = f"C:\\TEMP"
+    root_folder = f"C:\\"
+    await folder2pg(root_folder)
 
     time2 = datetime.now()
     print(f"Total files: {total_files}")
