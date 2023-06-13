@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 from asyncio import sleep
 import asyncpg
 
@@ -53,15 +54,67 @@ async def parallel_worker():
         unsearched.task_done()
 
 
-async def db_insert(db_pool, root: str, file: str):
+async def db_insert(db_pool, root_folder: str, root: str, file: str):
     # conn = await asyncpg.connect("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
-    file_split = os.path.splitext(file)
-    file_ext = str(file_split[1]).replace(".", "")
-    file_full_path = str(os.path.join(root, file))
-    QUERY = "INSERT INTO file (file_path, file_ext) VALUES ($1,$2)"
+    try:
+        # root_folder = root_folder
+        f_root = root_folder
+        f_name = file
+        file_split = os.path.splitext(file)
+        f_ext = str(file_split[1]).replace(".", "").lower()
+        f_path = str(os.path.join(root, file))
+        f_folder = root
 
-    await db_pool.fetch(QUERY, file_full_path, file_ext)
-    print(file_full_path)
+        stat_file = os.stat(f_folder)
+
+        f_size = stat_file.st_size
+        f_ctime = datetime.fromtimestamp(stat_file.st_ctime)
+        f_mtime = datetime.fromtimestamp(stat_file.st_mtime)
+        f_atime = datetime.fromtimestamp(stat_file.st_mtime)
+        hash_object = hashlib.md5(f_path.encode())
+        f_path_md5 = hash_object.hexdigest()
+        lastupdate = datetime.now()
+        # date_u = datetime.now().strftime('%Y-%m-%d')
+
+        QUERY = "INSERT INTO file (f_root, f_path, f_folder, f_name, f_ext, f_size, f_ctime, f_mtime, f_atime, f_path_md5, lastupdate ) VALUES ($1,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
+
+        await db_pool.fetch(QUERY, f_root, f_path, f_folder, f_name, f_ext, f_size, f_ctime, f_mtime, f_atime, f_path_md5, lastupdate )
+        print(f_path)
+
+        # root_folder: str = Column(TEXT, index=True, )
+        # file_path: str = Column(TEXT, index=True, )
+        # file_folder: str = Column(TEXT, index=True, )
+        # file_name: str = Column(String(length=255), index=True, )
+        # file_ext: str = Column(String(length=11), index=True, )
+        # file_size: int = Column(BigInteger)
+        # file_ctime: str = Column(TIMESTAMP, default=datetime.now)
+        # file_mtime: str = Column(TIMESTAMP, default=datetime.now)
+        # date_c: str = Column(String(length=11))
+        # date_m: str = Column(String(length=11))
+        # date_u: str = Column(String(length=11))
+        # fpath: str = Column(TEXT)
+        # fpath_md5: str = Column(TEXT)
+        # file_text: str = Column(TEXT)
+        # field: str = Column(String(length=255), index=True, )
+        # areaoil: str = Column(String(length=255), index=True, )
+        # lu: str = Column(String(length=255), index=True, )
+        # well: str = Column(String(length=255), index=True, )
+        # lat: float = Column(Float)
+        # lon: float = Column(Float)
+        # report_name: str = Column(TEXT, index=True, )
+        # report_text: str = Column(TEXT)
+        # report_author: str = Column(TEXT, index=True, )
+        # report_year: int = Column(Integer, index=True, )
+        # report_tgf: str = Column(TEXT)
+        # is_deleted: bool = Column(Boolean, default=False)
+        # lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
+        # file_path_fts: str = Column(TSVECTOR)
+
+    except Exception as e:
+        # file_ext
+        print(f_path)
+        # print(file_ext)
+        print("Exception occurred: " + str(e))  # , exc_info=True
 
 
 def folder_get_files_count(path: str):
@@ -72,10 +125,10 @@ def folder_get_files_count(path: str):
     return files_cnt
 
 
-async def folder2pg(folder_in: str):
+async def folder2pg(root_folder: str):
     global total_files
     db_pool = await asyncpg.create_pool("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
-    paths = explore_path(folder_in)
+    paths = explore_path(root_folder)
     chunk = 200
     tasks = []
     pended = 0
@@ -87,7 +140,7 @@ async def folder2pg(folder_in: str):
         for root, dirs, files in os.walk(path):
             for file in files:
                 print(f"{root}\{file}")
-                tasks.append(asyncio.create_task(db_insert(db_pool, root, file)))
+                tasks.append(asyncio.create_task(db_insert(db_pool, root_folder, root, file)))
                 pended += 1
                 total_files += 1
                 if len(tasks) == chunk or pended == files_cnt:
@@ -111,7 +164,10 @@ async def main():
     log.info(str_msg)
     print(str_msg)
     # await folder2pg("C:\\TEMP\\Geodex_files\\")
-    await folder2pg("C:\\TEMP")
+    # global root_folder
+    root_folder = f"C:\\TEMP"
+    await folder2pg(root_folder)
+    # await folder2pg("C:\\")
     # chunk = 200
     # tasks = []
     # pended = 0
