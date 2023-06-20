@@ -26,7 +26,7 @@ class FILE_M(Base):
     f_ctime: str = Column(TIMESTAMP, default=datetime.now)
     f_mtime: str = Column(TIMESTAMP, default=datetime.now)
     f_atime: str = Column(TIMESTAMP, default=datetime.now)
-    f_path_md5: str = Column(TEXT)
+    f_path_md5: str = Column(TEXT, index=True)
     f_text: str = Column(TEXT)
     field: str = Column(String(length=255), index=True, )
     areaoil: str = Column(String(length=255), index=True, )
