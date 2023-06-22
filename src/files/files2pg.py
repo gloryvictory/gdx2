@@ -7,6 +7,8 @@ from datetime import datetime
 import logging as log
 from multiprocessing import JoinableQueue as Queue
 
+from src.cfg import DB_DSN
+
 # from asyncio import sleep
 # import csv
 # from multiprocessing import Lock
@@ -20,14 +22,14 @@ global total_files
 total_files = 0  # global total_files
 
 
+# explore files and directories
 def explore_path(path):
-    # explore files and directories
     directories = []
     for filename in os.listdir(path):
         fullname = os.path.join(path, filename)
         if os.path.isdir(fullname):
             directories.append(fullname)
-            print(f"fullname: {fullname}")
+            # print(f"fullname: {fullname}")
     return directories
 
 
@@ -76,7 +78,7 @@ async def db_insert(db_pool, root_folder: str, root: str, file: str):
         QUERY = "INSERT INTO file (f_root, f_path, f_folder, f_name, f_ext, f_size, f_ctime, f_mtime, f_atime, f_path_md5, lastupdate ) VALUES ($1,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11)"
 
         await db_pool.fetch(QUERY, f_root, f_path, f_folder, f_name, f_ext, f_size, f_ctime, f_mtime, f_atime, f_path_md5, lastupdate )
-        print(f_path)
+        # print(f_path)
 
         # root_folder: str = Column(TEXT, index=True, )
         # file_path: str = Column(TEXT, index=True, )
@@ -122,9 +124,17 @@ def folder_get_files_count(path: str):
     return files_cnt
 
 
-async def folder2pg(root_folder: str):
+async def folder2pg(root_folder: str, dsn: str):
+    folder_start = root_folder
+    time1 = datetime.now()
+
+    print('Starting at :' + str(time1))
+    # str_msg = f"Total files: {total_files}"
+    # log.info(str_msg)
+    # print(str_msg)
+
     global total_files
-    db_pool = await asyncpg.create_pool("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
+    db_pool = await asyncpg.create_pool(dsn) #"dsn = postgresql://gdx2:gdx2pwd@localhost:5432/gdx2"
     paths = explore_path(root_folder)
     chunk = 200
     tasks = []
@@ -134,17 +144,24 @@ async def folder2pg(root_folder: str):
 
     for path in paths:
         files_cnt = folder_get_files_count(path)
+        print(f"{path}  - Total files: {files_cnt}")
         for root, dirs, files in os.walk(path):
             for file in files:
-                print(f"{root}\{file}")
+                # print(f"{root}\{file}")
                 tasks.append(asyncio.create_task(db_insert(db_pool, root_folder, root, file)))
                 pended += 1
                 total_files += 1
                 if len(tasks) == chunk or pended == files_cnt:
                     await asyncio.gather(*tasks)
                     tasks = []
-                    print(pended)
+                    # print(pended)
 
+
+    time2 = datetime.now()
+    print(f"At source: '{folder_start}' Total files: {total_files}")
+    print('Finishing at :' + str(time2))
+    print('Total time : ' + str(time2 - time1))
+    print('DONE !!!!')
 
 # async def make_request(db_pool):
 #     QUERY = "INSERT INTO test VALUES ($1,$2,$3)"
@@ -153,31 +170,34 @@ async def folder2pg(root_folder: str):
 
 
 async def main():
+    pass
     # global db_pool
     # db_pool = await asyncpg.create_pool("postgresql://gdx2:gdx2pwd@localhost:5432/gdx2")
-    time1 = datetime.now()
-    print('Starting at :' + str(time1))
-    str_msg = f"Total files: {total_files}"
-    log.info(str_msg)
-    print(str_msg)
+
     # await folder2pg("C:\\TEMP\\Geodex_files\\")
 
+    # time1 = datetime.now()
+    # print('Starting at :' + str(time1))
+    # str_msg = f"Total files: {total_files}"
+    # log.info(str_msg)
+    # print(str_msg)
+    #
     # root_folder = f"C:\\TEMP"
-    root_folder = f"C:\\"
-    await folder2pg(root_folder)
+    # # root_folder = f"C:\\"
+    # await folder2pg(root_folder, DB_DSN)
 
-    time2 = datetime.now()
-    print(f"Total files: {total_files}")
-    print('Finishing at :' + str(time2))
-    print('Total time : ' + str(time2 - time1))
-    print('DONE !!!!')
+    # time2 = datetime.now()
+    # print(f"Total files: {total_files}")
+    # print('Finishing at :' + str(time2))
+    # print('Total time : ' + str(time2 - time1))
+    # print('DONE !!!!')
 
 
-if __name__ == '__main__':
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    # loop = asyncio.get_event_loop()
-    try:
-        loop.run_until_complete(main())
-    except KeyboardInterrupt:
-        pass
+# if __name__ == '__main__':
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     # loop = asyncio.get_event_loop()
+#     try:
+#         loop.run_until_complete(main())
+#     except KeyboardInterrupt:
+#         pass

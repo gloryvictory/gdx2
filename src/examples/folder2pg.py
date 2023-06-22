@@ -20,16 +20,13 @@ import os.path
 from datetime import datetime
 # import csv
 import logging as log
-from multiprocessing import Lock
 from multiprocessing.pool import Pool
 from multiprocessing import JoinableQueue as Queue
-
-from sqlalchemy import select
 
 from src import cfg
 
 
-from src.workers.files2pg_class import Files2DB
+from src.examples.files2pg_class import Files2DB
 
 global unsearched
 unsearched = Queue()  # queue for hold the next directories for the processes

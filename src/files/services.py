@@ -1,7 +1,9 @@
-from src.database import get_async_session
-from src.examples.folder2pg import folder2p
-from src.models import FILE_M, FILE_SRC_M
 from sqlalchemy import select
+
+from src.cfg import DB_DSN_ASYNCIO
+from src.database import get_async_session
+from src.files.files2pg import folder2pg
+from src.models import FILE_M, FILE_SRC_M
 
 
 async def files_get_all_count():
@@ -42,7 +44,8 @@ async def src_add(folder, session):
             session.add(new_src)
             await session.commit()
 
-            folder2p(folder)
+            # folder2p(folder)
+            await folder2pg(folder, DB_DSN_ASYNCIO)
 
             all_count = 1
             content = {"msg": "Success", "count": all_count}

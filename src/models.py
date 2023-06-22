@@ -21,13 +21,16 @@ class FILE_M(Base):
     f_path: str = Column(TEXT, index=True, )
     f_folder: str = Column(TEXT, index=True, )
     f_name: str = Column(String(length=255), index=True, )
-    f_ext: str = Column(String(length=11), index=True, )
+    f_ext: str = Column(String(length=255), index=True, )
     f_size: int = Column(BigInteger)
     f_ctime: str = Column(TIMESTAMP, default=datetime.now)
     f_mtime: str = Column(TIMESTAMP, default=datetime.now)
     f_atime: str = Column(TIMESTAMP, default=datetime.now)
     f_path_md5: str = Column(TEXT, index=True)
     f_text: str = Column(TEXT)
+    ngp: str = Column(String(length=255), index=True, )
+    ngo: str = Column(String(length=255), index=True, )
+    ngr: str = Column(String(length=255), index=True, )
     field: str = Column(String(length=255), index=True, )
     areaoil: str = Column(String(length=255), index=True, )
     lu: str = Column(String(length=255), index=True, )
@@ -41,6 +44,11 @@ class FILE_M(Base):
     report_author: str = Column(TEXT, index=True, )
     report_year: int = Column(Integer, index=True, )
     report_tgf: str = Column(TEXT)
+    dog_zakaz: str = Column(TEXT, index=True,) # Заказчик
+    dog_num: str = Column(TEXT, index=True,) # Номер договора
+    dog_isp: str = Column(TEXT, index=True,) # Ответственный исполнитель
+    dog_rep: str = Column(TEXT, index=True,) # Название отчета
+    dog_prikaz: str = Column(TEXT, index=True,) # Название приказа
     is_deleted: bool = Column(Boolean, default=False)
     lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
     file_path_fts: str = Column(TSVECTOR)

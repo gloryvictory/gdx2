@@ -16,6 +16,7 @@ DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")
 DB_USER = os.getenv("DB_USER", "gdx2")
 DB_PASS = os.getenv("DB_PASS", "gdx2pwd")
 DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DB_DSN_ASYNCIO = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 # print(DATABASE_URL)
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
