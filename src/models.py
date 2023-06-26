@@ -8,6 +8,8 @@ from sqlalchemy import (TIMESTAMP, Boolean, Column, Integer,
                         String, TEXT, BigInteger, Float)
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from src.database import Base
+
+
 # import geoalchemy2
 
 
@@ -44,11 +46,13 @@ class FILE_M(Base):
     report_author: str = Column(TEXT, index=True, )
     report_year: int = Column(Integer, index=True, )
     report_tgf: str = Column(TEXT)
-    dog_zakaz: str = Column(TEXT, index=True,) # Заказчик
-    dog_num: str = Column(TEXT, index=True,) # Номер договора
-    dog_isp: str = Column(TEXT, index=True,) # Ответственный исполнитель
-    dog_rep: str = Column(TEXT, index=True,) # Название отчета
-    dog_prikaz: str = Column(TEXT, index=True,) # Название приказа
+    dog_zakaz: str = Column(TEXT, index=True, )  # Заказчик
+    dog_name: str = Column(TEXT, index=True, )  # Название договора
+    dog_num: str = Column(TEXT, index=True, )  # Номер договора
+    dog_date: str = Column(TIMESTAMP, index=True, )  # Дата договора
+    dog_isp: str = Column(TEXT, index=True, )  # Ответственный исполнитель
+    dog_rep: str = Column(TEXT, index=True, )  # Название отчета
+    dog_prikaz: str = Column(TEXT, index=True, )  # Название приказа
     is_deleted: bool = Column(Boolean, default=False)
     lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
     file_path_fts: str = Column(TSVECTOR)
@@ -57,6 +61,7 @@ class FILE_M(Base):
     # date_m: str = Column(String(length=11))
     # date_u: str = Column(String(length=11))
     # fpath: str = Column(TEXT)
+
 
 # the_geom = Column(Geometry(...), index=True)
 
@@ -69,3 +74,18 @@ class FILE_SRC_M(Base):
     id: int = Column(Integer, primary_key=True)
     folder_src: str = Column(TEXT, index=True, unique=True)
     lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
+
+
+class EXT_M(Base):
+    """A source table"""
+
+    __tablename__ = "ext"
+
+    id: int = Column(Integer, primary_key=True)
+    ext: str = Column(TEXT, index=True, unique=True)
+    category: str = Column(TEXT, index=True, unique=True)
+    description: str = Column(TEXT, index=True, unique=True)
+    product: str = Column(TEXT, index=True, unique=True)
+    is_project: str = Column(TEXT, index=True, unique=True)
+    lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
+

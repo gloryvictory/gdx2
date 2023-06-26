@@ -7,13 +7,9 @@ from datetime import datetime
 import logging as log
 from multiprocessing import JoinableQueue as Queue
 
-from src.cfg import DB_DSN
-
 # from asyncio import sleep
-# import csv
 # from multiprocessing import Lock
 # from multiprocessing.pool import Pool
-# from src import cfg
 
 global unsearched
 unsearched = Queue()  # queue for hold the next directories for the processes

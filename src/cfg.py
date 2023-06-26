@@ -31,6 +31,9 @@ FILE_LOG = DATETIME_CURRENT + '_' + FILE_LOG_NAME + '.log'
 FILE_LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
 FOLDER_OUT = 'log'
 FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")
+FOLDER_UPLOAD = 'upload'
+
+
 
 CONVENTION = {
     'all_column_names': lambda constraint, table: '_'.join([
