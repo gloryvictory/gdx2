@@ -82,10 +82,10 @@ class EXT_M(Base):
     __tablename__ = "ext"
 
     id: int = Column(Integer, primary_key=True)
-    ext: str = Column(TEXT, index=True, unique=True)
-    category: str = Column(TEXT, index=True, unique=True)
-    description: str = Column(TEXT, index=True, unique=True)
-    product: str = Column(TEXT, index=True, unique=True)
-    is_project: str = Column(TEXT, index=True, unique=True)
+    ext: str = Column(TEXT, index=True)
+    category: str = Column(TEXT, index=True)
+    description: str = Column(TEXT, index=True)
+    product: str = Column(TEXT, index=True)
+    is_project: str = Column(TEXT, index=True)
     lastupdate: datetime = Column(TIMESTAMP, default=datetime.now)
 

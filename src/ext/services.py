@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 from sqlalchemy import insert
 
 from src import cfg
-from src.database import get_async_session
+from src.database import get_async_session, async_session_maker
 from src.models import EXT_M
 
 
@@ -27,7 +27,7 @@ async def ext_get_all_count():
     return content
 
 
-async def ext_upload_file(file: UploadFile = File(...) ):
+async def ext_upload_file(file: UploadFile = File(...)):
     content = {"msg": f"Unknown error"}
     try:
 
@@ -49,7 +49,7 @@ async def ext_upload_file(file: UploadFile = File(...) ):
         all_count = 1
         content = {"msg": "Success", "count": all_count, "filename": file.filename}
 
-        await excel2db(file_name, session)
+        await excel2db(file_name)
 
         return content
     except Exception as e:
@@ -68,13 +68,21 @@ async def excel2db(file_in: str):
     # await ADOC_M.objects.delete(each=True)
     # await AUTHOR_M.objects.delete(each=True)
 
-    async with get_async_session() as session:
-        # all_count = await session.query(EXT_M).count()
-        # content = {"msg": "Success", "count": all_count}
-        # session.close()
-
+    # async with get_async_session() as session:
+    # all_count = await session.query(EXT_M).count()
+    # content = {"msg": "Success", "count": all_count}
+    # session.close()
+    async with async_session_maker() as session:
         # Define variable to load the wookbook
         # wookbook = openpyxl.load_workbook(file_in)
+
+        # session.query(EXT_M).delete()
+        stmt = f"TRUNCATE {EXT_M.__tablename__} RESTART IDENTITY;"
+        print(stmt)
+        result = await session.execute(stmt)
+        await session.commit()
+
+
         wookbook = load_workbook(file_in)
 
         # Define variable to read the active sheet:
@@ -87,7 +95,8 @@ async def excel2db(file_in: str):
         cnt = 0
         try:
 
-            for value in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row, min_col=1, max_col=5, values_only=True):
+            for value in worksheet.iter_rows(min_row=2, max_row=worksheet.max_row, min_col=1, max_col=5,
+                                             values_only=True):
                 # print(f"{cnt}")
                 cnt = cnt + 1
                 str_ext = ''
@@ -111,14 +120,15 @@ async def excel2db(file_in: str):
 
                 if value[4]:  # is_project
                     str_is_project = str(value[4]).strip()
-                    if str_is_project.isdigit():
-                        if int(str_is_project) == 1:
-                            is_project = True
-
+                    # if str_is_project.isdigit():
+                    #     if int(str_is_project) == 1:
+                    #         is_project = True
 
                 print(f"{str_ext} {str_cat} {str_desc} {str_prod} {str_is_project} ")
 
-                stmt = insert(EXT_M).values(ext=str_ext, category=str_cat, description=str_desc, product=str_prod, is_project=is_project)
+                stmt = insert(EXT_M).values(ext=str_ext, category=str_cat, description=str_desc, product=str_prod,
+                                            is_project=str_is_project)
+                print(stmt)
                 result = await session.execute(stmt)
                 await session.commit()
 
@@ -132,7 +142,8 @@ async def excel2db(file_in: str):
                 #     report_name = str_cleanup(str_tmp1)
 
                 # ).save()
-            session.close()
+            await session.close()
 
         except Exception as e:
             content = {"msg": "error", "data": f"Exception occurred {str(e)}"}
+            print(content)
