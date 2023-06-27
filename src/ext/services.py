@@ -1,20 +1,32 @@
 import os
 from fastapi import UploadFile, File
 from openpyxl import load_workbook
-from sqlalchemy import insert
+from sqlalchemy import insert, func
+from sqlalchemy.orm import sessionmaker
 
 from src import cfg
-from src.database import get_async_session, async_session_maker
+from src.database import get_async_session, async_session_maker, engine
 from src.models import EXT_M
 
 
 async def ext_get_all_count():
     content = {"msg": f"Unknown error"}
     try:
-        async with get_async_session() as session:
-            all_count = await session.query(EXT_M).count()
+        async with async_session_maker() as session:
+            # Session = sessionmaker(bind=engine)
+            # session = Session()
+            # # SELECT COUNT(*) FROM Actor
+            # all_count = await session.query(EXT_M).count()
+            # all_count = session.query(func.count(EXT_M.id)).scalar()
+
+            stmt = f"SELECT COUNT(ID) FROM {EXT_M.__tablename__};"
+            print(stmt)
+            all_count = await session.execute(stmt)
+            # await session.commit()
+
+            # all_count = await session.query(EXT_M).count()
             content = {"msg": "Success", "count": all_count}
-            session.close()
+            await session.close()
             return content
     except Exception as e:
         cont_err = f"fail. can't read count from table ({EXT_M.__tablename__})"
