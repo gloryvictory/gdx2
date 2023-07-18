@@ -1,30 +1,32 @@
 import os
 from fastapi import UploadFile, File
 from openpyxl import load_workbook
-from sqlalchemy import insert, func
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import insert, func, select
+# from sqlalchemy.orm import sessionmaker
 
 from src import cfg
 from src.database import get_async_session, async_session_maker, engine
 from src.models import EXT_M
+
+# from src.database import async_session
+
+
+# @async_session
+# async def async_fetch_categories(async_session):
+#     content = {"msg": f"Unknown error"}
+#     stmt = select(EXT_M).filter()
+#     result = await async_session.execute(stmt)
+#     return result.scalars().all()
 
 
 async def ext_get_all_count():
     content = {"msg": f"Unknown error"}
     try:
         async with async_session_maker() as session:
-            # Session = sessionmaker(bind=engine)
-            # session = Session()
-            # # SELECT COUNT(*) FROM Actor
-            # all_count = await session.query(EXT_M).count()
-            # all_count = session.query(func.count(EXT_M.id)).scalar()
-
             stmt = f"SELECT COUNT(ID) FROM {EXT_M.__tablename__};"
             print(stmt)
             all_count = await session.execute(stmt)
-            # await session.commit()
 
-            # all_count = await session.query(EXT_M).count()
             content = {"msg": "Success", "count": all_count}
             await session.close()
             return content
@@ -93,7 +95,6 @@ async def excel2db(file_in: str):
         print(stmt)
         result = await session.execute(stmt)
         await session.commit()
-
 
         wookbook = load_workbook(file_in)
 

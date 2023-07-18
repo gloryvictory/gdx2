@@ -1,5 +1,7 @@
 # Базу создавать так
+# CREATE ROLE gdx2 WITH LOGIN SUPERUSER PASSWORD 'gdx2pwd';
 # CREATE USER gdx2 WITH ENCRYPTED PASSWORD 'gdx2pwd';
+# ALTER USER gdx2 WITH SUPERUSER;
 # CREATE DATABASE gdx2 WITH OWNER gdx2;
 # GRANT ALL PRIVILEGES ON DATABASE gdx2 TO gdx2;
 #
@@ -11,12 +13,12 @@
 # CREATE EXTENSION postgis;
 # GRANT ALL ON SCHEMA gdx2 TO gdx2;
 # Возможно пригодиться
-
+from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import  declarative_base
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
@@ -37,17 +39,36 @@ Base = declarative_base()
 # metadata = MetaData()
 
 metadata = MetaData(schema=DB_SCHEMA, naming_convention=CONVENTION)
-engine = create_async_engine(DATABASE_URL, poolclass=NullPool)
+engine = create_async_engine(DATABASE_URL, poolclass=NullPool, echo=True)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        try:
-            yield session
-        except Exception as e:
-            str_err = "Exception occurred " + str(e)
-            print(str_err)
-        # finally:
-        #     if session:
-        #         session.close()
+# async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+#     async with async_session_maker() as session:
+#         try:
+#             yield session
+#         except Exception as e:
+#             str_err = "Exception occurred " + str(e)
+#             print(str_err)
+#         # finally:
+#         #     if session:
+#         #         session.close()
+
+
+@asynccontextmanager
+async def get_async_session():
+    session = async_session_maker()
+    try:
+        yield session
+    except Exception as e:
+        print(e)
+        await session.rollback()
+    finally:
+        await session.close()
+
+
+def pg_async_session(func):
+    async def wrapper(*args, **kwargs):
+        async with get_async_session() as session:
+            return await func(session, *args, **kwargs)
+    return wrapper
