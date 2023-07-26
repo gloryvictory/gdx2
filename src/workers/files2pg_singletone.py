@@ -63,7 +63,7 @@ async def db_insert(db_pool, root_folder: str, root: str, file: str):
         f_path = str(os.path.join(root, file))
         f_folder = root
 
-        stat_file = os.stat(f_folder)
+        stat_file = os.stat(f_path)
 
         f_size = stat_file.st_size
         f_ctime = datetime.fromtimestamp(stat_file.st_ctime)
