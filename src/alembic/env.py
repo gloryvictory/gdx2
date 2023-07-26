@@ -6,17 +6,18 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-# from alembic.context import config as qq
-# from alembic import *
+from src.cfg import DB_DSN_ASYNCIO
+from src.database import Base
+from src.models import FILE_M, FILE_SRC_M, EXT_M
 
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
-# config = context.config
 config = context.config
+config.set_main_option("sqlalchemy.url", DB_DSN_ASYNCIO)
+print(DB_DSN_ASYNCIO)
+# DATABASE_URL = f"postgresql://gdx2:gdx2pwd@localhost:5432/gdx2"
+# print(DATABASE_URL)
+DATABASE_URL = DB_DSN_ASYNCIO
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
@@ -28,13 +29,10 @@ if config.config_file_name is not None:
 
 # sys.path = ['', '..'] + sys.path[1:]
 # from src.database import Base
-DATABASE_URL = f"postgresql://gdx2:gdx2pwd@localhost:5432/gdx2"
-# print(DATABASE_URL)
 
+target_metadata = Base.metadata
 
-# target_metadata = Base.metadata
-
-target_metadata = None
+# target_metadata = None
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

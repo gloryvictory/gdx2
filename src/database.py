@@ -21,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
+# from sqlalchemy.orm import DeclarativeBase
 
 from src.cfg import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, DB_SCHEMA, CONVENTION
 
@@ -29,6 +30,9 @@ DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{D
 print(DATABASE_URL)
 
 Base = declarative_base()
+
+# class Base(DeclarativeBase):
+#     pass
 
 # Default naming convention for all indexes and constraints
 # See why this is important and how it would save your time:
