@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from src import cfg
-from src.database import get_async_session, engine
+from src.db.db import get_async_session, engine
 from src.routers import api_router
 
 app = FastAPI(title="GDX2 App")
@@ -46,9 +46,10 @@ def root() -> JSONResponse:
                             "Swagger Documentation": url_swagger})
 
 
-
-
 app.include_router(api_router)
+
+# for router in all_routers:
+#     app.include_router(router)
 
 
 @app.on_event("startup")
@@ -60,9 +61,12 @@ async def startup() -> None:
 
 @app.on_event("shutdown")
 async def shutdown() -> None:
+    pass
     session = get_async_session()
-    await session.close()
+    await session.aclose()
     await engine.dispose()
+
+
 
 #     database_ = app.state.database
 #     if database_.is_connected:

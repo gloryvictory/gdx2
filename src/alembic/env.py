@@ -1,22 +1,31 @@
+# TRUNCATE TABLE table_name RESTART IDENTITY; # чтобы сбросить сиквенсы
+# alembic revision --autogenerate -m "Init"
+# alembic upgrade head
+# alembic downgrade base
+
+import asyncio
 import sys
 from logging.config import fileConfig
 
 import alembic
 from alembic import context
-from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+from sqlalchemy.engine import Connection
+from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from src.cfg import DB_DSN_ASYNCIO
-from src.database import Base
-from src.models import FILE_M, FILE_SRC_M, EXT_M
+
+from src.cfg import DB_DSN
+from src.db.db import Base
+
+from src.models import M_FILE, M_EXT, M_NSI_FIELD, M_NSI_LU, M_NSI_NGO, M_NSI_NGP, M_NSI_NGR,M_NSI_AREA, M_NSI_WELL, M_REPORT_TGF
 
 
 config = context.config
-config.set_main_option("sqlalchemy.url", DB_DSN_ASYNCIO)
-print(DB_DSN_ASYNCIO)
+config.set_main_option("sqlalchemy.url", DB_DSN)
+print(DB_DSN)
 # DATABASE_URL = f"postgresql://gdx2:gdx2pwd@localhost:5432/gdx2"
 # print(DATABASE_URL)
-DATABASE_URL = DB_DSN_ASYNCIO
+DATABASE_URL = DB_DSN
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -32,12 +41,6 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
-# target_metadata = None
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 
 def run_migrations_offline() -> None:
@@ -52,9 +55,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    # url = config.get_main_option("sqlalchemy.url")
-    url = DATABASE_URL
-    alembic.context.configure(
+    url = config.get_main_option("sqlalchemy.url")
+    context.configure(
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
@@ -65,34 +67,35 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
+def do_run_migrations(connection: Connection) -> None:
+    context.configure(connection=connection, target_metadata=target_metadata)
 
-    In this scenario we need to create an Engine
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+async def run_async_migrations() -> None:
+    """In this scenario we need to create an Engine
     and associate a connection with the context.
 
     """
-    configuration = config.get_section(config.config_ini_section)
-    configuration['sqlalchemy.url'] = DATABASE_URL
-    connectable = engine_from_config(
-        configuration,
+
+    connectable = async_engine_from_config(
+        config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-    #
-    # connectable = engine_from_config(
-    #     config.get_section(config.config_ini_section, {}),
-    #     prefix="sqlalchemy.",
-    #     poolclass=pool.NullPool,
-    # )
 
-    with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
 
-        with context.begin_transaction():
-            context.run_migrations()
+    await connectable.dispose()
+
+
+def run_migrations_online() -> None:
+    """Run migrations in 'online' mode."""
+
+    asyncio.run(run_async_migrations())
 
 
 if context.is_offline_mode():

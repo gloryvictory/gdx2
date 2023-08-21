@@ -1,0 +1,23 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "province": "Волго-Уральская НГП" }, "geometry": { "type": "Point", "coordinates": [ 51.953066075339287, 55.50763047566754 ] } },
+{ "type": "Feature", "properties": { "province": "Восточно-Арктическая НГП" }, "geometry": { "type": "Point", "coordinates": [ 164.88455498698238, 75.478632759584144 ] } },
+{ "type": "Feature", "properties": { "province": "Восточно-Баранцевская НГП" }, "geometry": { "type": "Point", "coordinates": [ 50.824860218731864, 76.190290361200042 ] } },
+{ "type": "Feature", "properties": { "province": "Днепровско-Припятская НГП" }, "geometry": { "type": "Point", "coordinates": [ 41.548419033053044, 48.522410236014501 ] } },
+{ "type": "Feature", "properties": { "province": "Западно-Баренцевская НГП" }, "geometry": { "type": "Point", "coordinates": [ 31.613706838030165, 75.492977522361841 ] } },
+{ "type": "Feature", "properties": { "province": "Западно-Сибирская НГП" }, "geometry": { "type": "Point", "coordinates": [ 75.824306758216267, 64.83442079259396 ] } },
+{ "type": "Feature", "properties": { "province": "Лено-Вилюйская НГП" }, "geometry": { "type": "Point", "coordinates": [ 125.659210512296625, 65.087882247544016 ] } },
+{ "type": "Feature", "properties": { "province": "Лено-Тунгусская НГП" }, "geometry": { "type": "Point", "coordinates": [ 107.490794993389429, 63.537462570656416 ] } },
+{ "type": "Feature", "properties": { "province": "Мезенская ПНГП" }, "geometry": { "type": "Point", "coordinates": [ 44.906212417308254, 64.333328908268001 ] } },
+{ "type": "Feature", "properties": { "province": "Новосибирско-Чукотская ПНГП" }, "geometry": { "type": "Point", "coordinates": [ 171.26413660716338, 72.675960231869226 ] } },
+{ "type": "Feature", "properties": { "province": "Охотская НГП" }, "geometry": { "type": "Point", "coordinates": [ 148.621272861333864, 52.835994416857922 ] } },
+{ "type": "Feature", "properties": { "province": "Прикаспийская НГП" }, "geometry": { "type": "Point", "coordinates": [ 47.055678525182202, 48.398166245860132 ] } },
+{ "type": "Feature", "properties": { "province": "Притихоокеанская НГП" }, "geometry": { "type": "Point", "coordinates": [ 169.065220716398869, 58.388383917209616 ] } },
+{ "type": "Feature", "properties": { "province": "Причерноморско-Северо-Кавказская НГП" }, "geometry": { "type": "Point", "coordinates": [ 43.48871742312771, 45.139894050727783 ] } },
+{ "type": "Feature", "properties": { "province": "Тимано-Печорская НГП" }, "geometry": { "type": "Point", "coordinates": [ 55.382819648085764, 66.854261492501919 ] } },
+{ "type": "Feature", "properties": { "province": "Черноморская НГП" }, "geometry": { "type": "Point", "coordinates": [ 38.068435975700375, 43.630550963163465 ] } },
+{ "type": "Feature", "properties": { "province": "Япономорская НГП" }, "geometry": { "type": "Point", "coordinates": [ 138.971396303249179, 45.788495353794708 ] } }
+]
+}

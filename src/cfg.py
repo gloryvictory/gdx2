@@ -16,7 +16,7 @@ DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")
 DB_USER = os.getenv("DB_USER", "gdx2")
 DB_PASS = os.getenv("DB_PASS", "gdx2pwd")
 DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-DB_DSN_ASYNCIO = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# DB_DSN_ASYNCIO = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 # print(DATABASE_URL)
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
@@ -33,6 +33,8 @@ FOLDER_OUT = 'log'
 FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")
 FOLDER_UPLOAD = 'upload'
 
+FOLDER_GEOJSON_OUT = 'geojson'
+FOLDER_DATA = 'data'
 
 
 CONVENTION = {
@@ -48,3 +50,11 @@ CONVENTION = {
     ),
     'pk': 'pk__%(table_name)s'
 }
+
+CRS_OUT = 4326  # 4326 - WGS 84
+
+
+NGP_FILE_GEOJSON_IN = 'NGP.geojson' # 'mest.geojson'
+NGP_FILE_GEOJSON_OUT = 'NGP.geojson'
+NGP_NAME_FIELD = 'province'
+NGP_FILE_LOG = NGP_FILE_GEOJSON_IN + '.log'

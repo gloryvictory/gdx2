@@ -1,9 +1,12 @@
 from fastapi import APIRouter
 
-from src.db.router import router_db
-from src.ext.router import router_ext
-from src.ext2.router import router_ext2
-from src.files.router import router_files
+from src.api.ext.router import router_ext
+from src.api.files.router import router_files
+from src.api.ngp.endpoint import ngp_router
+
+# from src.db.router import router_db
+# from src.ext.router import router_ext
+# from src.files.router import router_files
 
 api_router = APIRouter(prefix='/api/v1')
 
@@ -14,7 +17,7 @@ def ping():
     return {"msg": "pong!"}
 
 
-api_router.include_router(router_files, prefix="/files", tags=["Файлы"])  #
-api_router.include_router(router_ext, prefix="/ext", tags=["Расширения"])  #
-api_router.include_router(router_ext2, prefix="/ext2", tags=["Расширения 2"])  #
-api_router.include_router(router_db, prefix="/db", tags=["База данных"])  #
+api_router.include_router(router_files)  #
+api_router.include_router(router_ext)  #
+api_router.include_router(ngp_router)  #
+# api_router.include_router(router_db, prefix="/db", tags=["База данных"])  #
