@@ -1,26 +1,22 @@
 import json
 import os
 import hashlib
-from typing import Any
 
 import geopandas
-from sqlalchemy import insert, text, select, func
+from sqlalchemy import text, select, func, insert
 
 from src import cfg
 from src.db.db import async_session_maker
-# from src.models import NGP
-# from src import cfg
 from src.log import set_logger
-from src.models import M_NSI_NGP
+from src.models import M_NSI_NGO
 
 
-# TODO разобраться почему не работает центроид на  "Новосибирско-Чукотская ПНГП"
-
-async def ngp_reload():
+#
+async def ngo_reload():
     content = {"msg": "error"}
-    file_geojson = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_DATA, cfg.NGP_FILE_GEOJSON_IN)
-    file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.NGP_FILE_GEOJSON_OUT)
-    name_field = cfg.NGP_NAME_FIELD  # 'name_ru'
+    file_geojson = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_DATA, cfg.NGO_FILE_GEOJSON_IN)
+    file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.NGO_FILE_GEOJSON_OUT)
+    name_field = cfg.NGO_NAME_FIELD  # 'name_ru'
     crs_out = cfg.CRS_OUT
 
     try:
@@ -29,6 +25,7 @@ async def ngp_reload():
         gdf = gdf.explode(column='geometry', ignore_index=True, index_parts=False)
         # Объединяем два контура одного месторождения с одинаковым наименованием
         gdf = gdf.dissolve(by=name_field, as_index=False)
+
         gdf = gdf.to_crs(gdf.estimate_utm_crs())
         gdf['centroid'] = gdf.centroid
 
@@ -39,16 +36,16 @@ async def ngp_reload():
 
         gdf1.to_file(file_geojson_out, driver='GeoJSON')
 
-        async with async_session_maker() as session:
-            # await M_NSI_NGP.objects.delete(each=True)
-            stmt = text(f"TRUNCATE {M_NSI_NGP.__tablename__} RESTART IDENTITY;")
-            await session.execute(stmt)
+        for i in range(0, len(gdf1)):
+            gdf1.loc[i, 'lon'] = gdf1.geometry.centroid.x.iloc[i]
+            gdf1.loc[i, 'lat'] = gdf1.geometry.centroid.y.iloc[i]
+        log = set_logger(cfg.NGO_FILE_LOG)
 
-            for i in range(0, len(gdf1)):
-                gdf1.loc[i, 'lon'] = gdf1.geometry.centroid.x.iloc[i]
-                gdf1.loc[i, 'lat'] = gdf1.geometry.centroid.y.iloc[i]
-            log = set_logger(cfg.NGP_FILE_LOG)
-            log.info(gdf1)
+        log.info(gdf1)
+
+        async with async_session_maker() as session:
+            stmt = text(f"TRUNCATE {M_NSI_NGO.__tablename__} RESTART IDENTITY;")
+            await session.execute(stmt)
 
             for i in range(0, len(gdf1)):
                 str_name = str(gdf1.loc[i, name_field]).lower()
@@ -60,12 +57,13 @@ async def ngp_reload():
                 _crs = crs_out
                 _hash = hash_md5
 
-                stmt = insert(M_NSI_NGP).values(name_ru=_name_ru, lon=_lon, lat=_lat, crs=_crs, hash=_hash)
+                stmt = insert(M_NSI_NGO).values(name_ru=_name_ru, lon=_lon, lat=_lat, crs=_crs, hash=_hash)
                 await session.execute(stmt)
                 await session.commit()
-            res = await session.scalar(select(func.count(M_NSI_NGP.id)))
+            res = await session.scalar(select(func.count(M_NSI_NGO.id)))
             content = {"msg": "Success", "count": res}
 
+            log.info(f"Total ngo count {res}")
     except Exception as e:
         content = {"msg": f"reload fail. can't read file {file_geojson}"}
         print("Exception occurred " + str(e))
@@ -76,15 +74,15 @@ async def ngp_reload():
     return content
 
 
-async def ngp_get_all():
-    content = {"msg": f"error"}
+async def get_ngo_all():
+    content = {"msg": f"Error"}
     log = set_logger(cfg.NGP_FILE_LOG)
 
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_NSI_NGP)
-                .order_by(M_NSI_NGP.name_ru)
+                select(M_NSI_NGO)
+                .order_by(M_NSI_NGO.name_ru)
             )
             _all = res.all()
             cnt = len(_all)
@@ -92,7 +90,7 @@ async def ngp_get_all():
             log.info("ngp load successfully")
             return content
     except Exception as e:
-        cont_err = f"fail. can't read ngp from table ({M_NSI_NGP.__tablename__})"
+        cont_err = f"fail. can't read ngp from table ({M_NSI_NGO.__tablename__})"
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
         print(content)
     finally:
@@ -101,15 +99,15 @@ async def ngp_get_all():
     return content
 
 
-async def ngp_get_all_count():
+async def ngo_get_count():
     content = {"msg": f"error"}
     try:
         async with async_session_maker() as session:
-            res = await session.scalar(select(func.count(M_NSI_NGP.id)))
+            res = await session.scalar(select(func.count(M_NSI_NGO.id)))
             content = {"msg": "Success", "count": res}
             return content
     except Exception as e:
-        cont_err = f"fail. can't read ext from table ({M_NSI_NGP.__tablename__})"
+        cont_err = f"fail. can't read ext from table ({M_NSI_NGO.__tablename__})"
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
         print(content)
     finally:
@@ -118,10 +116,10 @@ async def ngp_get_all_count():
     return content
 
 
-async def ngp_get_geojson():
+async def ngo_get_geojson():
     content = {"msg": "Success"}
-    file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.NGP_FILE_GEOJSON_OUT)
-    log = set_logger(cfg.NGP_FILE_LOG)
+    file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.NGO_FILE_GEOJSON_OUT)
+    log = set_logger(cfg.NGO_FILE_LOG)
     log.info(f"Getting file {file_geojson_out}")
     try:
         with open(file_geojson_out, 'r', encoding="utf8") as fp:

@@ -26,7 +26,7 @@ from src.models import M_EXT
 
 
 async def ext_get_all_count():
-    content = {"msg": f"Unknown error"}
+    content = {"msg": f"error"}
     try:
         async with async_session_maker() as session:
             res = await session.scalar(select(func.count(M_EXT.id)))
