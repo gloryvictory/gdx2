@@ -12,7 +12,7 @@ app = FastAPI(title="GDX2 App")
 
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
+# test test
 # , root_path=API_VERSION
 # origins = [
 #     "http://localhost",
