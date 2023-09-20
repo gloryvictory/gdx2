@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from src.api.lu.services import lu_reload, lu_get_all, lu_get_all_count, lu_get_geojson_file
 
-lu_router = APIRouter(prefix="/lu", tags=[""])
+lu_router = APIRouter(prefix="/lu", tags=["Лицензионные участки"])
 
 
 @lu_router.get(path='/all',
