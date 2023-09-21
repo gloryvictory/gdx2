@@ -413,7 +413,8 @@ class M_AUTHOR(Base):
 class M_HISTORY(Base):
     """A source table"""
 
-    __tablename__ = "История запросов"
+    __tablename__ = "history"
+    __table_args__ = {'comment': 'История запросов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     url: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)

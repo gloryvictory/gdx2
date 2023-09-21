@@ -76,92 +76,105 @@ async def well_reload():
             await session.close()
     return content
 
+
+
+async def well_get_all():
+    content = {"msg": f"error"}
+    log = set_logger(cfg.WELL_FILE_LOG)
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_NSI_WELL)
+                .order_by(M_NSI_WELL.name_ru)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+            log.info("ngp load successfully")
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read well from table ({M_NSI_WELL.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+
+async def well_get_all_count():
+    content = {"msg": f"error"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalar(select(func.count(M_NSI_WELL.id)))
+            content = {"msg": "Success", "count": res}
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read ext from table ({M_NSI_WELL.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+async def well_get_geojson_file():
+    content = {"msg": "Success"}
+    file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.WELL_FILE_GEOJSON_OUT)
+    log = set_logger(cfg.WELL_FILE_LOG)
+    log.info(f"Getting file {file_geojson_out}")
+    try:
+        with open(file_geojson_out, 'r', encoding="utf8") as fp:
+            geojson_file = json.load(fp)
+            return geojson_file
+
+    except Exception as e:
+        content = {"msg": f"reload fail. can't read file {file_geojson_out}"}
+        str_err = "Exception occurred " + str(e)
+        log.info(str_err)
+        return content
 #
-# async def well_get_all():
-#     content = {"msg": f"Unknown error"}
-#     log = set_logger(cfg.WELL_FILE_LOG)
 #
-#     try:
-#         well_all = await WELL.objects.all()
-#
-#         log.info("wells load successfully")
-#         return well_all
-#     except Exception as e:
-#         content = {"msg": f"reload fail. can't read ngo from database {WELL.Meta.tablename}"}
-#         str_err = "Exception occurred " + str(e)
-#         print(str_err)
-#         log.info(str_err)
-#     return content
-#
-#
-# async def well_get_all_count() -> dict[str, str | Any] | dict[str, str]:
-#     content = {"msg": f"Unknown error"}
-#     log = set_logger(cfg.WELL_FILE_LOG)
-#
-#     try:
-#         # table_exist = ngo.
-#         well_all_count = await WELL.objects.count()
-#
-#         log.info(f"count load successfuly: {well_all_count}")
-#         content = {"msg": "Success", "count": well_all_count}
-#         return content
-#     except Exception as e:
-#         content = {"msg": f"reload fail. can't read count of ngo from database {WELL.Meta.tablename}"}
-#         str_err = "Exception occurred " + str(e)
-#         print(str_err)
-#         log.info(str_err)
-#     return content
-#
-#
-# async def well_get_geojson_file():
-#     content = {"msg": "Success"}
-#     file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.WELL_FILE_GEOJSON_OUT)
-#     log = set_logger(cfg.WELL_FILE_LOG)
-#     log.info(f"Getting file {file_geojson_out}")
-#     try:
-#         with open(file_geojson_out, 'r', encoding="utf8") as fp:
-#             geojson_file = json.load(fp)
-#             return geojson_file
-#
-#     except Exception as e:
-#         content = {"msg": f"reload fail. can't read file {file_geojson_out}"}
-#         str_err = "Exception occurred " + str(e)
-#         # print(str_err)
-#         log.info(str_err)
-#         return content
-#
-#
-# async def well_get_by_area(area: str):
-#     content = {"msg": f"Unknown error"}
-#     log = set_logger(cfg.WELL_FILE_LOG)
-#     print(area)
-#     try:
-#         well_all = await WELL.objects.all(WELL.area == area)
-#
-#         log.info("wells load successfully")
-#         return well_all
-#     except Exception as e:
-#         content = {"msg": f"reload fail. can't read ngo from database {WELL.Meta.tablename}"}
-#         str_err = "Exception occurred " + str(e)
-#         print(str_err)
-#         log.info(str_err)
-#     return content
+async def well_get_by_area(area: str):
+    content = {"msg": f"error"}
+    log = set_logger(cfg.WELL_FILE_LOG)
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_NSI_WELL)
+                .where(M_NSI_WELL.area==area)
+                .order_by(M_NSI_WELL.name_ru)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+            log.info("ngp load successfully")
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read well from table ({M_NSI_WELL.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+async def well_get_area_count(area: str):
+    content = {"msg": f"error"}
+    try:
+        async with async_session_maker() as session:
+            # M_NSI_WELL.area == area
+            res = await session.scalar(select(func.count(M_NSI_WELL.id)).where(M_NSI_WELL.area==area))
+            content = {"msg": "Success", "count": res}
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read ext from table ({M_NSI_WELL.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
 #
 #
 # async def well_get_area_count(area: str):
-#     content = {"msg": f"Unknown error"}
-#     log = set_logger(cfg.WELL_FILE_LOG)
-#
-#     try:
-#         # table_exist = ngo.
-#         well_all = await WELL.objects.all(WELL.area == area)
-#         well_all_count = len(well_all)
-#         log.info(f"count load successfuly: {well_all_count}")
-#         content = {"msg": "Success", "count": well_all_count}
-#         return content
-#     except Exception as e:
-#         content = {"msg": f"reload fail. can't read count of ngo from database {WELL.Meta.tablename}"}
-#         str_err = "Exception occurred " + str(e)
-#         print(str_err)
-#         log.info(str_err)
-#     return content

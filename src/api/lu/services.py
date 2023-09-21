@@ -128,6 +128,7 @@ async def lu_get_all_count():
             await session.close()
     return content
 #
+
 async def lu_get_geojson_file():
     content = {"msg": "Success"}
     file_geojson_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_GEOJSON_OUT, cfg.LU_FILE_GEOJSON_OUT)

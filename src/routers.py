@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from src.api.area.endpoint import area_router
 from src.api.ext.router import router_ext
 from src.api.field.endpoint import fields_router
 from src.api.files.router import router_files
@@ -27,8 +28,9 @@ api_router.include_router(router_ext)  #
 api_router.include_router(ngp_router)  #
 api_router.include_router(ngo_router)  #
 api_router.include_router(ngr_router)  #
-api_router.include_router(fields_router)  #
 api_router.include_router(lu_router)  #
+api_router.include_router(fields_router)  #
+api_router.include_router(area_router)  #
 api_router.include_router(well_router)  #
 
 # api_router.include_router(router_db, prefix="/db", tags=["База данных"])  #

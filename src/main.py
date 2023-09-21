@@ -1,4 +1,5 @@
 # uvicorn main:app --reload
+# https://habr.com/ru/articles/705752/
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
