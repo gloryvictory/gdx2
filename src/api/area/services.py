@@ -1,7 +1,6 @@
 import json
 import os
 import hashlib
-from typing import Any
 
 import geopandas
 from sqlalchemy import text, insert, select, func
@@ -34,17 +33,14 @@ async def area_reload():
             gdf_area1.loc[i, 'lat'] = gdf_area1.geometry.centroid.y.iloc[i]
 
         # gdf_area = sorted(gdf_area1) # Сортируем
-        # log.info(gdf_area)
-        # cnt_areas = len(gdf_area)
         gdf_area1.to_file(file_geojson_out, driver='GeoJSON')
 
         async with async_session_maker() as session:
-            # await M_NSI_NGP.objects.delete(each=True)
             stmt = text(f"TRUNCATE {M_NSI_AREA.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
 
             cnt_all = len(gdf_area1)
-            # for area_current in gdf_area1:
+
             for i in range(0, cnt_all):
                 print(f"{i}  of {cnt_all}")
                 str_name = str(gdf_area1.loc[i, name_area]).lower()

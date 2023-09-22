@@ -1,7 +1,6 @@
 import json
 import os
 import hashlib
-from typing import Any
 
 import geopandas
 from sqlalchemy import text, insert, select, func

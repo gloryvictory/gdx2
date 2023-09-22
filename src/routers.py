@@ -8,6 +8,7 @@ from src.api.lu.endpoint import lu_router
 from src.api.ngo.endpoint import ngo_router
 from src.api.ngp.endpoint import ngp_router
 from src.api.ngr.endpoint import ngr_router
+from src.api.search.endpoint import search_router
 from src.api.well.endpoint import well_router
 
 # from src.db.router import router_db
@@ -32,5 +33,6 @@ api_router.include_router(lu_router)  #
 api_router.include_router(fields_router)  #
 api_router.include_router(area_router)  #
 api_router.include_router(well_router)  #
+api_router.include_router(search_router)  #
 
 # api_router.include_router(router_db, prefix="/db", tags=["База данных"])  #

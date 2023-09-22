@@ -88,3 +88,6 @@ FIELDS_FILE_LOG = FIELDS_FILE_GEOJSON_IN + '.log'
 
 AREA_FILE_LOG = 'AREA.log'
 AREA_FILE_GEOJSON_OUT = 'AREA.geojson'
+
+
+FILE_FTS_INDEX = 'file_path_fts_idx'

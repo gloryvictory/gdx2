@@ -8,7 +8,7 @@ from sqlalchemy import (TIMESTAMP, Boolean, Integer, String, TEXT, BigInteger, F
 from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from src.db.db import Base
-from src.api.files.schemas import S_FILE, S_EXT, S_NSI_FIELD, S_NSI_LU, S_NSI_NGO, S_NSI_NGP, S_NSI_NGR, S_NSI_WELL, \
+from src.schemas import S_FILE, S_EXT, S_NSI_FIELD, S_NSI_LU, S_NSI_NGO, S_NSI_NGP, S_NSI_NGR, S_NSI_WELL, \
     S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY
 
 
