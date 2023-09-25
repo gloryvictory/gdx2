@@ -3,15 +3,16 @@ import os
 import hashlib
 
 import geopandas
-from sqlalchemy import text, insert, select, func
+from sqlalchemy import text, insert, select
 
 from src import cfg
 from src.db.db import async_session_maker
 from src.log import set_logger
 from src.models import M_NSI_NGR, M_FILE
-
+from sqlalchemy.sql.expression import func
 
 # M_NSI_NGR
+
 async def index_create():
     content = {"msg": "Success"}
 
@@ -38,6 +39,43 @@ async def index_create():
 
     except Exception as e:
         content = {"msg": f"can't create index {cfg.FILE_FTS_INDEX}"}
+        print("Exception occurred " + str(e))
+        return content
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+async def fulltext_search(search_str:str):
+    content = {"msg": "Success"}
+    str_query_local = search_str.strip().replace(" ", "&")
+    try:
+        async with async_session_maker() as session:
+            print(str_query_local)
+            # all_ = await FILES_M.objects.filter(file_path_fts__match=str_query_local).all()
+            # print(f"Удаляем индекс {cfg.FILE_FTS_INDEX}")
+            # stmt = M_FILE.filter(M_FILE.__ts_vector__.match(str_query_local, postgresql_regconfig='russian')).all()
+
+            res = await select(M_FILE).where(
+                M_FILE.file_path_fts.match(str_query_local, postgresql_regconfig='russian')
+            )
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+            # stmt = text(f"SELECT *\
+            # FROM {M_FILE.__tablename__}\
+            # WHERE {M_FILE.file_path_fts.key} @@ to_tsquery('{str_query_local}')\
+            # ORDER BY ts_rank({M_FILE.file_path_fts.key}, plainto_tsquery('{str_query_local}'));")
+            # # ORDER BY rank;
+            # print(stmt)
+            # res = await session.execute(stmt)
+            # result = res.all()
+            # _len = len(result)
+            # print(result)
+            # content = {"msg": "Success", "count": _len, "data": result}
+
+    except Exception as e:
+        content = {"msg": f"can't search in index {cfg.FILE_FTS_INDEX}"}
         print("Exception occurred " + str(e))
         return content
     finally:
