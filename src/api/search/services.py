@@ -48,16 +48,12 @@ async def index_create():
 
 async def fulltext_search(search_str:str):
     content = {"msg": "Success"}
-    str_query_local = search_str.strip().replace(" ", "&")
+    str_query_local = search_str.strip().lower().replace(" ", "&")
     try:
         async with async_session_maker() as session:
             print(str_query_local)
-            # all_ = await FILES_M.objects.filter(file_path_fts__match=str_query_local).all()
-            # print(f"Удаляем индекс {cfg.FILE_FTS_INDEX}")
-            # stmt = M_FILE.filter(M_FILE.__ts_vector__.match(str_query_local, postgresql_regconfig='russian')).all()
-
-            res = await select(M_FILE).where(
-                M_FILE.file_path_fts.match(str_query_local, postgresql_regconfig='russian')
+            res = await session.scalars(select(M_FILE).where(
+                M_FILE.file_path_fts.match(str_query_local, postgresql_regconfig='russian'))
             )
             _all = res.all()
             cnt = len(_all)

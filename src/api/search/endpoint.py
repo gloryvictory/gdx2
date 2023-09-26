@@ -15,7 +15,7 @@ async def get_index_create():
     content = await index_create()
     return content
 
-@search_router.get(path='/fulltext/{search_str}',
+@search_router.get(path='/{search_str}',
                 status_code=200,
                 # response_model=List[s_ngr],
                 name='Полнотекстовый поиск',
