@@ -3,7 +3,7 @@ from sqlalchemy import select, func
 from src.db.db import get_async_session, async_session_maker
 # from src.cfg import DB_DSN_ASYNCIO
 # from src.database import get_async_session
-# from src.files.files2pg import folder2pg
+# from src.file.files2pg import folder2pg
 # from src.models import FILE_M, FILE_SRC_M
 from src.models import M_FILE
 

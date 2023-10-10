@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.api.files.services import files_get_count, files_get_all, files_get_all_limit_offset, src_get_all, \
+from src.api.file.services import files_get_count, files_get_all, files_get_all_limit_offset, src_get_all, \
     files_get_by_id
 from src.db.db import get_async_session
-# from src.files.schemas import FILES_S
-# from src.files.services import files_get_all_count, src_add, src_get_all, src_get_by_id
+# from src.file.schemas import FILES_S
+# from src.file.services import files_get_all_count, src_add, src_get_all, src_get_by_id
 
 router_files = APIRouter(
-    prefix="/files",
+    prefix="/file",
     tags=["Файлы"]
 )
 

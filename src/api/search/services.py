@@ -11,6 +11,7 @@ from src.log import set_logger
 from src.models import M_NSI_NGR, M_FILE
 from sqlalchemy.sql.expression import func
 
+
 # M_NSI_NGR
 
 async def index_create():
@@ -29,10 +30,10 @@ async def index_create():
             print(res)
 
             print(f"Создаем индекс ...")
-            stmt = text(f"CREATE INDEX IF NOT EXISTS {cfg.FILE_FTS_INDEX} ON {M_FILE.__tablename__} USING GIN ({M_FILE.file_path_fts.key});")
+            stmt = text(
+                f"CREATE INDEX IF NOT EXISTS {cfg.FILE_FTS_INDEX} ON {M_FILE.__tablename__} USING GIN ({M_FILE.file_path_fts.key});")
             res = await session.execute(stmt)
             print(res)
-
 
         print("OK")
         content = {"msg": "Success", "count": 0}
@@ -46,14 +47,16 @@ async def index_create():
             await session.close()
     return content
 
-async def fulltext_search(search_str:str):
+
+async def fulltext_search(search_str: str):
     content = {"msg": "Success"}
     str_query_local = search_str.strip().lower().replace(" ", "&")
     try:
         async with async_session_maker() as session:
             print(str_query_local)
-            res = await session.scalars(select(M_FILE).where(
-                M_FILE.file_path_fts.match(str_query_local, postgresql_regconfig='russian'))
+            res = await session.scalars(
+                select(M_FILE)
+                .where(M_FILE.file_path_fts.match(str_query_local, postgresql_regconfig='russian'))
             )
             _all = res.all()
             cnt = len(_all)
@@ -79,3 +82,27 @@ async def fulltext_search(search_str:str):
             await session.close()
     return content
 
+
+async def fulltext_search_limit_offset(search_str: str, limit: int = 100, offset: int = 0):
+    content = {"msg": "Success"}
+    str_query_local = search_str.strip().lower().replace(" ", "&")
+    try:
+        async with async_session_maker() as session:
+            print(str_query_local)
+            res = await session.scalars(
+                select(M_FILE)
+                .where(M_FILE.file_path_fts.match(str_query_local, postgresql_regconfig='russian'))
+                .limit(limit)
+                .offset(offset)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+    except Exception as e:
+        content = {"msg": f"can't search in index {cfg.FILE_FTS_INDEX}"}
+        print("Exception occurred " + str(e))
+        return content
+    finally:
+        if session is not None:
+            await session.close()
+    return content

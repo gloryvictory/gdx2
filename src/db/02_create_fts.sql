@@ -1,21 +1,21 @@
 --SELECT count(*)
---FROM files
---where files.file_path  like '%Снежная%'
+--FROM file
+--where file.file_path  like '%Снежная%'
 
 --explain SELECT *
---FROM files
---where files.file_path  like '%Снежная%'
+--FROM file
+--where file.file_path  like '%Снежная%'
 
 
--- files.file_path  like '%Снежная%'
+-- file.file_path  like '%Снежная%'
 
 -- SELECT f.file_path
--- FROM files f
+-- FROM file f
 -- where
 -- to_tsvector(f.file_path) @@ to_tsquery('Снежная')
 
 -- ----------------------------------------------------------------------------------------------------
---ALTER TABLE files
+--ALTER TABLE file
 --	ADD COLUMN file_path_fts tsvector;
 --
 --update file
