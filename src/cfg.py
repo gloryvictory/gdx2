@@ -21,6 +21,8 @@ DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+# redis://username:password@hostname:port/db
 
 NUMBER_PROCESS = os.getenv("NUMBER_PROCESS", "1")
 
@@ -91,3 +93,4 @@ AREA_FILE_GEOJSON_OUT = 'AREA.geojson'
 
 
 FILE_FTS_INDEX = 'file_path_fts_idx'
+

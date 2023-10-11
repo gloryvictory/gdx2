@@ -5,6 +5,7 @@ from datetime import datetime
 from sqlalchemy import insert, text, select, update, func
 
 from src import cfg
+from src.api.celery.tasks import update_file_by_ngp_str
 from src.db.db import async_session_maker
 from src.log import set_logger
 from src.models import M_NSI_NGP, M_FILE
@@ -52,8 +53,9 @@ async def update_file_by_ngp(ngp_str: str, lat: float, lon: float):
     try:
         async with async_session_maker() as session:
             time1 = datetime.now()
-            log = set_logger(cfg.NGP_FILE_LOG)
-            log.INFO(f"Обработка: {ngp_str}")
+            # log = set_logger(cfg.NGP_FILE_LOG)
+            print(f"Обработка: {ngp_str}")
+            # log.INFO(f"Обработка: {ngp_str}")
             # через полнотекстовый поиск (но он выдает больше результатов, т.к. для него Частная и Частный одно и то же)
             # res = await session.scalars(
             #     select(M_FILE)
@@ -72,20 +74,21 @@ async def update_file_by_ngp(ngp_str: str, lat: float, lon: float):
             _all = res.all()
             cnt = len(_all)
             for file in _all:
-                # f_str = file.f_path
-                print(file.f_path)
                 f_path_md5 = file.f_path_md5
-                stmt = (
-                    update(M_FILE)
-                    .where(M_FILE.f_path_md5 == f_path_md5)
-                    .values(ngp=ngp_str, lat=lat, lon=lon)
-                )
-                await session.execute(stmt)
-                await session.commit()
+                update_file_by_ngp_str.delay(ngp_str, lat, lon, f_path_md5)
+                # print(file.f_path)
+                # f_path_md5 = file.f_path_md5
+                # stmt = (
+                #     update(M_FILE)
+                #     .where(M_FILE.f_path_md5 == f_path_md5)
+                #     .values(ngp=ngp_str, lat=lat, lon=lon)
+                # )
+                # await session.execute(stmt)
+                # await session.commit()
 
             content = {"msg": "Success"}
             time2 = datetime.now()
-            log.INFO(f"Обработано: {ngp_str}. Total time:  + {str(time2 - time1)}")
+            print(f"Обработано: {ngp_str}. Total time:  + {str(time2 - time1)}")
             return content
     except Exception as e:
         cont_err = f"fail. can't read file from table ({M_NSI_NGP.__tablename__})"
