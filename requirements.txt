@@ -9,3 +9,4 @@ SQLAlchemy
 uvicorn
 python-multipart
 geopandas
+psycopg2-binary
