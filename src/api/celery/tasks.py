@@ -28,6 +28,7 @@ celery = Celery('tasks', backend='redis://localhost:6379/0', broker='redis://loc
 
 # запуск celery
 # celery -A src.api.celery.tasks:celery worker --loglevel=INFO --pool=solo
+# celery -A src.api.celery.tasks:celery worker --loglevel=INFO --pool=solo --autoscale=10,3 --concurrency=10 -n worker1@%h
 # запуск flower
 # celery -A src.api.celery.tasks:celery flower
 # Удалить все задачи
@@ -115,9 +116,9 @@ celery.conf.update(
 @celery.task(name="update_file_by_ngp")
 def update_file_by_ngp_str2(ngp_str: str, lat: float, lon: float):
     # ngp_str: str = "qweqweqweqwe"
-    print(f"Обработано: {ngp_str} {lat} {lon}.!!!!!!")
+    # print(f"Обработано: {ngp_str} {lat} {lon}.!!!!!!")
     try:
-        print(f"Обработано: {ngp_str}.!!!!!!")
+        # print(f"Обработано: {ngp_str}.!!!!!!")
         engine = sqlalchemy.create_engine(cfg.DB_DSN2)
         # create session and add objects
         with Session(engine) as session:
@@ -131,7 +132,36 @@ def update_file_by_ngp_str2(ngp_str: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
-            print(f"Обработано: {ngp_str}. Total time:  + {str(time2 - time1)}")
+            print(f"Обработано: {ngp_str}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
+    except Exception as e:
+        cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            session.close()
+
+
+@celery.task(name="update_file_by_ngo")
+def update_file_by_ngo_str2(ngo_str: str, lat: float, lon: float):
+    # ngp_str: str = "qweqweqweqwe"
+    # print(f"Обработано: {ngp_str} {lat} {lon}.!!!!!!")
+    try:
+        # print(f"Обработано: {ngp_str}.!!!!!!")
+        engine = sqlalchemy.create_engine(cfg.DB_DSN2)
+        # create session and add objects
+        with Session(engine) as session:
+            time1 = datetime.now()
+            ngp_str_new = f"%{ngo_str}%"
+            stmt = (
+                update(M_FILE)
+                .where(M_FILE.f_path.ilike(ngp_str_new))
+                .values(ngo=ngo_str, lat=lat, lon=lon)
+            )
+            session.execute(stmt)
+            session.commit()
+            time2 = datetime.now()
+            print(f"Обработано: {ngo_str}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}

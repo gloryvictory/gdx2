@@ -5,10 +5,10 @@ from datetime import datetime
 from sqlalchemy import insert, text, select, update, func
 
 from src import cfg
-from src.api.celery.tasks import update_file_by_ngp_str2
+from src.api.celery.tasks import update_file_by_ngp_str2, update_file_by_ngo_str2
 from src.db.db import async_session_maker
 from src.log import set_logger
-from src.models import M_NSI_NGP, M_FILE
+from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO
 
 
 def get_ngp_name(ngp_in: str):
@@ -61,7 +61,6 @@ async def update_file_by_ngp(ngp_str: str, lat: float, lon: float):
 
         # result = update_file_by_ngp_str2.delay(ngp_str, lat, lon)
 
-
         result = update_file_by_ngp_str2.delay(ngp_str, lat, lon)
 
         # while not result.ready():
@@ -82,29 +81,29 @@ async def update_file_by_ngp(ngp_str: str, lat: float, lon: float):
         #
         #     update_file_by_ngp_str2.delay(ngp_str, lat, lon)
         #
-            # ngp_str_new = f"%{ngp_str}%"
-            # res = await session.scalars(
-            #     select(M_FILE)
-            #     .where(M_FILE.f_path.ilike(ngp_str_new) ) # lower(f.f_path) like LOWER('%частная%')
-            #     .order_by(M_FILE.f_path)
-            # )
-            # # func.lower(M_FILE.f_path)
-            # # .where(M_FILE.file_path_fts.match(ngp_str, postgresql_regconfig='russian'))
-            #
-            # _all = res.all()
-            # cnt = len(_all)
-            # for file in _all:
-            #     f_path_md5 = file.f_path_md5
-            #     update_file_by_ngp_str.delay(ngp_str, lat, lon, f_path_md5)
-            #     # print(file.f_path)
-            #     # f_path_md5 = file.f_path_md5
-            #     # stmt = (
-            #     #     update(M_FILE)
-            #     #     .where(M_FILE.f_path_md5 == f_path_md5)
-            #     #     .values(ngp=ngp_str, lat=lat, lon=lon)
-            #     # )
-            #     # await session.execute(stmt)
-            #     # await session.commit()
+        # ngp_str_new = f"%{ngp_str}%"
+        # res = await session.scalars(
+        #     select(M_FILE)
+        #     .where(M_FILE.f_path.ilike(ngp_str_new) ) # lower(f.f_path) like LOWER('%частная%')
+        #     .order_by(M_FILE.f_path)
+        # )
+        # # func.lower(M_FILE.f_path)
+        # # .where(M_FILE.file_path_fts.match(ngp_str, postgresql_regconfig='russian'))
+        #
+        # _all = res.all()
+        # cnt = len(_all)
+        # for file in _all:
+        #     f_path_md5 = file.f_path_md5
+        #     update_file_by_ngp_str.delay(ngp_str, lat, lon, f_path_md5)
+        #     # print(file.f_path)
+        #     # f_path_md5 = file.f_path_md5
+        #     # stmt = (
+        #     #     update(M_FILE)
+        #     #     .where(M_FILE.f_path_md5 == f_path_md5)
+        #     #     .values(ngp=ngp_str, lat=lat, lon=lon)
+        #     # )
+        #     # await session.execute(stmt)
+        #     # await session.commit()
 
         content = {"msg": "Success"}
         return content
@@ -113,3 +112,55 @@ async def update_file_by_ngp(ngp_str: str, lat: float, lon: float):
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
         print(content)
     return content
+
+
+# НГ Области
+
+def get_ngo_name(ngo_in: str):
+    ngo_str = ngo_in.replace(" пнго", "")
+    ngo_str = ngo_str.replace(" нго", "")
+    ngo_str = ngo_str.replace(" пго", "")
+    ngo_str = ngo_str.replace(" снго", "")
+    ngo_str = ngo_str.replace(" сно", "")
+    ngo_str = ngo_str.replace(" спнго", "")
+    ngo_str = ngo_str.replace(" гно", "")
+    ngo_str = ngo_str.replace("  нг", "")
+    ngo_str = ngo_str.replace("пнго ", "")
+    return ngo_str.lower().strip()
+
+
+async def update_by_ngo():
+    content = {"msg": f"error"}
+    # log = set_logger(cfg.NGP_FILE_LOG)
+
+    try:
+        time1 = datetime.now()
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_NSI_NGO)
+                .order_by(M_NSI_NGO.name_ru)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            for ngo in _all:
+                ngo_str = get_ngo_name(ngo.name_ru)
+
+                lat = float(ngo.lat)
+                lon = float(ngo.lon)
+                print(f"{ngo_str} {lat} {lon}")
+
+                update_file_by_ngo_str2.delay(ngo_str, lat, lon)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+        time2 = datetime.now()
+        print(f"Обработаны все НГО: Total time:  + {str(time2 - time1)}")
+        return content
+    except Exception as e:
+        cont_err = f"fail. can't read ngp from table ({M_NSI_NGO.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+
