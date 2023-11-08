@@ -25,6 +25,8 @@ REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 # redis://username:password@hostname:port/db
 
+
+DEVENV = os.getenv("DEVENV", "dev")
 NUMBER_PROCESS = os.getenv("NUMBER_PROCESS", "1")
 
 DATETIME_CURRENT = str(strftime("%Y-%m-%d-%H-%M-%S"))
