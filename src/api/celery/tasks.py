@@ -176,10 +176,7 @@ def update_file_by_ngo_str2(ngo_str: str, lat: float, lon: float):
 # НГ Районы
 @celery.task(name="update_file_by_ngr")
 def update_file_by_ngr_str2(ngr_str: str, lat: float, lon: float):
-    # ngp_str: str = "qweqweqweqwe"
-    # print(f"Обработано: {ngp_str} {lat} {lon}.!!!!!!")
     try:
-        # print(f"Обработано: {ngp_str}.!!!!!!")
         engine = sqlalchemy.create_engine(cfg.DB_DSN2)
         # create session and add objects
         with Session(engine) as session:
@@ -194,6 +191,32 @@ def update_file_by_ngr_str2(ngr_str: str, lat: float, lon: float):
             session.commit()
             time2 = datetime.now()
             print(f"Обработано: {ngr_str}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
+    except Exception as e:
+        cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            session.close()
+
+# Площади
+@celery.task(name="update_file_by_area")
+def update_file_by_area_str2(area: str, lat: float, lon: float):
+    try:
+        engine = sqlalchemy.create_engine(cfg.DB_DSN2)
+        # create session and add objects
+        with Session(engine) as session:
+            time1 = datetime.now()
+            ngr_str_new = f"%{area}%"
+            stmt = (
+                update(M_FILE)
+                .where(M_FILE.f_path.ilike(ngr_str_new))
+                .values(area=area, lat=lat, lon=lon)
+            )
+            session.execute(stmt)
+            session.commit()
+            time2 = datetime.now()
+            print(f"Обработано: {area}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}

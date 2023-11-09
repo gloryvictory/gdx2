@@ -5,10 +5,11 @@ from datetime import datetime
 from sqlalchemy import insert, text, select, update, func
 
 from src import cfg
-from src.api.celery.tasks import update_file_by_ngp_str2, update_file_by_ngo_str2, update_file_by_ngr_str2
+from src.api.celery.tasks import update_file_by_ngp_str2, update_file_by_ngo_str2, update_file_by_ngr_str2, \
+    update_file_by_area_str2
 from src.db.db import async_session_maker
 from src.log import set_logger
-from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO, M_NSI_NGR
+from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO, M_NSI_NGR, M_NSI_AREA
 
 
 # НГ провинции
@@ -145,7 +146,7 @@ async def update_by_ngr():
             if cfg.DEVENV.startswith("dev"):
                 print("Development mode!!!")
                 ngr = _all[1]
-                ngr_str = get_ngr_name(ngr.name_ru)
+                ngr_str = get_area_name(ngr.name_ru)
                 # проверяем что НГР не пустая
                 if len(ngr_str) > 3:
                     lat = float(ngr.lat)
@@ -155,7 +156,7 @@ async def update_by_ngr():
                     update_file_by_ngr_str2.delay(ngr_str, lat, lon)
             else:
                 for ngr in _all:
-                    ngr_str = get_ngr_name(ngr.name_ru)
+                    ngr_str = get_area_name(ngr.name_ru)
                     # проверяем что НГР не пустая
                     if len(ngr_str) > 3:
                         lat = float(ngr.lat)
@@ -163,6 +164,57 @@ async def update_by_ngr():
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{ngr_str}")
                         update_file_by_ngr_str2.delay(ngr_str, lat, lon)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+        time2 = datetime.now()
+        print(f"Обработаны все НГР: Total time:  + {str(time2 - time1)}")
+        return content
+    except Exception as e:
+        cont_err = f"fail. can't read ngp from table ({M_NSI_NGR.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+# Площади
+def get_area_name(area: str):
+    area_str = area.replace("  ", "")
+    return area_str.lower().strip()
+
+
+async def update_by_area():
+    content = {"msg": f"error"}
+    try:
+        time1 = datetime.now()
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_NSI_AREA)
+                .order_by(M_NSI_AREA.name_ru)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            if cfg.DEVENV.startswith("dev"):
+                print("Development mode!!!")
+                area = _all[1]
+                area_str = get_area_name(area.name_ru)
+                # проверяем что Площадь не пустая
+                if len(area_str) > 3:
+                    lat = float(area.lat)
+                    lon = float(area.lon)
+                    # print(f"{ngr.name_ru} {lat} {lon}")
+                    print(f"{area_str} {lat} {lon}")
+                    update_file_by_area_str2.delay(area_str, lat, lon)
+            else:
+                for area in _all:
+                    area_str = get_area_name(area.name_ru)
+                    # проверяем что Площадь не пустая
+                    if len(area_str) > 3:
+                        lat = float(area.lat)
+                        lon = float(area.lon)
+                        # print(f"{ngr_str} {lat} {lon}")
+                        print(f"{area_str}")
+                        update_file_by_area_str2.delay(area_str, lat, lon)
             content = {"msg": "Success", "count": cnt, "data": _all}
         time2 = datetime.now()
         print(f"Обработаны все НГР: Total time:  + {str(time2 - time1)}")
