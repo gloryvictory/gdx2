@@ -207,12 +207,13 @@ def update_file_by_area_str2(area: str, lat: float, lon: float):
         # create session and add objects
         with Session(engine) as session:
             time1 = datetime.now()
-            ngr_str_new = f"%{area}%"
+            area_str_new = f"%{area}%"
             stmt = (
                 update(M_FILE)
-                .where(M_FILE.f_path.ilike(ngr_str_new))
-                .values(area=area, lat=lat, lon=lon)
+                .where(M_FILE.f_path.ilike(area_str_new))
+                .values(areaoil=area, lat=lat, lon=lon)
             )
+            # print(stmt)
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()

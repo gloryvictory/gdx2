@@ -196,7 +196,7 @@ async def update_by_area():
             cnt = len(_all)
             if cfg.DEVENV.startswith("dev"):
                 print("Development mode!!!")
-                area = _all[1]
+                area = _all[0]
                 area_str = get_area_name(area.name_ru)
                 # проверяем что Площадь не пустая
                 if len(area_str) > 3:
