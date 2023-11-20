@@ -225,3 +225,30 @@ def update_file_by_area_str2(area: str, lat: float, lon: float):
     finally:
         if session is not None:
             session.close()
+
+# Месторождения
+@celery.task(name="update_file_by_field")
+def update_file_by_field_str2(field: str, lat: float, lon: float):
+    try:
+        engine = sqlalchemy.create_engine(cfg.DB_DSN2)
+        # create session and add objects
+        with Session(engine) as session:
+            time1 = datetime.now()
+            field_str_new = f"%{field}%"
+            stmt = (
+                update(M_FILE)
+                .where(M_FILE.f_path.ilike(field_str_new))
+                .values(field=field, lat=lat, lon=lon)
+            )
+            # print(stmt)
+            session.execute(stmt)
+            session.commit()
+            time2 = datetime.now()
+            print(f"Обработано: {field}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
+    except Exception as e:
+        cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            session.close()

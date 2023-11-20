@@ -6,10 +6,10 @@ from sqlalchemy import insert, text, select, update, func
 
 from src import cfg
 from src.api.celery.tasks import update_file_by_ngp_str2, update_file_by_ngo_str2, update_file_by_ngr_str2, \
-    update_file_by_area_str2
+    update_file_by_area_str2, update_file_by_field_str2
 from src.db.db import async_session_maker
 from src.log import set_logger
-from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO, M_NSI_NGR, M_NSI_AREA
+from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO, M_NSI_NGR, M_NSI_AREA, M_NSI_FIELD
 
 
 # НГ провинции
@@ -166,7 +166,7 @@ async def update_by_ngr():
                         update_file_by_ngr_str2.delay(ngr_str, lat, lon)
             content = {"msg": "Success", "count": cnt, "data": _all}
         time2 = datetime.now()
-        print(f"Обработаны все НГР: Total time:  + {str(time2 - time1)}")
+        print(f"Обработаны все НГ Районы: Total time:  + {str(time2 - time1)}")
         return content
     except Exception as e:
         cont_err = f"fail. can't read ngp from table ({M_NSI_NGR.__tablename__})"
@@ -217,7 +217,59 @@ async def update_by_area():
                         update_file_by_area_str2.delay(area_str, lat, lon)
             content = {"msg": "Success", "count": cnt, "data": _all}
         time2 = datetime.now()
-        print(f"Обработаны все НГР: Total time:  + {str(time2 - time1)}")
+        print(f"Обработаны все Площади: Total time:  + {str(time2 - time1)}")
+        return content
+    except Exception as e:
+        cont_err = f"fail. can't read ngp from table ({M_NSI_NGR.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+
+# Месторождения
+def get_field_name(field: str):
+    field_str = field.replace("  ", "")
+    return field_str.lower().strip()
+
+
+async def update_by_field():
+    content = {"msg": f"error"}
+    try:
+        time1 = datetime.now()
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_NSI_FIELD)
+                .order_by(M_NSI_FIELD.name_ru)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            if cfg.DEVENV.startswith("dev"):
+                print("Development mode!!!")
+                field = _all[1]
+                field_str = get_field_name(field.name_ru)
+                # проверяем что Месторождение не пустое
+                if len(field_str) > 3:
+                    lat = float(field.lat)
+                    lon = float(field.lon)
+                    # print(f"{ngr.name_ru} {lat} {lon}")
+                    print(f"{field_str} {lat} {lon}")
+                    update_file_by_field_str2.delay(field_str, lat, lon)
+            else:
+                for field in _all:
+                    field_str = get_field_name(field.name_ru)
+                    # проверяем что Месторождение не пустое
+                    if len(field_str) > 3:
+                        lat = float(field.lat)
+                        lon = float(field.lon)
+                        # print(f"{ngr_str} {lat} {lon}")
+                        print(f"{field_str}")
+                        update_file_by_field_str2.delay(field_str, lat, lon)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+        time2 = datetime.now()
+        print(f"Обработаны все Месторождения: Total time:  + {str(time2 - time1)}")
         return content
     except Exception as e:
         cont_err = f"fail. can't read ngp from table ({M_NSI_NGR.__tablename__})"
