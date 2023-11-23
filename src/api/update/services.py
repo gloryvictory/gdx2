@@ -6,10 +6,10 @@ from sqlalchemy import insert, text, select, update, func
 
 from src import cfg
 from src.api.celery.tasks import update_file_by_ngp_str2, update_file_by_ngo_str2, update_file_by_ngr_str2, \
-    update_file_by_area_str2, update_file_by_field_str2
+    update_file_by_area_str2, update_file_by_field_str2, update_file_by_well_str2
 from src.db.db import async_session_maker
 from src.log import set_logger
-from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO, M_NSI_NGR, M_NSI_AREA, M_NSI_FIELD
+from src.models import M_NSI_NGP, M_FILE, M_NSI_NGO, M_NSI_NGR, M_NSI_AREA, M_NSI_FIELD, M_NSI_WELL
 
 
 # НГ провинции
@@ -220,7 +220,7 @@ async def update_by_area():
         print(f"Обработаны все Площади: Total time:  + {str(time2 - time1)}")
         return content
     except Exception as e:
-        cont_err = f"fail. can't read ngp from table ({M_NSI_NGR.__tablename__})"
+        cont_err = f"fail. can't read ngp from table ({M_NSI_AREA.__tablename__})"
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
         print(content)
     finally:
@@ -249,7 +249,7 @@ async def update_by_field():
             if cfg.DEVENV.startswith("dev"):
                 print("Development mode!!!")
                 field = _all[1]
-                field_str = get_field_name(field.name_ru)
+                field_str = get_well_name(field.name_ru)
                 # проверяем что Месторождение не пустое
                 if len(field_str) > 3:
                     lat = float(field.lat)
@@ -259,7 +259,7 @@ async def update_by_field():
                     update_file_by_field_str2.delay(field_str, lat, lon)
             else:
                 for field in _all:
-                    field_str = get_field_name(field.name_ru)
+                    field_str = get_well_name(field.name_ru)
                     # проверяем что Месторождение не пустое
                     if len(field_str) > 3:
                         lat = float(field.lat)
@@ -272,7 +272,7 @@ async def update_by_field():
         print(f"Обработаны все Месторождения: Total time:  + {str(time2 - time1)}")
         return content
     except Exception as e:
-        cont_err = f"fail. can't read ngp from table ({M_NSI_NGR.__tablename__})"
+        cont_err = f"fail. can't read ngp from table ({M_NSI_FIELD.__tablename__})"
         content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
         print(content)
     finally:
@@ -280,6 +280,61 @@ async def update_by_field():
             await session.close()
     return content
 
+# Скважины
+def get_well_name(well: str):
+    well_str = well.replace("  ", "")
+    return well_str.lower().strip()
+
+
+async def update_by_well():
+    content = {"msg": f"error"}
+    try:
+        time1 = datetime.now()
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_NSI_WELL)
+                .order_by(M_NSI_WELL.name_ru)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            if cfg.DEVENV.startswith("dev"):
+                print("Development mode!!!")
+                # well = _all[1]
+
+                # проверяем что Скважина не пустая
+                counter = 0
+                for well in _all:
+                    well_str = get_well_name(well.name_ru)
+                    if len(well_str) and counter < 10:
+                        lat = float(well.lat)
+                        lon = float(well.lon)
+                        area_str = well.area
+                        # print(f"{ngr.name_ru} {lat} {lon}")
+                        print(f"{area_str} {well_str} {lat} {lon}")
+                        update_file_by_well_str2.delay(area_str, well_str, lat, lon)
+            else:
+                for well in _all:
+                    well_str = get_well_name(well.name_ru)
+                    # проверяем что Скважина не пустая
+                    if len(well_str):
+                        lat = float(well.lat)
+                        lon = float(well.lon)
+                        area_str = well.area
+                        print(f"{area_str} {well_str}")
+                        # print(f"{well_str}")
+                        update_file_by_well_str2.delay(area_str, well_str, lat, lon)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+        time2 = datetime.now()
+        print(f"Обработаны все Скважинам: Total time:  + {str(time2 - time1)}")
+        return content
+    except Exception as e:
+        cont_err = f"fail. can't read ngp from table ({M_NSI_WELL.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
 
 
 

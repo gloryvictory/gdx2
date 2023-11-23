@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from src.api.update.services import update_by_ngp, update_by_ngo, update_by_ngr, update_by_area, update_by_field
+from src.api.update.services import update_by_ngp, update_by_ngo, update_by_ngr, update_by_area, update_by_field, \
+    update_by_well
 
 update_router = APIRouter(prefix="/update", tags=["Обновление таблицы файлов координатами"])
 
@@ -44,4 +45,13 @@ async def get_update_by_area():
                 description='Обновить координаты по Месторождениям')
 async def get_update_by_field():
     content = await update_by_field()
+    return (content)
+
+
+@update_router.get(path='/well',
+                status_code=200,
+                name='Обновить координаты по Скважинам',
+                description='Обновить координаты по Скважинам')
+async def get_update_by_well():
+    content = await update_by_well()
     return content
