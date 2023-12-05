@@ -47,7 +47,7 @@ async def update_by_ngp():
                     lon = float(ngp.lon)
                     print(ngp_str)
                     update_file_by_ngp_str2.delay(ngp_str, lat, lon)
-            content = {"msg": "Success", "count": cnt, "data": _all}
+            content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все НГП: Total time:  + {str(time2 - time1)}")
         return content
@@ -103,7 +103,7 @@ async def update_by_ngo():
                     lon = float(ngo.lon)
                     print(f"{ngo_str} {lat} {lon}")
                     update_file_by_ngo_str2.delay(ngo_str, lat, lon)
-            content = {"msg": "Success", "count": cnt, "data": _all}
+            content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все НГО: Total time:  + {str(time2 - time1)}")
         return content
@@ -164,7 +164,7 @@ async def update_by_ngr():
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{ngr_str}")
                         update_file_by_ngr_str2.delay(ngr_str, lat, lon)
-            content = {"msg": "Success", "count": cnt, "data": _all}
+            content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все НГ Районы: Total time:  + {str(time2 - time1)}")
         return content
@@ -215,7 +215,7 @@ async def update_by_area():
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{area_str}")
                         update_file_by_area_str2.delay(area_str, lat, lon)
-            content = {"msg": "Success", "count": cnt, "data": _all}
+            content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все Площади: Total time:  + {str(time2 - time1)}")
         return content
@@ -267,7 +267,7 @@ async def update_by_field():
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{field_str}")
                         update_file_by_field_str2.delay(field_str, lat, lon)
-            content = {"msg": "Success", "count": cnt, "data": _all}
+            content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все Месторождения: Total time:  + {str(time2 - time1)}")
         return content
@@ -305,13 +305,14 @@ async def update_by_well():
                 counter = 0
                 for well in _all:
                     well_str = get_well_name(well.name_ru)
-                    if len(well_str) and counter < 10:
+                    if len(well_str) and counter < 5:
                         lat = float(well.lat)
                         lon = float(well.lon)
                         area_str = well.area
                         # print(f"{ngr.name_ru} {lat} {lon}")
                         print(f"{area_str} {well_str} {lat} {lon}")
                         update_file_by_well_str2.delay(area_str, well_str, lat, lon)
+                        counter += 1
             else:
                 for well in _all:
                     well_str = get_well_name(well.name_ru)
@@ -323,9 +324,9 @@ async def update_by_well():
                         print(f"{area_str} {well_str}")
                         # print(f"{well_str}")
                         update_file_by_well_str2.delay(area_str, well_str, lat, lon)
-            content = {"msg": "Success", "count": cnt, "data": _all}
+            content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
-        print(f"Обработаны все Скважинам: Total time:  + {str(time2 - time1)}")
+        print(f"Обработаны все Скважины: Total time:  + {str(time2 - time1)}")
         return content
     except Exception as e:
         cont_err = f"fail. can't read ngp from table ({M_NSI_WELL.__tablename__})"
@@ -337,7 +338,58 @@ async def update_by_well():
     return content
 
 
+# Обновляет координаты в PostGIS
+async def update_by_geom():
+    content = {"msg": f"error"}
+    try:
+        time1 = datetime.now()
+        str_table_file = M_FILE.__tablename__
+        async with async_session_maker() as session:
+            async with session.begin():
+                str_tmp = f"ALTER TABLE {str_table_file} drop column if exists geom;"
+                stmt = text(str_tmp)
+                print(stmt.compile())
+                await session.execute(stmt)
+                # a1 = result.scalars().one()
+                # print(a1)
+                str_tmp = f"ALTER TABLE {str_table_file} ADD column IF NOT EXISTS geom geometry(Point, 4326);"
+                stmt = text(str_tmp)
+                print(stmt.compile())
+                await session.execute(stmt)
 
+                str_tmp = f"UPDATE {str_table_file}  SET geom = ST_SetSRID(ST_MakePoint({str_table_file}.lon, {str_table_file}.lat), 4326) WHERE {str_table_file}.lon <> 0 and {str_table_file}.lat <> 0;"
+                stmt = text(str_tmp)
+                print(stmt.compile())
+                await session.execute(stmt)
+
+                str_tmp = f"CREATE INDEX ix_file_geom ON {str_table_file} USING gist(geom);"
+                stmt = text(str_tmp)
+                print(stmt.compile())
+                await session.execute(stmt)
+
+                # str_tmp = f"VACUUM ANALYZE {str_table_file};"
+                # stmt = text(str_tmp)
+                # print(stmt.compile())
+                # await session.execute(stmt)
+
+                await session.commit()
+
+            # stmt = update(GuildSettingDB).where(
+            #     GuildSettingDB.guild_id == guild_id).values(dispander=tf)
+            # await session.execute(stmt)
+
+            content = {"msg": "Success" }
+        time2 = datetime.now()
+        print(f"Обработаны все записи: Total time:  + {str(time2 - time1)}")
+        return content
+    except Exception as e:
+        cont_err = f"fail. can't read file from table ({M_FILE.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
 
 
 
