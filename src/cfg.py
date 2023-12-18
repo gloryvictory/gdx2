@@ -9,7 +9,12 @@ API_VERSION = "/api/v1"
 SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
 SERVER_PORT = os.getenv("SERVER_PORT", 8001)
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
+DEVENV = os.getenv("DEVENV", "dev")
+
+if DEVENV.startswith("dev"):
+    DB_HOST = os.getenv("DB_HOST", "localhost")
+else:
+    DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
 DB_PORT = os.getenv("DB_PORT", 5432)
 DB_NAME = os.getenv("DB_NAME", "gdx2")
 DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")
@@ -26,7 +31,7 @@ REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 # redis://username:password@hostname:port/db
 
 
-DEVENV = os.getenv("DEVENV", "dev")
+
 NUMBER_PROCESS = os.getenv("NUMBER_PROCESS", "1")
 
 DATETIME_CURRENT = str(strftime("%Y-%m-%d-%H-%M-%S"))
