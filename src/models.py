@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from src.db.db import Base
 from src.schemas import S_FILE, S_EXT, S_NSI_FIELD, S_NSI_LU, S_NSI_NGO, S_NSI_NGP, S_NSI_NGR, S_NSI_WELL, \
-    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY
+    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY, S_HISTORY_TASK
 
 
 # import geoalchemy2
@@ -432,5 +432,33 @@ class M_HISTORY(Base):
             addr_ip=self.addr_ip,
             user_name=self.user_name,
             user_login=self.user_login,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_HISTORY_TASK(Base):
+    """A HISTORY_TASK table"""
+
+    __tablename__ = "history_task"
+    __table_args__ = {'comment': 'История задач'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    task_id: Mapped[str] = mapped_column(String(length=40), index=True, nullable=True)
+    task_type: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    task_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    time_start: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=True)
+    time_end: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=True)
+    time_duration: Mapped[datetime] = mapped_column(TIMESTAMP, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_HISTORY_TASK:
+        return S_HISTORY_TASK(
+            id=self.id,
+            task_id=self.task_id,
+            task_type=self.task_type,
+            task_name=self.task_name,
+            time_start=self.time_start,
+            time_end=self.time_end,
+            time_duration=self.time_duration,
             lastupdate=self.lastupdate,
         )

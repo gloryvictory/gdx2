@@ -1,19 +1,20 @@
 from datetime import datetime
-import asyncio
-
 import sqlalchemy
 from sqlalchemy.orm import Session
 
 from celery import Celery
 from sqlalchemy import update, MetaData, NullPool
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from src import cfg
-from src.db.db import async_session_maker
-from src.log import set_logger
 from src.models import M_FILE
+# import asyncio
+# from src.db.db import async_session_maker
+# from src.log import set_logger
+# from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-celery = Celery('tasks', backend='redis://localhost:6379/0', broker='redis://localhost:6379/0')
+
+# celery = Celery('tasks', backend='redis://localhost:6379/0', broker='redis://localhost:6379/0')
+celery = Celery('tasks', backend=cfg.REDIS_BACKEND, broker=cfg.REDIS_BROKER)
 
 # celery = Celery('tasks', broker=cfg.REDIS_URL)
 # волго-уральская	6

@@ -28,6 +28,10 @@ DB_DSN2 = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NA
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+REDIS_DB = f"{REDIS_URL}/0"
+REDIS_BACKEND = REDIS_DB
+REDIS_BROKER = REDIS_DB
+
 # redis://username:password@hostname:port/db
 
 

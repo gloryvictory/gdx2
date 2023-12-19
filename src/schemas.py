@@ -149,3 +149,14 @@ class S_HISTORY(BaseTable):
     user_name: str
     user_login: str
     lastupdate: datetime
+
+
+class S_HISTORY_TASK(BaseTable):
+    id: int
+    task_id: str
+    task_type: str
+    task_name: str
+    time_start: datetime
+    time_end: datetime
+    time_duration: datetime
+    lastupdate: datetime
