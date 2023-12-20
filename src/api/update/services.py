@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-
+import uuid
 from sqlalchemy import insert, text, select, update, func
 
 from src import cfg
@@ -22,7 +22,7 @@ def get_ngp_name(ngp_in: str):
 async def update_by_ngp():
     content = {"msg": f"error"}
     # log = set_logger(cfg.NGP_FILE_LOG)
-
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         async with async_session_maker() as session:
@@ -39,14 +39,14 @@ async def update_by_ngp():
                 lat = float(ngp.lat)
                 lon = float(ngp.lon)
                 print(ngp_str)
-                update_file_by_ngp_str2.delay(ngp_str, lat, lon)
+                update_file_by_ngp_str2.delay(uuid_session, ngp_str, lat, lon)
             else:
                 for ngp in _all:
                     ngp_str = get_ngp_name(ngp.name_ru)
                     lat = float(ngp.lat)
                     lon = float(ngp.lon)
                     print(ngp_str)
-                    update_file_by_ngp_str2.delay(ngp_str, lat, lon)
+                    update_file_by_ngp_str2.delay(uuid_session, ngp_str, lat, lon)
             content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все НГП: Total time:  + {str(time2 - time1)}")
@@ -78,6 +78,7 @@ def get_ngo_name(ngo_in: str):
 
 async def update_by_ngo():
     content = {"msg": f"error"}
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         async with async_session_maker() as session:
@@ -94,7 +95,7 @@ async def update_by_ngo():
                 lat = float(ngo.lat)
                 lon = float(ngo.lon)
                 print(f"{ngo_str} {lat} {lon}")
-                update_file_by_ngo_str2.delay(ngo_str, lat, lon)
+                update_file_by_ngo_str2.delay(uuid_session, ngo_str, lat, lon)
             else:
                 for ngo in _all:
                     ngo_str = get_ngo_name(ngo.name_ru)
@@ -102,7 +103,7 @@ async def update_by_ngo():
                     lat = float(ngo.lat)
                     lon = float(ngo.lon)
                     print(f"{ngo_str} {lat} {lon}")
-                    update_file_by_ngo_str2.delay(ngo_str, lat, lon)
+                    update_file_by_ngo_str2.delay(uuid_session, ngo_str, lat, lon)
             content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все НГО: Total time:  + {str(time2 - time1)}")
@@ -134,6 +135,7 @@ def get_ngr_name(ngr_in: str):
 
 async def update_by_ngr():
     content = {"msg": f"error"}
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         async with async_session_maker() as session:
@@ -153,7 +155,7 @@ async def update_by_ngr():
                     lon = float(ngr.lon)
                     # print(f"{ngr.name_ru} {lat} {lon}")
                     print(f"{ngr_str} {lat} {lon}")
-                    update_file_by_ngr_str2.delay(ngr_str, lat, lon)
+                    update_file_by_ngr_str2.delay(uuid_session, ngr_str, lat, lon)
             else:
                 for ngr in _all:
                     ngr_str = get_area_name(ngr.name_ru)
@@ -163,7 +165,7 @@ async def update_by_ngr():
                         lon = float(ngr.lon)
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{ngr_str}")
-                        update_file_by_ngr_str2.delay(ngr_str, lat, lon)
+                        update_file_by_ngr_str2.delay(uuid_session, ngr_str, lat, lon)
             content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все НГ Районы: Total time:  + {str(time2 - time1)}")
@@ -185,6 +187,7 @@ def get_area_name(area: str):
 
 async def update_by_area():
     content = {"msg": f"error"}
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         async with async_session_maker() as session:
@@ -204,7 +207,7 @@ async def update_by_area():
                     lon = float(area.lon)
                     # print(f"{ngr.name_ru} {lat} {lon}")
                     print(f"{area_str} {lat} {lon}")
-                    update_file_by_area_str2.delay(area_str, lat, lon)
+                    update_file_by_area_str2.delay(uuid_session, area_str, lat, lon)
             else:
                 for area in _all:
                     area_str = get_area_name(area.name_ru)
@@ -214,7 +217,7 @@ async def update_by_area():
                         lon = float(area.lon)
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{area_str}")
-                        update_file_by_area_str2.delay(area_str, lat, lon)
+                        update_file_by_area_str2.delay(uuid_session, area_str, lat, lon)
             content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все Площади: Total time:  + {str(time2 - time1)}")
@@ -237,6 +240,7 @@ def get_field_name(field: str):
 
 async def update_by_field():
     content = {"msg": f"error"}
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         async with async_session_maker() as session:
@@ -256,7 +260,7 @@ async def update_by_field():
                     lon = float(field.lon)
                     # print(f"{ngr.name_ru} {lat} {lon}")
                     print(f"{field_str} {lat} {lon}")
-                    update_file_by_field_str2.delay(field_str, lat, lon)
+                    update_file_by_field_str2.delay(uuid_session, field_str, lat, lon)
             else:
                 for field in _all:
                     field_str = get_well_name(field.name_ru)
@@ -266,7 +270,7 @@ async def update_by_field():
                         lon = float(field.lon)
                         # print(f"{ngr_str} {lat} {lon}")
                         print(f"{field_str}")
-                        update_file_by_field_str2.delay(field_str, lat, lon)
+                        update_file_by_field_str2.delay(uuid_session, field_str, lat, lon)
             content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все Месторождения: Total time:  + {str(time2 - time1)}")
@@ -288,6 +292,7 @@ def get_well_name(well: str):
 
 async def update_by_well():
     content = {"msg": f"error"}
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         async with async_session_maker() as session:
@@ -311,7 +316,7 @@ async def update_by_well():
                         area_str = well.area
                         # print(f"{ngr.name_ru} {lat} {lon}")
                         print(f"{area_str} {well_str} {lat} {lon}")
-                        update_file_by_well_str2.delay(area_str, well_str, lat, lon)
+                        update_file_by_well_str2.delay(uuid_session, area_str, well_str, lat, lon)
                         counter += 1
             else:
                 for well in _all:
@@ -323,7 +328,7 @@ async def update_by_well():
                         area_str = well.area
                         print(f"{area_str} {well_str}")
                         # print(f"{well_str}")
-                        update_file_by_well_str2.delay(area_str, well_str, lat, lon)
+                        update_file_by_well_str2.delay(uuid_session, area_str, well_str, lat, lon)
             content = {"msg": "Success", "count": cnt}
         time2 = datetime.now()
         print(f"Обработаны все Скважины: Total time:  + {str(time2 - time1)}")
@@ -341,6 +346,7 @@ async def update_by_well():
 # Обновляет координаты в PostGIS
 async def update_by_geom():
     content = {"msg": f"error"}
+    uuid_session = uuid.uuid4().hex
     try:
         time1 = datetime.now()
         str_table_file = M_FILE.__tablename__

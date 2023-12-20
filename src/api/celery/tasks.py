@@ -1,12 +1,13 @@
+import time
 from datetime import datetime
 import sqlalchemy
 from sqlalchemy.orm import Session
 
 from celery import Celery
-from sqlalchemy import update, MetaData, NullPool
+from sqlalchemy import update, insert, MetaData, NullPool
 
 from src import cfg
-from src.models import M_FILE
+from src.models import M_FILE, M_HISTORY_TASK
 # import asyncio
 # from src.db.db import async_session_maker
 # from src.log import set_logger
@@ -116,7 +117,7 @@ celery.conf.update(
 # НГ провинции
 # , lat: float, lon: float, *args, **kwargs
 @celery.task(name="update_file_by_ngp")
-def update_file_by_ngp_str2(ngp_str: str, lat: float, lon: float):
+def update_file_by_ngp_str2(uuid_session:str, ngp_str: str, lat: float, lon: float):
     # ngp_str: str = "qweqweqweqwe"
     # print(f"Обработано: {ngp_str} {lat} {lon}.!!!!!!")
     try:
@@ -134,6 +135,14 @@ def update_file_by_ngp_str2(ngp_str: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
+
+            time_diff = time2 - time1
+            time_obj = time.gmtime(time_diff.total_seconds())
+            dt = time.strftime('%Y-%m-%d %H:%M:%S', time_obj)
+            stmt = insert(M_HISTORY_TASK).values(task_id=uuid_session, task_type="update_file_by_ngp", task_name=ngp_str,time_start=time1, time_end=time2, time_duration=dt)
+            session.execute(stmt)
+            session.commit()
+
             print(f"Обработано: {ngp_str}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
@@ -146,7 +155,7 @@ def update_file_by_ngp_str2(ngp_str: str, lat: float, lon: float):
 
 # НГ Области
 @celery.task(name="update_file_by_ngo")
-def update_file_by_ngo_str2(ngo_str: str, lat: float, lon: float):
+def update_file_by_ngo_str2(uuid_session:str, ngo_str: str, lat: float, lon: float):
     # ngp_str: str = "qweqweqweqwe"
     # print(f"Обработано: {ngp_str} {lat} {lon}.!!!!!!")
     try:
@@ -164,6 +173,14 @@ def update_file_by_ngo_str2(ngo_str: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
+
+            time_diff = time2 - time1
+            time_obj = time.gmtime(time_diff.total_seconds())
+            dt = time.strftime('%Y-%m-%d %H:%M:%S', time_obj)
+            stmt = insert(M_HISTORY_TASK).values(task_id=uuid_session, task_type="update_file_by_ngo", task_name=ngo_str,time_start=time1, time_end=time2, time_duration=dt)
+            session.execute(stmt)
+            session.commit()
+
             print(f"Обработано: {ngo_str}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
@@ -176,7 +193,7 @@ def update_file_by_ngo_str2(ngo_str: str, lat: float, lon: float):
 
 # НГ Районы
 @celery.task(name="update_file_by_ngr")
-def update_file_by_ngr_str2(ngr_str: str, lat: float, lon: float):
+def update_file_by_ngr_str2(uuid_session:str, ngr_str: str, lat: float, lon: float):
     try:
         engine = sqlalchemy.create_engine(cfg.DB_DSN2)
         # create session and add objects
@@ -191,6 +208,13 @@ def update_file_by_ngr_str2(ngr_str: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
+            time_diff = time2 - time1
+            time_obj = time.gmtime(time_diff.total_seconds())
+            dt = time.strftime('%Y-%m-%d %H:%M:%S', time_obj)
+            stmt = insert(M_HISTORY_TASK).values(task_id=uuid_session, task_type="update_file_by_ngr", task_name=ngr_str,time_start=time1, time_end=time2, time_duration=dt)
+            session.execute(stmt)
+            session.commit()
+
             print(f"Обработано: {ngr_str}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
@@ -202,7 +226,7 @@ def update_file_by_ngr_str2(ngr_str: str, lat: float, lon: float):
 
 # Площади
 @celery.task(name="update_file_by_area")
-def update_file_by_area_str2(area: str, lat: float, lon: float):
+def update_file_by_area_str2(uuid_session:str, area: str, lat: float, lon: float):
     try:
         engine = sqlalchemy.create_engine(cfg.DB_DSN2)
         # create session and add objects
@@ -218,6 +242,13 @@ def update_file_by_area_str2(area: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
+            time_diff = time2 - time1
+            time_obj = time.gmtime(time_diff.total_seconds())
+            dt = time.strftime('%Y-%m-%d %H:%M:%S', time_obj)
+            stmt = insert(M_HISTORY_TASK).values(task_id=uuid_session, task_type="update_file_by_area",
+                                                 task_name=area, time_start=time1, time_end=time2, time_duration=dt)
+            session.execute(stmt)
+            session.commit()
             print(f"Обработано: {area}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
@@ -229,7 +260,7 @@ def update_file_by_area_str2(area: str, lat: float, lon: float):
 
 # Месторождения
 @celery.task(name="update_file_by_field")
-def update_file_by_field_str2(field: str, lat: float, lon: float):
+def update_file_by_field_str2(uuid_session:str, field: str, lat: float, lon: float):
     try:
         engine = sqlalchemy.create_engine(cfg.DB_DSN2)
         # create session and add objects
@@ -245,6 +276,13 @@ def update_file_by_field_str2(field: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
+            time_diff = time2 - time1
+            time_obj = time.gmtime(time_diff.total_seconds())
+            dt = time.strftime('%Y-%m-%d %H:%M:%S', time_obj)
+            stmt = insert(M_HISTORY_TASK).values(task_id=uuid_session, task_type="update_file_by_field",
+                                                 task_name=field, time_start=time1, time_end=time2, time_duration=dt)
+            session.execute(stmt)
+            session.commit()
             print(f"Обработано: {field}  {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
@@ -256,7 +294,7 @@ def update_file_by_field_str2(field: str, lat: float, lon: float):
 
 # Скважины
 @celery.task(name="update_file_by_well")
-def update_file_by_well_str2(area: str, well: str, lat: float, lon: float):
+def update_file_by_well_str2(uuid_session:str, area: str, well: str, lat: float, lon: float):
     try:
         engine = sqlalchemy.create_engine(cfg.DB_DSN2)
         # create session and add objects
@@ -272,6 +310,13 @@ def update_file_by_well_str2(area: str, well: str, lat: float, lon: float):
             session.execute(stmt)
             session.commit()
             time2 = datetime.now()
+            time_diff = time2 - time1
+            time_obj = time.gmtime(time_diff.total_seconds())
+            dt = time.strftime('%Y-%m-%d %H:%M:%S', time_obj)
+            stmt = insert(M_HISTORY_TASK).values(task_id=uuid_session, task_type="update_file_by_well",
+                                                 task_name=field_str_new, time_start=time1, time_end=time2, time_duration=dt)
+            session.execute(stmt)
+            session.commit()
             print(f"Обработано: {area} {well} {lat} {lon}. Total time:  + {str(time2 - time1)}")
     except Exception as e:
         cont_err = f"fail. can't read or update data from table ({M_FILE.__tablename__})"
