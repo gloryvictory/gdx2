@@ -1,16 +1,17 @@
 from fastapi import APIRouter
 
-from src.api.area.endpoint import area_router
+from src.api.area.router import area_router
 from src.api.ext.router import router_ext
-from src.api.field.endpoint import fields_router
+from src.api.field.router import fields_router
 from src.api.file.router import router_files
-from src.api.lu.endpoint import lu_router
-from src.api.ngo.endpoint import ngo_router
-from src.api.ngp.endpoint import ngp_router
-from src.api.ngr.endpoint import ngr_router
-from src.api.search.endpoint import search_router
-from src.api.update.endpoint import update_router
-from src.api.well.endpoint import well_router
+from src.api.health.router import router_health
+from src.api.lu.router import lu_router
+from src.api.ngo.router import ngo_router
+from src.api.ngp.router import ngp_router
+from src.api.ngr.router import ngr_router
+from src.api.search.router import search_router
+from src.api.update.router import update_router
+from src.api.well.router import well_router
 
 # from src.db.router import router_db
 # from src.ext.router import router_ext
@@ -19,12 +20,7 @@ from src.api.well.endpoint import well_router
 api_router = APIRouter(prefix='/api/v1')
 
 
-@api_router.get("/health", description="Health Check", tags=["Health Check"])
-def ping():
-    """Health check."""
-    return {"msg": "pong!"}
-
-
+api_router.include_router(router_health)
 api_router.include_router(router_files)  #
 api_router.include_router(router_ext)  #
 api_router.include_router(ngp_router)  #
