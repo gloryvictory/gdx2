@@ -128,6 +128,18 @@ class S_REPORT_TGF(BaseTable):
     year_str: str
     year_int: int
     territory_name: str
+    subrf_name: str
+    list_name: str
+    part_name: str
+    areaoil: str
+    field: str
+    lu: str
+    pi_name: str
+    fin_name: str
+    org_name: str
+    zsniigg_report: str
+    inf_report: str
+    vid_rab: str
     comments: str
     lat: float
     lon: float

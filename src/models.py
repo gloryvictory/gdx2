@@ -356,6 +356,20 @@ class M_REPORT_TGF(Base):
     year_str: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     year_int: Mapped[int] = mapped_column(Integer, index=True, nullable=True)
     territory_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+
+    subrf_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    list_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    part_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    areaoil: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    field: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lu: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    pi_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    fin_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    org_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    zsniigg_report: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    inf_report: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    vid_rab: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+
     comments: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
     lat: Mapped[float] = mapped_column(Float, nullable=True)  # ormar.Float(precision=21, scale=18)
     lon: Mapped[float] = mapped_column(Float, nullable=True)  # ormar.Float(precision=21, scale=18)
@@ -384,6 +398,18 @@ class M_REPORT_TGF(Base):
             year_str=self.year_str,
             year_int=self.year_int,
             territory_name=self.territory_name,
+            subrf_name=self.yesubrf_namear_str,
+            list_name=self.list_name,
+            part_name=self.part_name,
+            areaoil=self.areaoil,
+            field=self.field,
+            lu=self.lu,
+            pi_name=self.pi_name,
+            fin_name=self.fin_name,
+            org_name=self.yorg_nameear_str,
+            zsniigg_report=self.zsniigg_report,
+            inf_report=self.inf_report,
+            vid_rab=self.vid_rab,
             comments=self.comments,
             lat=self.lat,
             lon=self.lon,
