@@ -1,0 +1,98 @@
+import re
+from src.utils.mystrings import strip_last, str_cleanup, removing_leading_whitespaces
+
+
+def str_tgf_format(str_in: str):
+    if len(str_in) > 1 :
+        return str_in
+    else:
+        return ''
+
+
+def str_get_full_path_with_format(str_in: str):
+    if len(str_in) and str_in.startswith('\\'):
+        if str_in.endswith('\\'):
+            str_tmp = str_in.removesuffix('\\')
+            return str_tmp
+        else:
+            return str_in
+    else:
+        return ''
+
+
+def str_get_folder(str_in: str):
+    if len(str_in) and str_in.startswith('\\'):
+        str_arr = str_in.rsplit('\\', 1)
+        if len(str_arr):
+            str_tmp = str(str_arr[1])
+        else:
+            str_tmp = ""
+        return str_tmp
+    else:
+        return ''
+
+
+def str_clean(str_in: str):
+    str_tmp = str_cleanup(str_in)
+    str_tmp = removing_leading_whitespaces(str_tmp)
+    # str_tmp = cleanupstring(str_tmp)
+
+    str_tmp = str_tmp.lstrip() \
+                  .rstrip() \
+                  .replace("Авторы:", "") \
+                  .replace("Леонов А.П.", "Леонов А.П.,") \
+                  .replace("Ляхов С.В.", "Ляхов С.В.,") \
+                  .replace("Чунихина Л.Д.", "Чунихина Л.Д.,") \
+                  .replace("Херувимова Е.В.", "Херувимова Е.В.,") \
+                  .replace("Брадучан Ю.В.", "Брадучан Ю.В.,") \
+                  .replace("Дьяконова Ю.А", "Дьяконова Ю.А.,") \
+                  .replace("Кос.И.М.", "Кос И.М.,") \
+                  .replace("ЗАО НПК «Форум»", " ") \
+                  .replace("и др.", ",") \
+                  .replace(" др.", ",") \
+                  .replace(" др", ",") \
+                  .replace("отв. исполнитель", "") \
+                  .replace("г.", "") \
+                  .replace("0", "") \
+                  .replace("1", "") \
+                  .replace("2", "") \
+                  .replace("3", "") \
+                  .replace("4", "") \
+                  .replace("5", "") \
+                  .replace("6", "") \
+                  .replace("7", "") \
+                  .replace("8", "") \
+                  .replace("9", "") \
+                  .replace("0", "") \
+                  .replace("/", "") \
+                  .replace("\n", "") \
+                  .replace("-", "") \
+                  .replace(" и ", ",") \
+                  .replace("  ", "") \
+                  .replace(")", "") \
+                  .replace("(", ",") \
+                  .replace(" - ", ",") \
+                  .replace(" Есть ", ",") \
+                  .replace("\xa0", ",") \
+                  .replace("_x001E_", "") \
+                  .replace("\t", "") \
+                  .replace("  ", "") \
+                  .replace(", ", ",") \
+                  .replace("См_____", " ") \
+                  .replace("См____", " ") \
+                  .replace(". ", ".") \
+                  .lstrip() \
+                  .rstrip() \
+                  .strip() + ','
+    # .replace(". и", ".") \
+    # if str_tmp.startswith(" "):
+    #     str_tmp = str_tmp.replace(" ", "")
+    if str_tmp.endswith(" "):
+        str_tmp = strip_last(str_tmp)
+
+    if len(str_tmp):
+        result = re.match("\s", str_tmp)
+        if result:
+            str_tmp = str_tmp.strip()
+    return str_tmp
+

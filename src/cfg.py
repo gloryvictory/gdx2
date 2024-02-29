@@ -106,3 +106,4 @@ AREA_FILE_GEOJSON_OUT = 'AREA.geojson'
 
 FILE_FTS_INDEX = 'file_path_fts_idx'
 
+FILE_REPORT_NAME = 'КАТАЛОГ_ОТЧЕТОВ.xlsx'

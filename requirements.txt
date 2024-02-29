@@ -12,5 +12,4 @@ geopandas
 psycopg2-binary
 celery
 flower
-gunicorn
 redis
