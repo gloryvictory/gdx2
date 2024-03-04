@@ -6,7 +6,8 @@ from fastapi import UploadFile, File
 from sqlalchemy import text, insert, select, func
 
 from src import cfg
-from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean
+from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
+    str_get_last_folder
 from src.db.db import async_session_maker
 from src.utils.mystrings import str_cleanup
 
@@ -116,6 +117,7 @@ async def report_excel_file_read(file_in: str):
             tgf_ekat = ''
             tgf_omsk = ''
             tgf_novo = ''
+            tgf_tomsk = ''
             tgf_more = ''
             tgf_tmn = ''
             tgf = ''
@@ -130,30 +132,50 @@ async def report_excel_file_read(file_in: str):
                 folder_root = str_get_full_path_with_format(str(value[0]))
                 folder_link = folder_root  # Гиперссылка
                 folder_short = str_get_folder(folder_root)
-                folder_name = folder_short
+                folder_name = str_get_last_folder(folder_root)
                 print(folder_root)
+                # print(folder_link)
+                # print(folder_short)
+                # print(folder_name)
 
-            # if value[4]:
-            #     rgf = str_tgf_format(str(value[4]))
-            # if value[5]:
-            #     tgf_hmao = str_tgf_format(str(value[5]))
-            # if value[6]:
-            #     tgf_ynao = str_tgf_format(str(value[6]))
-            # if value[7]:
-            #     tgf_kras = str_tgf_format(str(value[7]))
-            # if value[8]:
-            #     tgf_ekat = str_tgf_format(str(value[8]))
-            # if value[9]:
-            #     tgf_omsk = str_tgf_format(str(value[9]))
-            # if value[10]:
-            #     tgf_novo = str_tgf_format(str(value[10]))
-            # if value[11]:
-            #     tgf_more = str_tgf_format(str(value[11]))
-            # if value[12]:
-            #     tgf_tmn = str_tgf_format(str(value[12]))
+            if value[1]: # Инв. номер РГФ
+                rgf = str_tgf_format(str(value[1]))
+                print(rgf)
+            if value[2]:
+                tgf_hmao = str_tgf_format(str(value[2]))
+                print(tgf_hmao)
+            if value[3]:
+                tgf_ynao = str_tgf_format(str(value[3]))
+                print(tgf_ynao)
+            if value[4]:
+                tgf_kras = str_tgf_format(str(value[4]))
+                print(tgf_kras)
+            if value[5]:
+                tgf_ekat = str_tgf_format(str(value[5]))
+                print(tgf_ekat)
+            if value[6]:
+                tgf_omsk = str_tgf_format(str(value[6]))
+                print(tgf_omsk)
+            if value[7]:
+                tgf_novo = str_tgf_format(str(value[7]))
+                print(tgf_novo)
+            if value[8]:
+                tgf_tomsk = str_tgf_format(str(value[8]))
+                print(tgf_tomsk)
+            if value[9]:
+                tgf_more = str_tgf_format(str(value[9]))
+                print(tgf_more)
+            if value[10]:
+                tgf_tmn = str_tgf_format(str(value[10]))
+                print(tgf_tmn)
+            if value[11]:
+                tgf_kurgan = str_tgf_format(str(value[11]))
+                print(tgf_kurgan)
             #
             # if len(tgf_tmn):
             #     tgf = 'ТюмТГФ'
+            # if len(tgf_tomsk):
+            #     tgf = 'ТомскТГФ'
             # if len(tgf_more):
             #     tgf = 'МорскойТГФ'
             # if len(tgf_novo):
@@ -168,6 +190,9 @@ async def report_excel_file_read(file_in: str):
             #     tgf = 'ЯНТГФ'
             # if len(tgf_hmao):
             #     tgf = 'ХМТГФ'
+            # if len(tgf_kurgan):
+            #     tgf = 'КурганТГФ'
+
             # if len(rgf):
             #     tgf = 'РГФ'
             #

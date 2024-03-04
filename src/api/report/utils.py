@@ -1,4 +1,7 @@
+import os.path
 import re
+
+from src import cfg
 from src.utils.mystrings import strip_last, str_cleanup, removing_leading_whitespaces
 
 
@@ -20,11 +23,24 @@ def str_get_full_path_with_format(str_in: str):
         return ''
 
 
-def str_get_folder(str_in: str):
+def str_get_last_folder(str_in: str):
     if len(str_in) and str_in.startswith('\\'):
         str_arr = str_in.rsplit('\\', 1)
         if len(str_arr):
             str_tmp = str(str_arr[1])
+        else:
+            str_tmp = ""
+        return str_tmp
+    else:
+        return ''
+
+
+def str_get_folder(str_in: str):
+    if len(str_in) and str_in.startswith('\\'):
+        str_arr = str_in.split("\\")
+        del str_arr[0:4] # удаляем \\R57-vfs01\volarch и пр...
+        if len(str_arr):
+            str_tmp = str(os.path.join(*str_arr))
         else:
             str_tmp = ""
         return str_tmp
