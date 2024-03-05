@@ -6,7 +6,7 @@ from src.utils.mystrings import strip_last, str_cleanup, removing_leading_whites
 
 
 def str_tgf_format(str_in: str):
-    if len(str_in) > 1 :
+    if len(str_in) > 1:
         return str_in
     else:
         return ''
@@ -35,12 +35,27 @@ def str_get_last_folder(str_in: str):
         return ''
 
 
+# удаляем \\R57-vfs01\volarch и пр...
 def str_get_folder(str_in: str):
     if len(str_in) and str_in.startswith('\\'):
         str_arr = str_in.split("\\")
-        del str_arr[0:4] # удаляем \\R57-vfs01\volarch и пр...
+        del str_arr[0:4]  # удаляем \\R57-vfs01\volarch и пр...
         if len(str_arr):
             str_tmp = str(os.path.join(*str_arr))
+        else:
+            str_tmp = ""
+        return str_tmp
+    else:
+        return ''
+
+
+# получаем \\R57-vfs01\volarch и пр...
+def str_get_folder_src(str_in: str):
+    if len(str_in) and str_in.startswith('\\'):
+        str_arr = str_in.split("\\")
+        del str_arr[4:len(str_arr)]  # получаем \\R57-vfs01\volarch и пр...
+        if len(str_arr):
+            str_tmp = '\\' + '\\' + str(os.path.join(*str_arr))
         else:
             str_tmp = ""
         return str_tmp
@@ -111,4 +126,3 @@ def str_clean(str_in: str):
         if result:
             str_tmp = str_tmp.strip()
     return str_tmp
-
