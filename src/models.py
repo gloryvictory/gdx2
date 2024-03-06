@@ -348,8 +348,10 @@ class M_REPORT_TGF(Base):
     tgf_ekat: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     tgf_omsk: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     tgf_novo: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    tgf_tomsk: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     tgf_more: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     tgf_tmn: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    tgf_kurgan: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     tgf: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     report_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
     author_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
@@ -358,21 +360,22 @@ class M_REPORT_TGF(Base):
     territory_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
 
     subrf_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
-    list_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    part_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    areaoil: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    field: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    lu: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    list_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    part_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    areaoil: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    field: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
+    lu: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
     pi_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
-    fin_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    fin_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
     org_name: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
     zsniigg_report: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     inf_report: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    vid_rab: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    vid_rab: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
 
     comments: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
     lat: Mapped[float] = mapped_column(Float, nullable=True)  # ormar.Float(precision=21, scale=18)
     lon: Mapped[float] = mapped_column(Float, nullable=True)  # ormar.Float(precision=21, scale=18)
+    is_alive: Mapped[bool] = mapped_column(Boolean, nullable=True)  #
     report_fts: Mapped[str] = mapped_column(TSVECTOR, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
@@ -390,15 +393,17 @@ class M_REPORT_TGF(Base):
             tgf_ekat=self.tgf_ekat,
             tgf_omsk=self.tgf_omsk,
             tgf_novo=self.tgf_novo,
+            tgf_tomsk=self.tgf_tomsk,
             tgf_more=self.tgf_more,
             tgf_tmn=self.tgf_tmn,
+            tgf_kurgan=self.tgf_kurgan,
             tgf=self.tgf,
             report_name=self.report_name,
             author_name=self.author_name,
             year_str=self.year_str,
             year_int=self.year_int,
             territory_name=self.territory_name,
-            subrf_name=self.yesubrf_namear_str,
+            subrf_name=self.subrf_name,
             list_name=self.list_name,
             part_name=self.part_name,
             areaoil=self.areaoil,
@@ -406,13 +411,14 @@ class M_REPORT_TGF(Base):
             lu=self.lu,
             pi_name=self.pi_name,
             fin_name=self.fin_name,
-            org_name=self.yorg_nameear_str,
+            org_name=self.org_name,
             zsniigg_report=self.zsniigg_report,
             inf_report=self.inf_report,
             vid_rab=self.vid_rab,
             comments=self.comments,
             lat=self.lat,
             lon=self.lon,
+            is_alive=self.is_alive,
             report_fts=self.report_fts,
             lastupdate=self.lastupdate,
         )

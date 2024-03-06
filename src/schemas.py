@@ -120,8 +120,10 @@ class S_REPORT_TGF(BaseTable):
     tgf_ekat: str
     tgf_omsk: str
     tgf_novo: str
+    tgf_tomsk: str
     tgf_more: str
     tgf_tmn: str
+    tgf_kurgan: str
     tgf: str
     report_name: str
     author_name: str
@@ -143,6 +145,7 @@ class S_REPORT_TGF(BaseTable):
     comments: str
     lat: float
     lon: float
+    is_alive: bool
     report_fts: str
     lastupdate: datetime
 
