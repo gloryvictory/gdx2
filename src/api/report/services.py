@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
-    str_get_last_folder, str_get_folder_src
+    str_get_last_folder, str_get_folder_src, str_get_rgf
 from src.db.db import async_session_maker
 from src.models import M_REPORT_TGF
 from src.utils.mystrings import str_cleanup
@@ -113,7 +113,9 @@ async def report_excel_file_read(file_in: str):
         authors = []
         # create session and add objects
         with Session(engine) as session:
-            session.query(M_REPORT_TGF).delete()
+            # truncate table
+            stmt = text(f"TRUNCATE {M_REPORT_TGF.__tablename__} RESTART IDENTITY;")
+            session.execute(stmt)
             session.commit()
             for value in worksheet.iter_rows(min_row=min_row, max_row=max_row, min_col=min_col, max_col=max_col,
                                              values_only=True):
@@ -166,7 +168,11 @@ async def report_excel_file_read(file_in: str):
                     # print(folder_name)
 
                 if value[1]:  # Инв. номер РГФ
-                    rgf = str_tgf_format(str(value[1]))
+                    tmp_str = str(value[1])
+                    if tmp_str.isdecimal():
+                        rgf = tmp_str
+                    else:
+                        rgf = ''
                     print(rgf)
                 if value[2]:
                     tgf_hmao = str_tgf_format(str(value[2]))
@@ -199,7 +205,9 @@ async def report_excel_file_read(file_in: str):
                     tgf_kurgan = str_tgf_format(str(value[11]))
                     # print(tgf_kurgan)
                 if value[12]:
-                    tgf = str_tgf_format(str(value[12]))
+                    # tgf = str_tgf_format(str(value[12]))
+                    tgf = str_get_rgf(
+                        tgf_kurgan, tgf_tmn, tgf_more, tgf_tomsk, tgf_novo, tgf_omsk, tgf_ekat, tgf_kras, tgf_ynao, tgf_hmao, rgf)
                     print(tgf)
 
                 if value[13]:  # Отчет

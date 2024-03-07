@@ -63,6 +63,44 @@ def str_get_folder_src(str_in: str):
         return ''
 
 
+def str_get_rgf(tgf_kurgan: str, tgf_tmn: str, tgf_more: str, tgf_tomsk: str, tgf_novo: str, tgf_omsk: str, tgf_ekat: str, tgf_kras: str, tgf_ynao: str, tgf_hmao: str, rgf: str):
+    tgf = 'Отсутствует'
+    if len(tgf_kurgan):
+        tgf = 'КурганТГФ'
+        return tgf
+    if len(tgf_tmn):
+        tgf = 'ТюмТГФ'
+        return tgf
+    if len(tgf_more):
+        tgf = 'МорскойТГФ'
+        return tgf
+    if len(tgf_tomsk):
+        tgf = 'ТомскТГФ'
+        return tgf
+    if len(tgf_novo):
+        tgf = 'НовосибТГФ'
+        return tgf
+    if len(tgf_omsk):
+        tgf = 'ОмскТГФ'
+        return tgf
+    if len(tgf_ekat):
+        tgf = 'ЕкатерТГФ'
+        return tgf
+    if len(tgf_kras):
+        tgf = 'КраснТГФ'
+        return tgf
+    if len(tgf_ynao):
+        tgf = 'ЯНТГФ'
+        return tgf
+    if len(tgf_hmao):
+        tgf = 'ХМТГФ'
+        return tgf
+    if len(rgf):
+        tgf = 'РГФ'
+        return tgf
+    return tgf
+
+
 def str_clean(str_in: str):
     str_tmp = str_cleanup(str_in)
     str_tmp = removing_leading_whitespaces(str_tmp)
