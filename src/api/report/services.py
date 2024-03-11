@@ -15,29 +15,6 @@ from src.models import M_REPORT_TGF
 from src.utils.mystrings import str_cleanup
 
 
-async def report_all_objects():
-    content = {"msg": "Fail"}
-    try:
-        # content = {"msg": "Success", "count": 111111}
-        # async with async_session_maker() as session:
-        #     #  НГП
-        #     res = await session.scalars(
-        #         select(M_NSI_NGP)
-        #         .order_by(M_NSI_NGP.name_ru)
-        #     )
-        #     _all = res.all()
-        #     _cnt = len(all_data)
-        #     cnt = cnt + _cnt
-        #     content = {"msg": "Success", "count": cnt, "data": all_data}
-        # log.info("ngp load successfully")
-        return content
-    except Exception as e:
-        content = {"msg": f"reload fail. can't... "}
-        print("Exception occurred " + str(e))
-        # fastapi_logger.exception("update_user_password")
-        return content
-
-
 async def report_upload_file(file: UploadFile = File(...)):
     content = {"msg": f"Unknown error"}
     try:
@@ -163,9 +140,6 @@ async def report_excel_file_read(file_in: str):
                     folder_short = str_get_folder(folder_root)
                     folder_name = str_get_last_folder(folder_root)
                     print(folder_root)
-                    print(folder_link)
-                    # print(folder_short)
-                    # print(folder_name)
 
                 if value[1]:  # Инв. номер РГФ
                     tmp_str = str(value[1])
@@ -207,7 +181,8 @@ async def report_excel_file_read(file_in: str):
                 if value[12]:
                     # tgf = str_tgf_format(str(value[12]))
                     tgf = str_get_rgf(
-                        tgf_kurgan, tgf_tmn, tgf_more, tgf_tomsk, tgf_novo, tgf_omsk, tgf_ekat, tgf_kras, tgf_ynao, tgf_hmao, rgf)
+                        tgf_kurgan, tgf_tmn, tgf_more, tgf_tomsk, tgf_novo, tgf_omsk, tgf_ekat, tgf_kras, tgf_ynao,
+                        tgf_hmao, rgf)
                     print(tgf)
 
                 if value[13]:  # Отчет
@@ -324,29 +299,6 @@ async def report_excel_file_read(file_in: str):
                 session.execute(stmt)
                 session.commit()
 
-            # await ADOC_M(
-            #     folder_root=folder_root,
-            #     folder_link=folder_link,
-            #     folder_short=folder_short,
-            #     folder_name=folder_name,
-            #     rgf=rgf,
-            #     tgf_hmao=tgf_hmao,
-            #     tgf_ynao=tgf_ynao,
-            #     tgf_kras=tgf_kras,
-            #     tgf_ekat=tgf_ekat,
-            #     tgf_omsk=tgf_omsk,
-            #     tgf_novo=tgf_novo,
-            #     tgf_more=tgf_more,
-            #     tgf_tmn=tgf_tmn,
-            #     tgf=tgf,
-            #     report_name=report_name,
-            #     author_name=author_name,
-            #     year_str=year_str,
-            #     year_int=year_int,
-            #     territory_name=territory_name,
-            #     comments=comments
-            # ).save()
-
         # authors_str = ",".join(authors)
         # authors2 = authors_str.split(",")
         # authors_tmp2 = sorted(set(authors2))
@@ -358,3 +310,319 @@ async def report_excel_file_read(file_in: str):
         str_err = "Exception occurred " + str(e)
         content = {"msg": f"ERROR!!! cnt is {cnt}", "err": str(e)}
         print(str_err)
+
+
+async def report_all_objects():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                # .order_by(M_REPORT_TGF.name_ru)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_all_count():
+    content = {"msg": f"error"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalar(select(func.count(M_REPORT_TGF.id)))
+            content = {"msg": "Success", "count": res}
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read ext from table ({M_REPORT_TGF.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+
+async def report_all_no_folder():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.folder_root == '')
+                # .order_by(M_REPORT_TGF.name_ru)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_rgf():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.rgf != '')
+                .order_by(M_REPORT_TGF.rgf)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_hmao():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_hmao != '')
+                .order_by(M_REPORT_TGF.tgf_hmao)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_ynao():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_ynao != '')
+                .order_by(M_REPORT_TGF.tgf_ynao)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_kras():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_kras != '')
+                .order_by(M_REPORT_TGF.tgf_kras)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_ekat():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_ekat != '')
+                .order_by(M_REPORT_TGF.tgf_ekat)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_omsk():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_omsk != '')
+                .order_by(M_REPORT_TGF.tgf_omsk)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_novo():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_novo != '')
+                .order_by(M_REPORT_TGF.tgf_novo)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_tomsk():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_tomsk != '')
+                .order_by(M_REPORT_TGF.tgf_tomsk)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_more():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_more != '')
+                .order_by(M_REPORT_TGF.tgf_more)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_tmn():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_tmn != '')
+                .order_by(M_REPORT_TGF.tgf_tmn)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_tgf_kurgan():
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            #  НГП
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_kurgan != '')
+                .order_by(M_REPORT_TGF.tgf_kurgan)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
