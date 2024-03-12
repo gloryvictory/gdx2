@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from src.api.all.router import all_router
 from src.api.area.router import area_router
+from src.api.author.router import author_router
 from src.api.ext.router import router_ext
 from src.api.field.router import fields_router
 from src.api.file.router import router_files
@@ -36,5 +37,6 @@ api_router.include_router(search_router)  #
 api_router.include_router(update_router)  #
 api_router.include_router(all_router)  #
 api_router.include_router(report_router)  #
+api_router.include_router(author_router)  #
 
 # api_router.include_router(router_db, prefix="/db", tags=["База данных"])  #
