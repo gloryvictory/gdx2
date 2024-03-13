@@ -89,7 +89,7 @@ async def report_excel_file_read(file_in: str):
     try:
         authors = []
         # create session and add objects
-        async with Session(engine) as session:
+        async with async_session_maker() as session:
             # truncate table
             stmt = text(f"TRUNCATE {M_REPORT_TGF.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
@@ -398,6 +398,27 @@ async def report_all_rtgf(tgf_param: mapped_column):
         return content
 
 
+async def report_all_by_year(year: str):
+    content = {"msg": "Fail"}
+    try:
+        # content = {"msg": "Success", "count": 111111}
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.year_str.ilike(year))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
 async def report_all_rgf():
     content = await report_all_rtgf(M_REPORT_TGF.rgf)
     return content
@@ -463,6 +484,11 @@ async def report_all_year():
     return content
 
 
+async def report_get_all_by_year(year: str):
+    content = await report_all_by_year(year)
+    return content
+
+
 async def report_get_update_author():
     content = {"msg": "Fail"}
     try:
@@ -502,6 +528,28 @@ async def report_get_update_author():
             _cnt = len(authors_tmp2)
             content = {"msg": "Success", "count": _cnt, "data": authors_tmp2}
         # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_report_by_author(author: str):
+    content = {"msg": "Fail"}
+    try:
+        authors = []
+        authors_tmp2 = []
+        async with async_session_maker() as session:
+            author_str = f"%{author}%"
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.author_name.ilike(author_str))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
         content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}

@@ -147,6 +147,8 @@ def str_clean(str_in: str):
                   .replace("\t", "") \
                   .replace("  ", "") \
                   .replace(", ", ",") \
+                  .replace("; ", ", ") \
+                  .replace(";",",") \
                   .replace(",,,", ",") \
                   .replace(",,", ",") \
                   .replace("См_____", " ") \

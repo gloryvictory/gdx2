@@ -5,8 +5,6 @@ from src.api.author.services import author_get_all
 author_router = APIRouter(prefix="/author", tags=["Авторы"])
 
 
-
-
 @author_router.get(path='/all',
                    status_code=200,
                    name='Получить всех авторов',

@@ -3,7 +3,8 @@ from src.api.report.services import (
     report_all_objects, report_upload_file, report_update, report_get_all_count,
     report_all_no_folder, report_all_rgf, report_all_tgf_hmao, report_all_tgf_ynao, report_all_tgf_kras,
     report_all_tgf_ekat, report_all_tgf_omsk, report_all_tgf_novo, report_all_tgf_tomsk, report_all_tgf_more,
-    report_all_tgf_tmn, report_all_tgf_kurgan, report_all_tgf, report_all_year, report_get_update_author)
+    report_all_tgf_tmn, report_all_tgf_kurgan, report_all_tgf, report_all_year, report_get_update_author,
+    report_report_by_author, report_get_all_by_year)
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
 
@@ -176,6 +177,7 @@ async def get_all_tgf():
     content = await report_all_tgf()
     return content
 
+
 @report_router.get(path='/year/all',
                    status_code=200,
                    name='Отчеты только у которых есть год',
@@ -183,6 +185,15 @@ async def get_all_tgf():
                    description='Отчеты только у которых есть год')
 async def get_all_year():
     content = await report_all_year()
+    return content
+
+@report_router.get(path='/year',
+                   status_code=200,
+                   name='Отчеты только в год',
+                   tags=['Отчеты'],
+                   description='Отчеты только в год')
+async def get_all_by_year(year:str):
+    content = await report_get_all_by_year(year)
     return content
 
 
@@ -193,4 +204,14 @@ async def get_all_year():
                    description='Обновить авторов')
 async def get_update_author():
     content = await report_get_update_author()
+    return content
+
+
+@report_router.get(path='/author',
+                   status_code=200,
+                   name='Получить отчеты по автору',
+                   tags=['Отчеты'],
+                   description='Получить отчеты по автору')
+async def get_report_by_author(author:str):
+    content = await report_report_by_author(author)
     return content
