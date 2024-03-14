@@ -43,3 +43,4 @@ venv.bak/
 /src/data/
 /src/geojson/
 /src/upload/КАТАЛОГ_ОТЧЕТОВ.xlsx
+!/src/upload/КАТАЛОГ_ОТЧЕТОВ_short.xlsx

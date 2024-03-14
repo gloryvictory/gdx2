@@ -556,3 +556,214 @@ async def report_report_by_author(author: str):
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
+
+async def report_all_by_rgf(rgf: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.rgf.ilike(rgf))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_hmao(tgf_hmao: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_hmao.ilike(tgf_hmao))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_ynao(tgf_ynao: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_ynao.ilike(tgf_ynao))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_kras(tgf_kras: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_kras.ilike(tgf_kras))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_ekat(tgf_ekat: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_ekat.ilike(tgf_ekat))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_omsk(tgf_omsk: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_omsk.ilike(tgf_omsk))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_novo(tgf_novo: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_novo.ilike(tgf_novo))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_tomsk(tgf_tomsk: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_tomsk.ilike(tgf_tomsk))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_more(tgf_more: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_more.ilike(tgf_more))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_tmn(tgf_tmn: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_tmn.ilike(tgf_tmn))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_all_by_tgf_kurgan(tgf_kurgan: str):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.tgf_kurgan.ilike(tgf_kurgan))
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+

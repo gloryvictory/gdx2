@@ -4,7 +4,9 @@ from src.api.report.services import (
     report_all_no_folder, report_all_rgf, report_all_tgf_hmao, report_all_tgf_ynao, report_all_tgf_kras,
     report_all_tgf_ekat, report_all_tgf_omsk, report_all_tgf_novo, report_all_tgf_tomsk, report_all_tgf_more,
     report_all_tgf_tmn, report_all_tgf_kurgan, report_all_tgf, report_all_year, report_get_update_author,
-    report_report_by_author, report_get_all_by_year)
+    report_report_by_author, report_get_all_by_year, report_all_by_rgf, report_all_by_tgf_hmao, report_all_by_tgf_ynao,
+    report_all_by_tgf_kras, report_all_by_tgf_ekat, report_all_by_tgf_omsk, report_all_by_tgf_novo,
+    report_all_by_tgf_tomsk, report_all_by_tgf_more, report_all_by_tgf_tmn, report_all_by_tgf_kurgan)
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
 
@@ -187,7 +189,7 @@ async def get_all_year():
     content = await report_all_year()
     return content
 
-@report_router.get(path='/year',
+@report_router.get(path='/year/{year}',
                    status_code=200,
                    name='Отчеты только в год',
                    tags=['Отчеты'],
@@ -207,11 +209,120 @@ async def get_update_author():
     return content
 
 
-@report_router.get(path='/author',
+@report_router.get(path='/author/{author}',
                    status_code=200,
                    name='Получить отчеты по автору',
                    tags=['Отчеты'],
                    description='Получить отчеты по автору')
 async def get_report_by_author(author:str):
     content = await report_report_by_author(author)
+    return content
+
+
+
+@report_router.get(path='/rgf/{rgf}',
+                   status_code=200,
+                   name='Отчеты РГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты РГФ по номеру')
+async def get_all_by_rgf(rgf:str):
+    content = await report_all_by_rgf(rgf)
+    return content
+
+@report_router.get(path='/tgf_hmao/{tgf_hmao}',
+                   status_code=200,
+                   name='Отчеты ХМТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты ХМТГФ по номеру')
+async def get_all_by_tgf_hmao(tgf_hmao:str):
+    content = await report_all_by_tgf_hmao(tgf_hmao)
+    return content
+
+
+@report_router.get(path='/tgf_ynao/{tgf_ynao}',
+                   status_code=200,
+                   name='Отчеты ЯНТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты ЯНТГФ по номеру')
+async def get_all_by_tgf_ynao(tgf_ynao:str):
+    content = await report_all_by_tgf_ynao(tgf_ynao)
+    return content
+
+
+@report_router.get(path='/tgf_kras/{tgf_kras}',
+                   status_code=200,
+                   name='Отчеты КраснТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты КраснТГФ по номеру')
+async def get_all_by_tgf_kras(tgf_kras:str):
+    content = await report_all_by_tgf_kras(tgf_kras)
+    return content
+
+
+@report_router.get(path='/tgf_ekat/{tgf_ekat}',
+                   status_code=200,
+                   name='Отчеты ЕкатерТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты ЕкатерТГФ по номеру')
+async def get_all_by_tgf_ekat(tgf_ekat:str):
+    content = await report_all_by_tgf_ekat(tgf_ekat)
+    return content
+
+
+@report_router.get(path='/tgf_omsk/{tgf_omsk}',
+                   status_code=200,
+                   name='Отчеты ОмскТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты ОмскТГФ по номеру')
+async def get_all_by_tgf_omsk(tgf_omsk:str):
+    content = await report_all_by_tgf_omsk(tgf_omsk)
+    return content
+
+@report_router.get(path='/tgf_novo/{tgf_novo}',
+                   status_code=200,
+                   name='Отчеты НовосибТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты НовосибТГФ по номеру')
+async def get_all_by_tgf_novo(tgf_novo:str):
+    content = await report_all_by_tgf_novo(tgf_novo)
+    return content
+
+
+@report_router.get(path='/tgf_tomsk/{tgf_tomsk}',
+                   status_code=200,
+                   name='Отчеты ТомскТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты ТомскТГФ по номеру')
+async def get_all_by_tgf_tomsk(tgf_tomsk:str):
+    content = await report_all_by_tgf_tomsk(tgf_tomsk)
+    return content
+
+
+@report_router.get(path='/tgf_more/{tgf_more}',
+                   status_code=200,
+                   name='Отчеты МорскойТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты МорскойТГФ по номеру')
+async def get_all_by_tgf_more(tgf_more:str):
+    content = await report_all_by_tgf_more(tgf_more)
+    return content
+
+
+@report_router.get(path='/tgf_tmn/{tgf_tmn}',
+                   status_code=200,
+                   name='Отчеты ТюмТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты ТюмТГФ по номеру')
+async def get_all_by_tgf_tmn(tgf_tmn:str):
+    content = await report_all_by_tgf_tmn(tgf_tmn)
+    return content
+
+
+@report_router.get(path='/tgf_kurgan/{tgf_kurgan}',
+                   status_code=200,
+                   name='Отчеты КурганТГФ по номеру',
+                   tags=['Отчеты'],
+                   description='Отчеты КурганТГФ по номеру')
+async def get_all_by_tgf_kurgan(tgf_kurgan:str):
+    content = await report_all_by_tgf_kurgan(tgf_kurgan)
     return content
