@@ -206,57 +206,57 @@ async def report_excel_file_read(file_in: str):
                     if len(year_tmp):  # разбираем такое 2009   2009   2010
                         year_int = int(year_tmp[0])  # забираем первый год
                         # print(year_int)
-                if value[16]:  # Территория
-                    territory_name = str(value[16]).strip()
-                    # print(territory_name)
-                if value[17]:  # Субъект РФ
+                # if value[16]:  # Территория
+                #     territory_name = str(value[16]).strip()
+                #     # print(territory_name)
+                if value[16]:  # Субъект РФ
                     subrf_name = str(value[17]).strip()
                     # print(subrf_name)
 
-                if value[18]:  # Листы
+                if value[17]:  # Листы
                     list_name = str(value[18]).strip()
                     # print(list_name)
 
-                if value[19]:  # № партии
+                if value[18]:  # № партии
                     part_name = str(value[19]).strip()
                     # print(part_name)
-                if value[20]:  # Площадь
+                if value[19]:  # Площадь
                     areaoil = str(value[20]).strip()
                     # print(areaoil)
 
-                if value[21]:  # Месторождение
+                if value[20]:  # Месторождение
                     field = str(value[21]).strip()
                     # print(field)
 
-                if value[22]:  # ЛУ
+                if value[21]:  # ЛУ
                     lu = str(value[22]).strip()
                     # print(lu)
 
-                if value[23]:  # ПИ
+                if value[22]:  # ПИ
                     pi_name = str(value[23]).strip()
                     # print(pi_name)
 
-                if value[24]:  # Источник финансирования
+                if value[23]:  # Источник финансирования
                     fin_name = str(value[24]).strip()
                     # print(fin_name)
 
-                if value[25]:  # Организация
+                if value[24]:  # Организация
                     org_name = str(value[25]).strip()
                     # print(org_name)
 
-                if value[26]:  # Отчет ЗапСибНИИГГ
+                if value[25]:  # Отчет ЗапСибНИИГГ
                     zsniigg_report = str(value[26]).strip()
                     # print(zsniigg_report)
 
-                if value[27]:  # Информационный отчет
+                if value[26]:  # Информационный отчет
                     inf_report = str(value[27]).strip()
                     # print(inf_report)
 
-                if value[28]:  # Вид работ
+                if value[27]:  # Вид работ
                     vid_rab = str(value[28]).strip()
                     # print(vid_rab)
 
-                if value[29]:  # Комментарии
+                if value[28]:  # Комментарии
                     comments = str(value[29]).strip()
                     print(comments)
 
@@ -281,7 +281,7 @@ async def report_excel_file_read(file_in: str):
                     author_name=author_name,
                     year_str=year_str,
                     year_int=year_int,
-                    territory_name=territory_name,
+                    territory_name='',
                     subrf_name=subrf_name,
                     list_name=list_name,
                     part_name=part_name,

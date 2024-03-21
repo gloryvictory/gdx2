@@ -9,7 +9,7 @@ async def author_get_all():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_AUTHOR.author_name)
+                select(M_AUTHOR)
                 .order_by(M_AUTHOR.author_name)
             )
             _all = res.all()
