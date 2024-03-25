@@ -200,7 +200,7 @@ async def get_all_by_year(year:str):
     return content
 
 
-@report_router.get(path='/update_author',
+@report_router.get(path='/update/author',
                    status_code=200,
                    name='Обновить авторов',
                    tags=['Отчеты'],
