@@ -154,6 +154,9 @@ def str_clean(str_in: str):
                   .replace("См_____", " ") \
                   .replace("См____", " ") \
                   .replace(". ", ".") \
+                  .replace("<openpyxl.worksheet.formula.ArrayFormula object at xFD>", "") \
+                  .replace("угие.", "") \
+                  .replace("угие", "") \
                   .lstrip() \
                   .rstrip() \
                   .strip() + ','

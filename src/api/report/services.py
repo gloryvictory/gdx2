@@ -4,8 +4,8 @@ import re
 import openpyxl
 import sqlalchemy
 from fastapi import UploadFile, File
-from sqlalchemy import text, insert, select, func, ColumnElement
-from sqlalchemy.orm import Session, Mapped, mapped_column
+from sqlalchemy import text, insert, select, func
+from sqlalchemy.orm import  mapped_column
 
 from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
@@ -493,7 +493,6 @@ async def report_get_update_author():
     content = {"msg": "Fail"}
     try:
         authors = []
-        authors_tmp2 = []
         async with async_session_maker() as session:
             # truncate table
             stmt = text(f"TRUNCATE {M_AUTHOR.__tablename__} RESTART IDENTITY;")
@@ -507,7 +506,7 @@ async def report_get_update_author():
             )
             _all = res.all()
             for author_name in _all:
-                author_tmp = str_clean(author_name)
+                author_tmp = str_clean(author_name).lstrip()
                 # print(author_tmp)
                 if len(author_tmp) > 2:
                     result = re.match(r'^0-9', author_tmp)
@@ -516,7 +515,15 @@ async def report_get_update_author():
                         authors.append(author_tmp)
             authors_str = ",".join(authors)
             authors2 = authors_str.split(",")
-            authors_tmp2 = sorted(set(authors2))
+            authors3 = []
+            # Обрабатываем список авторов и добавляем . если ее нет
+            for author in authors2:
+                author_tmp1 = author.strip()
+                if len(author_tmp1) > 3 and (not author_tmp1.endswith(".") and author_tmp1[-1].isupper()):
+                    author_tmp1 = author_tmp1 + "."
+                authors3.append(author_tmp1)
+
+            authors_tmp2 = sorted(set(authors3)) # Получаем уникальные элементы
             for author in authors_tmp2:
                 if len(author) > 2:
                     print(author)
