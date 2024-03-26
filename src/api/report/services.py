@@ -11,7 +11,7 @@ from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
     str_get_last_folder, str_get_folder_src, str_get_rgf
 from src.db.db import async_session_maker
-from src.models import M_REPORT_TGF, M_AUTHOR
+from src.models import M_REPORT_TGF, M_AUTHOR, M_LIST, M_SUBRF
 from src.utils.mystrings import str_cleanup
 
 
@@ -210,54 +210,54 @@ async def report_excel_file_read(file_in: str):
                 #     territory_name = str(value[16]).strip()
                 #     # print(territory_name)
                 if value[16]:  # Субъект РФ
-                    subrf_name = str(value[17]).strip()
+                    subrf_name = str(value[16]).strip()
                     # print(subrf_name)
 
                 if value[17]:  # Листы
-                    list_name = str(value[18]).strip()
+                    list_name = str(value[17]).strip()
                     # print(list_name)
 
                 if value[18]:  # № партии
-                    part_name = str(value[19]).strip()
+                    part_name = str(value[18]).strip()
                     # print(part_name)
                 if value[19]:  # Площадь
-                    areaoil = str(value[20]).strip()
+                    areaoil = str(value[19]).strip()
                     # print(areaoil)
 
                 if value[20]:  # Месторождение
-                    field = str(value[21]).strip()
+                    field = str(value[20]).strip()
                     # print(field)
 
                 if value[21]:  # ЛУ
-                    lu = str(value[22]).strip()
+                    lu = str(value[21]).strip()
                     # print(lu)
 
                 if value[22]:  # ПИ
-                    pi_name = str(value[23]).strip()
+                    pi_name = str(value[22]).strip()
                     # print(pi_name)
 
                 if value[23]:  # Источник финансирования
-                    fin_name = str(value[24]).strip()
+                    fin_name = str(value[23]).strip()
                     # print(fin_name)
 
                 if value[24]:  # Организация
-                    org_name = str(value[25]).strip()
+                    org_name = str(value[24]).strip()
                     # print(org_name)
 
                 if value[25]:  # Отчет ЗапСибНИИГГ
-                    zsniigg_report = str(value[26]).strip()
+                    zsniigg_report = str(value[25]).strip()
                     # print(zsniigg_report)
 
                 if value[26]:  # Информационный отчет
-                    inf_report = str(value[27]).strip()
+                    inf_report = str(value[26]).strip()
                     # print(inf_report)
 
                 if value[27]:  # Вид работ
-                    vid_rab = str(value[28]).strip()
+                    vid_rab = str(value[27]).strip()
                     # print(vid_rab)
 
                 if value[28]:  # Комментарии
-                    comments = str(value[29]).strip()
+                    comments = str(value[28]).strip()
                     print(comments)
 
                 stmt = insert(M_REPORT_TGF).values(
@@ -489,60 +489,6 @@ async def report_get_all_by_year(year: str):
     return content
 
 
-async def report_get_update_author():
-    content = {"msg": "Fail"}
-    try:
-        authors = []
-        async with async_session_maker() as session:
-            # truncate table
-            stmt = text(f"TRUNCATE {M_AUTHOR.__tablename__} RESTART IDENTITY;")
-            await session.execute(stmt)
-            await session.commit()
-            #
-            res = await session.scalars(
-                select(M_REPORT_TGF.author_name)
-                .where(M_REPORT_TGF.author_name != '')
-                .order_by(M_REPORT_TGF.author_name)
-            )
-            _all = res.all()
-            for author_name in _all:
-                author_tmp = str_clean(author_name).lstrip()
-                # print(author_tmp)
-                if len(author_tmp) > 2:
-                    result = re.match(r'^0-9', author_tmp)
-                    result2 = re.match(r'[^\D]', author_tmp)
-                    if not result or not result2:
-                        authors.append(author_tmp)
-            authors_str = ",".join(authors)
-            authors2 = authors_str.split(",")
-            authors3 = []
-            # Обрабатываем список авторов и добавляем . если ее нет
-            for author in authors2:
-                author_tmp1 = author.strip()
-                if len(author_tmp1) > 3 and (not author_tmp1.endswith(".") and author_tmp1[-1].isupper()):
-                    author_tmp1 = author_tmp1 + "."
-                authors3.append(author_tmp1)
-
-            authors_tmp2 = sorted(set(authors3)) # Получаем уникальные элементы
-            for author in authors_tmp2:
-                if len(author) > 2:
-                    print(author)
-                    stmt = insert(M_AUTHOR).values(
-                        author_name=author
-                    )
-                    await session.execute(stmt)
-                    await session.commit()
-            _cnt = len(authors_tmp2)
-            content = {"msg": "Success", "count": _cnt, "data": authors_tmp2}
-        # log.info("ngp load successfully")
-        return content
-    except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
-        print("Exception occurred " + str(e))
-        # fastapi_logger.exception("update_user_password")
-        return content
-
-
 async def report_report_by_author(author: str):
     content = {"msg": "Fail"}
     try:
@@ -563,6 +509,7 @@ async def report_report_by_author(author: str):
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
+
 
 async def report_all_by_rgf(rgf: str):
     content = {"msg": "Fail"}
@@ -772,5 +719,158 @@ async def report_all_by_tgf_kurgan(tgf_kurgan: str):
         # fastapi_logger.exception("update_user_password")
         return content
 
+
+
+async def report_get_update_author():
+    content = {"msg": "Fail"}
+    try:
+        authors = []
+        async with async_session_maker() as session:
+            # truncate table
+            stmt = text(f"TRUNCATE {M_AUTHOR.__tablename__} RESTART IDENTITY;")
+            await session.execute(stmt)
+            await session.commit()
+            #
+            res = await session.scalars(
+                select(M_REPORT_TGF.author_name)
+                .where(M_REPORT_TGF.author_name != '')
+                .order_by(M_REPORT_TGF.author_name)
+            )
+            _all = res.all()
+            for author_name in _all:
+                author_tmp = str_clean(author_name).lstrip()
+                # print(author_tmp)
+                if len(author_tmp) > 2:
+                    result = re.match(r'^0-9', author_tmp)
+                    result2 = re.match(r'[^\D]', author_tmp)
+                    if not result or not result2:
+                        authors.append(author_tmp)
+            authors_str = ",".join(authors)
+            authors2 = authors_str.split(",")
+            authors3 = []
+            # Обрабатываем список авторов и добавляем . если ее нет
+            for author in authors2:
+                author_tmp1 = author.strip()
+                if len(author_tmp1) > 3 and (not author_tmp1.endswith(".") and author_tmp1[-1].isupper()):
+                    author_tmp1 = author_tmp1 + "."
+                authors3.append(author_tmp1)
+
+            authors_tmp2 = sorted(set(authors3)) # Получаем уникальные элементы
+            for author in authors_tmp2:
+                if len(author) > 2:
+                    print(author)
+                    stmt = insert(M_AUTHOR).values(
+                        author_name=author
+                    )
+                    await session.execute(stmt)
+                    await session.commit()
+            _cnt = len(authors_tmp2)
+            content = {"msg": "Success", "count": _cnt, "data": authors_tmp2}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_update_list():
+    content = {"msg": "Fail"}
+    try:
+        lists = []
+        async with async_session_maker() as session:
+            # truncate table
+            stmt = text(f"TRUNCATE {M_LIST.__tablename__} RESTART IDENTITY;")
+            await session.execute(stmt)
+            await session.commit()
+            #
+            res = await session.scalars(
+                select(M_REPORT_TGF.list_name)
+                .where(M_REPORT_TGF.list_name != '')
+                .order_by(M_REPORT_TGF.list_name)
+            )
+            _all = res.all()
+            for list_name in _all:
+                list_tmp = str_clean(list_name).lstrip()
+                print(list_tmp)
+                # print(author_tmp)
+                if len(list_tmp) > 2:
+                    lists.append(list_tmp)
+            lists_str = ",".join(lists)
+            lists2 = lists_str.split(",")
+            lists3 = []
+            # Обрабатываем список авторов и добавляем . если ее нет
+            for author in lists2:
+                author_tmp1 = author.strip()
+                lists3.append(author_tmp1)
+
+            lists_tmp2 = sorted(set(lists3)) # Получаем уникальные элементы
+            for list in lists_tmp2:
+                if len(list) > 2:
+                    stmt = insert(M_LIST).values(
+                        list_name=list
+                    )
+                    await session.execute(stmt)
+                    await session.commit()
+            _cnt = len(lists_tmp2)
+            content = {"msg": "Success", "count": _cnt, "data": lists_tmp2}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+
+async def report_get_update_subrf():
+    content = {"msg": "Fail"}
+    try:
+        subrfs = []
+        async with async_session_maker() as session:
+            # truncate table
+            stmt = text(f"TRUNCATE {M_SUBRF.__tablename__} RESTART IDENTITY;")
+            await session.execute(stmt)
+            await session.commit()
+            #
+            res = await session.scalars(
+                select(M_REPORT_TGF.subrf_name)
+                .where(M_REPORT_TGF.subrf_name != '')
+                .order_by(M_REPORT_TGF.subrf_name)
+            )
+            _all = res.all()
+            for subrf_name in _all:
+                subrf_tmp = str_clean(subrf_name).lstrip()
+                print(subrf_tmp)
+                # print(author_tmp)
+                if len(subrf_tmp) > 2:
+                    subrfs.append(subrf_tmp)
+            subrfs_str = ",".join(subrfs)
+            subrfs2 = subrfs_str.split(",")
+            subrfs3 = []
+            # Обрабатываем список авторов и добавляем . если ее нет
+            for subrf in subrfs2:
+                subrf_tmp1 = subrf.strip()
+                subrfs3.append(subrf_tmp1)
+
+            subrfs_tmp2 = sorted(set(subrfs3)) # Получаем уникальные элементы
+            for subrf in subrfs_tmp2:
+                if len(subrf) > 2:
+                    stmt = insert(M_SUBRF).values(
+                        subrf_name=subrf
+                    )
+                    await session.execute(stmt)
+                    await session.commit()
+            _cnt = len(subrfs_tmp2)
+            content = {"msg": "Success", "count": _cnt, "data": subrfs_tmp2}
+        # log.info("ngp load successfully")
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
 
 

@@ -6,8 +6,9 @@ from src.api.report.services import (
     report_all_tgf_tmn, report_all_tgf_kurgan, report_all_tgf, report_all_year, report_get_update_author,
     report_report_by_author, report_get_all_by_year, report_all_by_rgf, report_all_by_tgf_hmao, report_all_by_tgf_ynao,
     report_all_by_tgf_kras, report_all_by_tgf_ekat, report_all_by_tgf_omsk, report_all_by_tgf_novo,
-    report_all_by_tgf_tomsk, report_all_by_tgf_more, report_all_by_tgf_tmn, report_all_by_tgf_kurgan
-    )
+    report_all_by_tgf_tomsk, report_all_by_tgf_more, report_all_by_tgf_tmn, report_all_by_tgf_kurgan,
+    report_get_update_list, report_get_update_subrf
+)
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
 
@@ -200,16 +201,6 @@ async def get_all_by_year(year:str):
     return content
 
 
-@report_router.get(path='/update/author',
-                   status_code=200,
-                   name='Обновить авторов',
-                   tags=['Отчеты'],
-                   description='Обновить авторов')
-async def get_update_author():
-    content = await report_get_update_author()
-    return content
-
-
 @report_router.get(path='/author/{author}',
                    status_code=200,
                    name='Получить отчеты по автору',
@@ -327,3 +318,36 @@ async def get_all_by_tgf_tmn(tgf_tmn:str):
 async def get_all_by_tgf_kurgan(tgf_kurgan:str):
     content = await report_all_by_tgf_kurgan(tgf_kurgan)
     return content
+
+
+@report_router.get(path='/update/author',
+                   status_code=200,
+                   name='Обновить авторов',
+                   tags=['Отчеты'],
+                   description='Обновить авторов')
+async def get_update_author():
+    content = await report_get_update_author()
+    return content
+
+
+
+@report_router.get(path='/update/list',
+                   status_code=200,
+                   name='Обновить листы карты',
+                   tags=['Отчеты'],
+                   description='Обновить листы карты')
+async def get_update_list():
+    content = await report_get_update_list()
+    return content
+
+
+
+@report_router.get(path='/update/subrf',
+                   status_code=200,
+                   name='Обновить Субъекты РФ',
+                   tags=['Отчеты'],
+                   description='Обновить Субъекты РФ')
+async def get_update_subrf():
+    content = await report_get_update_subrf()
+    return content
+

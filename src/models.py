@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from src.db.db import Base
 from src.schemas import S_FILE, S_EXT, S_NSI_FIELD, S_NSI_LU, S_NSI_NGO, S_NSI_NGP, S_NSI_NGR, S_NSI_WELL, \
-    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY, S_HISTORY_TASK
+    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_LIST, S_SUBRF
 
 
 # import geoalchemy2
@@ -442,10 +442,45 @@ class M_AUTHOR(Base):
         )
 
 
+class M_LIST(Base):
+    """A source table"""
+
+    __tablename__ = "r_list"
+    __table_args__ = {'comment': 'Листы карты'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    list_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_LIST:
+        return S_LIST(
+            id=self.id,
+            list_name=self.list_name,
+            lastupdate=self.lastupdate,
+        )
+
+class M_SUBRF(Base):
+    """A source table"""
+
+    __tablename__ = "r_subrf"
+    __table_args__ = {'comment': 'Субъекты РФ'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    subrf_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_SUBRF:
+        return S_SUBRF(
+            id=self.id,
+            subrf_name=self.subrf_name,
+            lastupdate=self.lastupdate,
+        )
+
+
 class M_HISTORY(Base):
     """A source table"""
 
-    __tablename__ = "history"
+    __tablename__: str = "history"
     __table_args__ = {'comment': 'История запросов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

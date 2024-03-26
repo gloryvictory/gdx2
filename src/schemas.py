@@ -155,6 +155,16 @@ class S_AUTHOR(BaseTable):
     author_name: str
     lastupdate: datetime
 
+class S_LIST(BaseTable):
+    id: int
+    list_name: str
+    lastupdate: datetime
+
+class S_SUBRF(BaseTable):
+    id: int
+    subrf_name: str
+    lastupdate: datetime
+
 
 class S_HISTORY(BaseTable):
     id: int
