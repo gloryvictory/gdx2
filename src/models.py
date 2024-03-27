@@ -9,7 +9,8 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from src.db.db import Base
 from src.schemas import S_FILE, S_EXT, S_NSI_FIELD, S_NSI_LU, S_NSI_NGO, S_NSI_NGP, S_NSI_NGR, S_NSI_WELL, \
-    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_LIST, S_SUBRF
+    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_LIST, S_SUBRF, S_ORG, S_AREA, S_FIELD, S_LU, S_PI, \
+    S_VID_RAB
 
 
 # import geoalchemy2
@@ -424,58 +425,6 @@ class M_REPORT_TGF(Base):
         )
 
 
-class M_AUTHOR(Base):
-    """A source table"""
-
-    __tablename__ = "author"
-    __table_args__ = {'comment': 'Авторы'}
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    author_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
-
-    def to_read_model(self) -> S_AUTHOR:
-        return S_AUTHOR(
-            id=self.id,
-            author_name=self.author_name,
-            lastupdate=self.lastupdate,
-        )
-
-
-class M_LIST(Base):
-    """A source table"""
-
-    __tablename__ = "r_list"
-    __table_args__ = {'comment': 'Листы карты'}
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    list_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
-
-    def to_read_model(self) -> S_LIST:
-        return S_LIST(
-            id=self.id,
-            list_name=self.list_name,
-            lastupdate=self.lastupdate,
-        )
-
-class M_SUBRF(Base):
-    """A source table"""
-
-    __tablename__ = "r_subrf"
-    __table_args__ = {'comment': 'Субъекты РФ'}
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    subrf_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
-    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
-
-    def to_read_model(self) -> S_SUBRF:
-        return S_SUBRF(
-            id=self.id,
-            subrf_name=self.subrf_name,
-            lastupdate=self.lastupdate,
-        )
-
 
 class M_HISTORY(Base):
     """A source table"""
@@ -527,5 +476,166 @@ class M_HISTORY_TASK(Base):
             time_start=self.time_start,
             time_end=self.time_end,
             time_duration=self.time_duration,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_AUTHOR(Base):
+    """A source table"""
+
+    __tablename__ = "r_author"
+    __table_args__ = {'comment': 'Авторы'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    author_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_AUTHOR:
+        return S_AUTHOR(
+            id=self.id,
+            author_name=self.author_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_LIST(Base):
+    """A source table"""
+
+    __tablename__ = "r_list"
+    __table_args__ = {'comment': 'Листы карты'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    list_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_LIST:
+        return S_LIST(
+            id=self.id,
+            list_name=self.list_name,
+            lastupdate=self.lastupdate,
+        )
+
+class M_SUBRF(Base):
+    """A source table"""
+
+    __tablename__ = "r_subrf"
+    __table_args__ = {'comment': 'Субъекты РФ'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    subrf_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_SUBRF:
+        return S_SUBRF(
+            id=self.id,
+            subrf_name=self.subrf_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_ORG(Base):
+    """A source table"""
+
+    __tablename__ = "r_org"
+    __table_args__ = {'comment': 'Организации'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    org_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_ORG:
+        return S_ORG(
+            id=self.id,
+            org_name=self.org_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_AREA(Base):
+    """A source table"""
+
+    __tablename__ = "r_area"
+    __table_args__ = {'comment': 'Площади отчетов'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    area_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_AREA:
+        return S_AREA(
+            id=self.id,
+            area_name=self.area_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_FIELD(Base):
+    """A source table"""
+
+    __tablename__ = "r_field"
+    __table_args__ = {'comment': 'Месторождения отчетов'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    field_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_FIELD:
+        return S_FIELD(
+            id=self.id,
+            field_name=self.field_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_LU(Base):
+    """A source table"""
+
+    __tablename__ = "r_lu"
+    __table_args__ = {'comment': 'ЛУ отчетов'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    lu_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_LU:
+        return S_LU(
+            id=self.id,
+            lu_name=self.lu_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_PI(Base):
+    """A source table"""
+
+    __tablename__ = "r_pi"
+    __table_args__ = {'comment': 'Полезные ископаемые отчетов'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    pi_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_PI:
+        return S_PI(
+            id=self.id,
+            pi_name=self.pi_name,
+            lastupdate=self.lastupdate,
+        )
+
+
+class M_VID_RAB(Base):
+    """A source table"""
+
+    __tablename__ = "r_vid_rab"
+    __table_args__ = {'comment': 'Вид работ отчетов'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    vid_rab_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_VID_RAB:
+        return S_VID_RAB(
+            id=self.id,
+            vid_rab_name=self.vid_rab_name,
             lastupdate=self.lastupdate,
         )

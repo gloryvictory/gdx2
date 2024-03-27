@@ -154,7 +154,9 @@ def str_clean(str_in: str):
                   .replace("См_____", " ") \
                   .replace("См____", " ") \
                   .replace(". ", ".") \
+                  .replace("\"", "") \
                   .replace("<openpyxl.worksheet.formula.ArrayFormula object at xFD>", "") \
+                  .replace("<openpyxl.worksheet.formula.ArrayFormula object at xEACA>", "") \
                   .replace("угие.", "") \
                   .replace("угие", "") \
                   .lstrip() \
@@ -163,6 +165,30 @@ def str_clean(str_in: str):
     # .replace(". и", ".") \
     # if str_tmp.startswith(" "):
     #     str_tmp = str_tmp.replace(" ", "")
+    if str_tmp.endswith(" "):
+        str_tmp = strip_last(str_tmp)
+
+    if len(str_tmp):
+        result = re.match("\s", str_tmp)
+        if result:
+            str_tmp = str_tmp.strip()
+    return str_tmp
+
+def list_str_clean(str_in: str):
+    str_tmp = str_cleanup(str_in)
+    str_tmp = removing_leading_whitespaces(str_tmp)
+    # str_tmp = cleanupstring(str_tmp)
+
+    str_tmp = str_tmp.lstrip() \
+                  .rstrip() \
+                  .replace(";", ",")\
+                  .replace(" ", ",")\
+                  .replace("\t", ",") \
+                  .replace("\n", ",") \
+                  .replace("                                                        ", ",") \
+                  .lstrip() \
+                  .rstrip() \
+                  .strip() + ','
     if str_tmp.endswith(" "):
         str_tmp = strip_last(str_tmp)
 

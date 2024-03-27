@@ -7,7 +7,8 @@ from src.api.report.services import (
     report_report_by_author, report_get_all_by_year, report_all_by_rgf, report_all_by_tgf_hmao, report_all_by_tgf_ynao,
     report_all_by_tgf_kras, report_all_by_tgf_ekat, report_all_by_tgf_omsk, report_all_by_tgf_novo,
     report_all_by_tgf_tomsk, report_all_by_tgf_more, report_all_by_tgf_tmn, report_all_by_tgf_kurgan,
-    report_get_update_list, report_get_update_subrf
+    report_get_update_list, report_get_update_subrf, report_get_update_org, report_get_update_area,
+    report_get_update_field, report_get_update_lu, report_get_update_pi, report_get_update_vid_rab
 )
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
@@ -349,5 +350,70 @@ async def get_update_list():
                    description='Обновить Субъекты РФ')
 async def get_update_subrf():
     content = await report_get_update_subrf()
+    return content
+
+
+
+@report_router.get(path='/update/org',
+                   status_code=200,
+                   name='Обновить Организации',
+                   tags=['Отчеты'],
+                   description='Обновить Организации')
+async def get_update_org():
+    content = await report_get_update_org()
+    return content
+
+
+
+@report_router.get(path='/update/area',
+                   status_code=200,
+                   name='Обновить Площади',
+                   tags=['Отчеты'],
+                   description='Обновить Площади')
+async def get_update_area():
+    content = await report_get_update_area()
+    return content
+
+
+@report_router.get(path='/update/field',
+                   status_code=200,
+                   name='Обновить Месторождения',
+                   tags=['Отчеты'],
+                   description='Обновить Месторождения')
+async def get_update_field():
+    content = await report_get_update_field()
+    return content
+
+
+
+@report_router.get(path='/update/lu',
+                   status_code=200,
+                   name='Обновить ЛУ',
+                   tags=['Отчеты'],
+                   description='Обновить ЛУ')
+async def get_update_lu():
+    content = await report_get_update_lu()
+    return content
+
+
+
+@report_router.get(path='/update/pi',
+                   status_code=200,
+                   name='Обновить ПИ',
+                   tags=['Отчеты'],
+                   description='Обновить ПИ')
+async def get_update_pi():
+    content = await report_get_update_pi()
+    return content
+
+
+
+@report_router.get(path='/update/vid_rab',
+                   status_code=200,
+                   name='Обновить Вид работ',
+                   tags=['Отчеты'],
+                   description='Обновить Вид работ')
+async def get_update_vid_rab():
+    content = await report_get_update_vid_rab()
     return content
 

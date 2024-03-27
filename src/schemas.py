@@ -150,22 +150,6 @@ class S_REPORT_TGF(BaseTable):
     lastupdate: datetime
 
 
-class S_AUTHOR(BaseTable):
-    id: int
-    author_name: str
-    lastupdate: datetime
-
-class S_LIST(BaseTable):
-    id: int
-    list_name: str
-    lastupdate: datetime
-
-class S_SUBRF(BaseTable):
-    id: int
-    subrf_name: str
-    lastupdate: datetime
-
-
 class S_HISTORY(BaseTable):
     id: int
     url: str
@@ -184,4 +168,56 @@ class S_HISTORY_TASK(BaseTable):
     time_start: datetime
     time_end: datetime
     time_duration: datetime
+    lastupdate: datetime
+
+
+class S_AUTHOR(BaseTable):
+    id: int
+    author_name: str
+    lastupdate: datetime
+
+class S_LIST(BaseTable):
+    id: int
+    list_name: str
+    lastupdate: datetime
+
+class S_SUBRF(BaseTable):
+    id: int
+    subrf_name: str
+    lastupdate: datetime
+
+
+class S_ORG(BaseTable):
+    id: int
+    org_name: str
+    lastupdate: datetime
+
+
+class S_AREA(BaseTable):
+    id: int
+    area_name: str
+    lastupdate: datetime
+
+
+class S_FIELD(BaseTable):
+    id: int
+    field_name: str
+    lastupdate: datetime
+
+
+class S_LU(BaseTable):
+    id: int
+    lu_name: str
+    lastupdate: datetime
+
+
+class S_PI(BaseTable):
+    id: int
+    pi_name: str
+    lastupdate: datetime
+
+
+class S_VID_RAB(BaseTable):
+    id: int
+    vid_rab_name: str
     lastupdate: datetime
