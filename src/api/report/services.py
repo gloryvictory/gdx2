@@ -1158,3 +1158,173 @@ async def report_get_update_vid_rab():
         # fastapi_logger.exception("update_user_password")
         return content
 
+
+async def report_get_author():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_AUTHOR)
+                .order_by(M_AUTHOR.author_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_AUTHOR.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_list():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_LIST)
+                .order_by(M_LIST.list_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_LIST.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_subrf():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_SUBRF)
+                .order_by(M_SUBRF.subrf_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_SUBRF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_org():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_ORG)
+                .order_by(M_ORG.org_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_ORG.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_area():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_AREA)
+                .order_by(M_AREA.area_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_AREA.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_field():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_FIELD)
+                .order_by(M_FIELD.field_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_FIELD.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_lu():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_LU)
+                .order_by(M_LU.lu_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_LU.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_pi():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_PI)
+                .order_by(M_PI.pi_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_PI.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+
+async def report_get_vid_rab():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_VID_RAB)
+                .order_by(M_VID_RAB.vid_rab_name)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_VID_RAB.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content

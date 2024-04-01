@@ -8,7 +8,9 @@ from src.api.report.services import (
     report_all_by_tgf_kras, report_all_by_tgf_ekat, report_all_by_tgf_omsk, report_all_by_tgf_novo,
     report_all_by_tgf_tomsk, report_all_by_tgf_more, report_all_by_tgf_tmn, report_all_by_tgf_kurgan,
     report_get_update_list, report_get_update_subrf, report_get_update_org, report_get_update_area,
-    report_get_update_field, report_get_update_lu, report_get_update_pi, report_get_update_vid_rab
+    report_get_update_field, report_get_update_lu, report_get_update_pi, report_get_update_vid_rab, report_get_author,
+    report_get_list, report_get_subrf, report_get_org, report_get_area, report_get_field, report_get_lu, report_get_pi,
+    report_get_vid_rab
 )
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
@@ -417,3 +419,92 @@ async def get_update_vid_rab():
     content = await report_get_update_vid_rab()
     return content
 
+
+@report_router.get(path='/author',
+                   status_code=200,
+                   name='Получить всех авторов',
+                   tags=['Отчеты'],
+                   description='Получить всех авторов')
+async def get_author():
+    content = await report_get_author()
+    return content
+
+
+@report_router.get(path='/list',
+                   status_code=200,
+                   name='Получить все листы',
+                   tags=['Отчеты'],
+                   description='Получить все листы')
+async def get_list():
+    content = await report_get_list()
+    return content
+
+
+@report_router.get(path='/subrf',
+                   status_code=200,
+                   name='Получить все Субъекты РФ',
+                   tags=['Отчеты'],
+                   description='Получить все Субъекты РФ')
+async def get_subrf():
+    content = await report_get_subrf()
+    return content
+
+
+@report_router.get(path='/org',
+                   status_code=200,
+                   name='Получить все Организации',
+                   tags=['Отчеты'],
+                   description='Получить все Организации')
+async def get_org():
+    content = await report_get_org()
+    return content
+
+
+@report_router.get(path='/area',
+                   status_code=200,
+                   name='Получить все Площади',
+                   tags=['Отчеты'],
+                   description='Получить все Площади')
+async def get_area():
+    content = await report_get_area()
+    return content
+
+
+@report_router.get(path='/field',
+                   status_code=200,
+                   name='Получить все Месторождения',
+                   tags=['Отчеты'],
+                   description='Получить все Месторождения')
+async def get_field():
+    content = await report_get_field()
+    return content
+
+
+@report_router.get(path='/lu',
+                   status_code=200,
+                   name='Получить все ЛУ',
+                   tags=['Отчеты'],
+                   description='Получить все ЛУ')
+async def get_lu():
+    content = await report_get_lu()
+    return content
+
+
+@report_router.get(path='/pi',
+                   status_code=200,
+                   name='Получить все ПИ',
+                   tags=['Отчеты'],
+                   description='Получить все ПИ')
+async def get_pi():
+    content = await report_get_pi()
+    return content
+
+
+@report_router.get(path='/vid_rab',
+                   status_code=200,
+                   name='Получить все Виды работ',
+                   tags=['Отчеты'],
+                   description='Получить все Виды работ')
+async def get_vid_rab():
+    content = await report_get_vid_rab()
+    return content
