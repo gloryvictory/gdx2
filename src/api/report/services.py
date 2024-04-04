@@ -5,7 +5,7 @@ import openpyxl
 import sqlalchemy
 from fastapi import UploadFile, File
 from sqlalchemy import text, insert, select, func
-from sqlalchemy.orm import  mapped_column
+from sqlalchemy.orm import mapped_column
 
 from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
@@ -720,7 +720,6 @@ async def report_all_by_tgf_kurgan(tgf_kurgan: str):
         return content
 
 
-
 async def report_get_update_author():
     content = {"msg": "Fail"}
     try:
@@ -756,7 +755,7 @@ async def report_get_update_author():
                         author_tmp1 = author_tmp1 + "."
                     authors3.append(author_tmp1)
 
-            authors_tmp2 = sorted(set(authors3)) # Получаем уникальные элементы
+            authors_tmp2 = sorted(set(authors3))  # Получаем уникальные элементы
             for author in authors_tmp2:
                 if len(author) > 2:
                     print(author)
@@ -805,7 +804,7 @@ async def report_get_update_list():
                 author_tmp1 = author.strip()
                 lists3.append(author_tmp1)
 
-            lists_tmp2 = sorted(set(lists3)) # Получаем уникальные элементы
+            lists_tmp2 = sorted(set(lists3))  # Получаем уникальные элементы
             for list in lists_tmp2:
                 if len(list) > 2:
                     stmt = insert(M_LIST).values(
@@ -822,7 +821,6 @@ async def report_get_update_list():
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
-
 
 
 async def report_get_update_subrf():
@@ -854,7 +852,7 @@ async def report_get_update_subrf():
                     subrf_tmp1 = subrf.strip()
                     subrfs3.append(subrf_tmp1)
 
-            subrfs_tmp2 = sorted(set(subrfs3)) # Получаем уникальные элементы
+            subrfs_tmp2 = sorted(set(subrfs3))  # Получаем уникальные элементы
             for subrf in subrfs_tmp2:
                 if len(subrf) > 2:
                     stmt = insert(M_SUBRF).values(
@@ -902,7 +900,7 @@ async def report_get_update_org():
                 if not org_tmp1.startswith("<openpyxl"):
                     orgs3.append(org_tmp1)
 
-            orgs_tmp2 = sorted(set(orgs3)) # Получаем уникальные элементы
+            orgs_tmp2 = sorted(set(orgs3))  # Получаем уникальные элементы
             for org in orgs_tmp2:
                 if len(org) > 2:
                     stmt = insert(M_ORG).values(
@@ -949,7 +947,7 @@ async def report_get_update_area():
                 if not area_tmp1.startswith("<openpyxl"):
                     areas3.append(area_tmp1)
 
-            areas_tmp2 = sorted(set(areas3)) # Получаем уникальные элементы
+            areas_tmp2 = sorted(set(areas3))  # Получаем уникальные элементы
             for area in areas_tmp2:
                 if len(area) > 2:
                     stmt = insert(M_AREA).values(
@@ -996,7 +994,7 @@ async def report_get_update_field():
                 if not field_tmp1.startswith("<openpyxl"):
                     fields3.append(field_tmp1)
 
-            fields_tmp2 = sorted(set(fields3)) # Получаем уникальные элементы
+            fields_tmp2 = sorted(set(fields3))  # Получаем уникальные элементы
             for field in fields_tmp2:
                 if len(field) > 2:
                     stmt = insert(M_FIELD).values(
@@ -1013,7 +1011,6 @@ async def report_get_update_field():
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
-
 
 
 async def report_get_update_lu():
@@ -1044,7 +1041,7 @@ async def report_get_update_lu():
                 if not lu_tmp1.startswith("<openpyxl"):
                     lus3.append(lu_tmp1)
 
-            lus_tmp2 = sorted(set(lus3)) # Получаем уникальные элементы
+            lus_tmp2 = sorted(set(lus3))  # Получаем уникальные элементы
             for lu in lus_tmp2:
                 if len(lu) > 2:
                     stmt = insert(M_LU).values(
@@ -1061,7 +1058,6 @@ async def report_get_update_lu():
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
-
 
 
 async def report_get_update_pi():
@@ -1092,7 +1088,7 @@ async def report_get_update_pi():
                 if not pi_tmp1.startswith("<openpyxl"):
                     pis3.append(pi_tmp1)
 
-            pis_tmp2 = sorted(set(pis3)) # Получаем уникальные элементы
+            pis_tmp2 = sorted(set(pis3))  # Получаем уникальные элементы
             for pi in pis_tmp2:
                 if len(pi) > 2:
                     stmt = insert(M_PI).values(
@@ -1109,7 +1105,6 @@ async def report_get_update_pi():
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
-
 
 
 async def report_get_update_vid_rab():
@@ -1140,7 +1135,7 @@ async def report_get_update_vid_rab():
                 if not vid_rab_tmp1.startswith("<openpyxl"):
                     vid_rabs3.append(vid_rab_tmp1)
 
-            vid_rabs_tmp2 = sorted(set(vid_rabs3)) # Получаем уникальные элементы
+            vid_rabs_tmp2 = sorted(set(vid_rabs3))  # Получаем уникальные элементы
             for vid_rab in vid_rabs_tmp2:
                 if len(vid_rab) > 2:
                     stmt = insert(M_VID_RAB).values(
@@ -1328,3 +1323,66 @@ async def report_get_vid_rab():
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
+
+
+async def report_get_model_all_count(model_param):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalar(select(func.count(model_param.id)))
+            content = {"msg": "Success", "count": res}
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read ext from table ({model_param.__tablename__})"
+        content = {"msg": "error", "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+
+async def report_get_model_author_count():
+    content = await report_get_model_all_count(M_AUTHOR)
+    return content
+
+
+async def report_get_model_list_count():
+    content = await report_get_model_all_count(M_LIST)
+    return content
+
+
+async def report_get_model_subrf_count():
+    content = await report_get_model_all_count(M_SUBRF)
+    return content
+
+
+async def report_get_model_org_count():
+    content = await report_get_model_all_count(M_ORG)
+    return content
+
+
+async def report_get_model_area_count():
+    content = await report_get_model_all_count(M_AREA)
+    return content
+
+
+async def report_get_model_field_count():
+    content = await report_get_model_all_count(M_FIELD)
+    return content
+
+
+async def report_get_model_lu_count():
+    content = await report_get_model_all_count(M_LU)
+    return content
+
+
+async def report_get_model_pi_count():
+    content = await report_get_model_all_count(M_PI)
+    return content
+
+
+async def report_get_model_vid_rab_count():
+    content = await report_get_model_all_count(M_VID_RAB)
+    return content
+
