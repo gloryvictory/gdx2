@@ -1172,6 +1172,26 @@ async def report_get_author():
         # fastapi_logger.exception("update_user_password")
         return content
 
+async def report_get_author_by_id(id:int):
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_AUTHOR)
+                .where(M_AUTHOR.id == id)
+                .order_by(M_AUTHOR.author_name)
+
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_AUTHOR.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
 
 async def report_get_list():
     content = {"msg": "Fail"}
