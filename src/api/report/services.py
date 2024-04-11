@@ -11,7 +11,7 @@ from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
     str_get_last_folder, str_get_folder_src, str_get_rgf, list_str_clean
 from src.db.db import async_session_maker
-from src.models import M_REPORT_TGF, M_AUTHOR, M_LIST, M_SUBRF, M_ORG, M_AREA, M_FIELD, M_LU, M_PI, M_VID_RAB
+from src.models import M_REPORT_TGF, M_R_AUTHOR, M_R_LIST, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_FIELD, M_R_LU, M_R_PI, M_R_VID_RAB
 from src.utils.mystrings import str_cleanup
 
 
@@ -726,7 +726,7 @@ async def report_get_update_author():
         authors = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_AUTHOR.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_AUTHOR.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -759,8 +759,8 @@ async def report_get_update_author():
             for author in authors_tmp2:
                 if len(author) > 2:
                     print(author)
-                    stmt = insert(M_AUTHOR).values(
-                        author_name=author
+                    stmt = insert(M_R_AUTHOR).values(
+                        name_ru=author
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -781,7 +781,7 @@ async def report_get_update_list():
         lists = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_LIST.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_LIST.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -807,8 +807,8 @@ async def report_get_update_list():
             lists_tmp2 = sorted(set(lists3))  # Получаем уникальные элементы
             for list in lists_tmp2:
                 if len(list) > 2:
-                    stmt = insert(M_LIST).values(
-                        list_name=list
+                    stmt = insert(M_R_LIST).values(
+                        name_ru=list
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -829,7 +829,7 @@ async def report_get_update_subrf():
         subrfs = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_SUBRF.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_SUBRF.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -855,8 +855,8 @@ async def report_get_update_subrf():
             subrfs_tmp2 = sorted(set(subrfs3))  # Получаем уникальные элементы
             for subrf in subrfs_tmp2:
                 if len(subrf) > 2:
-                    stmt = insert(M_SUBRF).values(
-                        subrf_name=subrf
+                    stmt = insert(M_R_SUBRF).values(
+                        name_ru=subrf
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -877,7 +877,7 @@ async def report_get_update_org():
         orgs = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_ORG.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_ORG.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -903,8 +903,8 @@ async def report_get_update_org():
             orgs_tmp2 = sorted(set(orgs3))  # Получаем уникальные элементы
             for org in orgs_tmp2:
                 if len(org) > 2:
-                    stmt = insert(M_ORG).values(
-                        org_name=org
+                    stmt = insert(M_R_ORG).values(
+                        name_ru=org
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -925,7 +925,7 @@ async def report_get_update_area():
         areas = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_AREA.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_AREA.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -950,8 +950,8 @@ async def report_get_update_area():
             areas_tmp2 = sorted(set(areas3))  # Получаем уникальные элементы
             for area in areas_tmp2:
                 if len(area) > 2:
-                    stmt = insert(M_AREA).values(
-                        area_name=area
+                    stmt = insert(M_R_AREA).values(
+                        name_ru=area
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -972,7 +972,7 @@ async def report_get_update_field():
         fields = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_FIELD.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_FIELD.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -997,8 +997,8 @@ async def report_get_update_field():
             fields_tmp2 = sorted(set(fields3))  # Получаем уникальные элементы
             for field in fields_tmp2:
                 if len(field) > 2:
-                    stmt = insert(M_FIELD).values(
-                        field_name=field
+                    stmt = insert(M_R_FIELD).values(
+                        name_ru=field
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -1019,7 +1019,7 @@ async def report_get_update_lu():
         lus = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_LU.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_LU.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -1044,8 +1044,8 @@ async def report_get_update_lu():
             lus_tmp2 = sorted(set(lus3))  # Получаем уникальные элементы
             for lu in lus_tmp2:
                 if len(lu) > 2:
-                    stmt = insert(M_LU).values(
-                        lu_name=lu
+                    stmt = insert(M_R_LU).values(
+                        name_ru=lu
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -1066,7 +1066,7 @@ async def report_get_update_pi():
         pis = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_PI.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_PI.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -1091,8 +1091,8 @@ async def report_get_update_pi():
             pis_tmp2 = sorted(set(pis3))  # Получаем уникальные элементы
             for pi in pis_tmp2:
                 if len(pi) > 2:
-                    stmt = insert(M_PI).values(
-                        pi_name=pi
+                    stmt = insert(M_R_PI).values(
+                        name_ru=pi
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -1113,7 +1113,7 @@ async def report_get_update_vid_rab():
         vid_rabs = []
         async with async_session_maker() as session:
             # truncate table
-            stmt = text(f"TRUNCATE {M_VID_RAB.__tablename__} RESTART IDENTITY;")
+            stmt = text(f"TRUNCATE {M_R_VID_RAB.__tablename__} RESTART IDENTITY;")
             await session.execute(stmt)
             await session.commit()
             #
@@ -1138,8 +1138,8 @@ async def report_get_update_vid_rab():
             vid_rabs_tmp2 = sorted(set(vid_rabs3))  # Получаем уникальные элементы
             for vid_rab in vid_rabs_tmp2:
                 if len(vid_rab) > 2:
-                    stmt = insert(M_VID_RAB).values(
-                        vid_rab_name=vid_rab
+                    stmt = insert(M_R_VID_RAB).values(
+                        name_ru=vid_rab
                     )
                     await session.execute(stmt)
                     await session.commit()
@@ -1159,15 +1159,15 @@ async def report_get_author():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_AUTHOR)
-                .order_by(M_AUTHOR.author_name)
+                select(M_R_AUTHOR)
+                .order_by(M_R_AUTHOR.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_AUTHOR.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_AUTHOR.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1177,9 +1177,9 @@ async def report_get_author_by_id(id:int):
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_AUTHOR)
-                .where(M_AUTHOR.id == id)
-                .order_by(M_AUTHOR.author_name)
+                select(M_R_AUTHOR)
+                .where(M_R_AUTHOR.id == id)
+                .order_by(M_R_AUTHOR.name_ru)
 
             )
             _all = res.all()
@@ -1187,7 +1187,7 @@ async def report_get_author_by_id(id:int):
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_AUTHOR.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_AUTHOR.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1198,15 +1198,15 @@ async def report_get_list():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_LIST)
-                .order_by(M_LIST.list_name)
+                select(M_R_LIST)
+                .order_by(M_R_LIST.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_LIST.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_LIST.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1217,15 +1217,15 @@ async def report_get_subrf():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_SUBRF)
-                .order_by(M_SUBRF.subrf_name)
+                select(M_R_SUBRF)
+                .order_by(M_R_SUBRF.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_SUBRF.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_SUBRF.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1236,15 +1236,15 @@ async def report_get_org():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_ORG)
-                .order_by(M_ORG.org_name)
+                select(M_R_ORG)
+                .order_by(M_R_ORG.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_ORG.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_ORG.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1255,15 +1255,15 @@ async def report_get_area():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_AREA)
-                .order_by(M_AREA.area_name)
+                select(M_R_AREA)
+                .order_by(M_R_AREA.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_AREA.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_AREA.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1274,15 +1274,15 @@ async def report_get_field():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_FIELD)
-                .order_by(M_FIELD.field_name)
+                select(M_R_FIELD)
+                .order_by(M_R_FIELD.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_FIELD.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_FIELD.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1293,15 +1293,15 @@ async def report_get_lu():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_LU)
-                .order_by(M_LU.lu_name)
+                select(M_R_LU)
+                .order_by(M_R_LU.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_LU.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_LU.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1312,15 +1312,15 @@ async def report_get_pi():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_PI)
-                .order_by(M_PI.pi_name)
+                select(M_R_PI)
+                .order_by(M_R_PI.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_PI.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_PI.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1331,15 +1331,15 @@ async def report_get_vid_rab():
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
-                select(M_VID_RAB)
-                .order_by(M_VID_RAB.vid_rab_name)
+                select(M_R_VID_RAB)
+                .order_by(M_R_VID_RAB.name_ru)
             )
             _all = res.all()
             _cnt = len(_all)
             content = {"msg": "Success", "count": _cnt, "data": _all}
         return content
     except Exception as e:
-        content = {"msg": "Fail", "data": f"Can't get all from {M_VID_RAB.__tablename__}... "}
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_VID_RAB.__tablename__}... "}
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
@@ -1363,46 +1363,46 @@ async def report_get_model_all_count(model_param):
 
 
 async def report_get_model_author_count():
-    content = await report_get_model_all_count(M_AUTHOR)
+    content = await report_get_model_all_count(M_R_AUTHOR)
     return content
 
 
 async def report_get_model_list_count():
-    content = await report_get_model_all_count(M_LIST)
+    content = await report_get_model_all_count(M_R_LIST)
     return content
 
 
 async def report_get_model_subrf_count():
-    content = await report_get_model_all_count(M_SUBRF)
+    content = await report_get_model_all_count(M_R_SUBRF)
     return content
 
 
 async def report_get_model_org_count():
-    content = await report_get_model_all_count(M_ORG)
+    content = await report_get_model_all_count(M_R_ORG)
     return content
 
 
 async def report_get_model_area_count():
-    content = await report_get_model_all_count(M_AREA)
+    content = await report_get_model_all_count(M_R_AREA)
     return content
 
 
 async def report_get_model_field_count():
-    content = await report_get_model_all_count(M_FIELD)
+    content = await report_get_model_all_count(M_R_FIELD)
     return content
 
 
 async def report_get_model_lu_count():
-    content = await report_get_model_all_count(M_LU)
+    content = await report_get_model_all_count(M_R_LU)
     return content
 
 
 async def report_get_model_pi_count():
-    content = await report_get_model_all_count(M_PI)
+    content = await report_get_model_all_count(M_R_PI)
     return content
 
 
 async def report_get_model_vid_rab_count():
-    content = await report_get_model_all_count(M_VID_RAB)
+    content = await report_get_model_all_count(M_R_VID_RAB)
     return content
 

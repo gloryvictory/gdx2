@@ -328,7 +328,7 @@ async def get_author():
     content = await report_get_author()
     return content
 
-@report_router.get(path='/author/{id}',
+@report_router.get(path='/author/id/{id}',
                    status_code=200,
                    name='Получить автора',
                    tags=['Отчеты'],

@@ -9,8 +9,9 @@ from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from src.db.db import Base
 from src.schemas import S_FILE, S_EXT, S_NSI_FIELD, S_NSI_LU, S_NSI_NGO, S_NSI_NGP, S_NSI_NGR, S_NSI_WELL, \
-    S_NSI_AREA, S_REPORT_TGF, S_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_LIST, S_SUBRF, S_ORG, S_AREA, S_FIELD, S_LU, S_PI, \
-    S_VID_RAB
+    S_NSI_AREA, S_REPORT_TGF, S_R_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_R_LIST, S_R_SUBRF, S_R_ORG, S_R_AREA, S_R_FIELD, \
+    S_R_LU, S_R_PI, \
+    S_R_VID_RAB, S_R_MESSAGE
 
 
 # import geoalchemy2
@@ -480,162 +481,185 @@ class M_HISTORY_TASK(Base):
         )
 
 
-class M_AUTHOR(Base):
+class M_R_AUTHOR(Base):
     """A source table"""
 
     __tablename__ = "r_author"
     __table_args__ = {'comment': 'Авторы'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    author_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_AUTHOR:
-        return S_AUTHOR(
+    def to_read_model(self) -> S_R_AUTHOR:
+        return S_R_AUTHOR(
             id=self.id,
-            author_name=self.author_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_LIST(Base):
+class M_R_LIST(Base):
     """A source table"""
 
     __tablename__ = "r_list"
     __table_args__ = {'comment': 'Листы карты'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    list_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_LIST:
-        return S_LIST(
+    def to_read_model(self) -> S_R_LIST:
+        return S_R_LIST(
             id=self.id,
-            list_name=self.list_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
-class M_SUBRF(Base):
+class M_R_SUBRF(Base):
     """A source table"""
 
     __tablename__ = "r_subrf"
     __table_args__ = {'comment': 'Субъекты РФ'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    subrf_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_SUBRF:
-        return S_SUBRF(
+    def to_read_model(self) -> S_R_SUBRF:
+        return S_R_SUBRF(
             id=self.id,
-            subrf_name=self.subrf_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_ORG(Base):
+class M_R_ORG(Base):
     """A source table"""
 
     __tablename__ = "r_org"
     __table_args__ = {'comment': 'Организации'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    org_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_ORG:
-        return S_ORG(
+    def to_read_model(self) -> S_R_ORG:
+        return S_R_ORG(
             id=self.id,
-            org_name=self.org_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_AREA(Base):
+class M_R_AREA(Base):
     """A source table"""
 
     __tablename__ = "r_area"
     __table_args__ = {'comment': 'Площади отчетов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    area_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_AREA:
-        return S_AREA(
+    def to_read_model(self) -> S_R_AREA:
+        return S_R_AREA(
             id=self.id,
-            area_name=self.area_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_FIELD(Base):
+class M_R_FIELD(Base):
     """A source table"""
 
     __tablename__ = "r_field"
     __table_args__ = {'comment': 'Месторождения отчетов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    field_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_FIELD:
-        return S_FIELD(
+    def to_read_model(self) -> S_R_FIELD:
+        return S_R_FIELD(
             id=self.id,
-            field_name=self.field_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_LU(Base):
+class M_R_LU(Base):
     """A source table"""
 
     __tablename__ = "r_lu"
     __table_args__ = {'comment': 'ЛУ отчетов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    lu_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_LU:
-        return S_LU(
+    def to_read_model(self) -> S_R_LU:
+        return S_R_LU(
             id=self.id,
-            lu_name=self.lu_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_PI(Base):
+class M_R_PI(Base):
     """A source table"""
 
     __tablename__ = "r_pi"
     __table_args__ = {'comment': 'Полезные ископаемые отчетов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    pi_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_PI:
-        return S_PI(
+    def to_read_model(self) -> S_R_PI:
+        return S_R_PI(
             id=self.id,
-            pi_name=self.pi_name,
+            name_ru=self.name_ru,
             lastupdate=self.lastupdate,
         )
 
 
-class M_VID_RAB(Base):
+class M_R_VID_RAB(Base):
     """A source table"""
 
     __tablename__ = "r_vid_rab"
     __table_args__ = {'comment': 'Вид работ отчетов'}
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    vid_rab_name: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
     lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
-    def to_read_model(self) -> S_VID_RAB:
-        return S_VID_RAB(
+    def to_read_model(self) -> S_R_VID_RAB:
+        return S_R_VID_RAB(
             id=self.id,
-            vid_rab_name=self.vid_rab_name,
+            name_ru=self.name_ru,
+            lastupdate=self.lastupdate,
+        )
+
+class M_R_MESSAGE(Base):
+    """A source table"""
+
+    __tablename__ = "r_message"
+    __table_args__ = {'comment': 'Сообщения обратной связи'}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    fio: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    email: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
+    is_done: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
+
+    def to_read_model(self) -> S_R_MESSAGE:
+        return S_R_MESSAGE(
+            id=self.id,
+            name_ru=self.name_ru,
+            fio=self.fio,
+            email=self.email,
+            is_done=self.is_done,
             lastupdate=self.lastupdate,
         )

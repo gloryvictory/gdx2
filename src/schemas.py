@@ -171,53 +171,61 @@ class S_HISTORY_TASK(BaseTable):
     lastupdate: datetime
 
 
-class S_AUTHOR(BaseTable):
+class S_R_AUTHOR(BaseTable):
     id: int
-    author_name: str
+    name_ru: str
     lastupdate: datetime
 
-class S_LIST(BaseTable):
+class S_R_LIST(BaseTable):
     id: int
-    list_name: str
+    name_ru: str
     lastupdate: datetime
 
-class S_SUBRF(BaseTable):
+class S_R_SUBRF(BaseTable):
     id: int
-    subrf_name: str
-    lastupdate: datetime
-
-
-class S_ORG(BaseTable):
-    id: int
-    org_name: str
+    name_ru: str
     lastupdate: datetime
 
 
-class S_AREA(BaseTable):
+class S_R_ORG(BaseTable):
     id: int
-    area_name: str
+    name_ru: str
     lastupdate: datetime
 
 
-class S_FIELD(BaseTable):
+class S_R_AREA(BaseTable):
     id: int
-    field_name: str
+    name_ru: str
     lastupdate: datetime
 
 
-class S_LU(BaseTable):
+class S_R_FIELD(BaseTable):
     id: int
-    lu_name: str
+    name_ru: str
     lastupdate: datetime
 
 
-class S_PI(BaseTable):
+class S_R_LU(BaseTable):
     id: int
-    pi_name: str
+    name_ru: str
     lastupdate: datetime
 
 
-class S_VID_RAB(BaseTable):
+class S_R_PI(BaseTable):
     id: int
-    vid_rab_name: str
+    name_ru: str
+    lastupdate: datetime
+
+
+class S_R_VID_RAB(BaseTable):
+    id: int
+    name_ru: str
+    lastupdate: datetime
+
+class S_R_MESSAGE(BaseTable):
+    id: int
+    fio:str
+    email:str
+    name_ru: str
+    is_done:bool
     lastupdate: datetime
