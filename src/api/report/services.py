@@ -317,7 +317,7 @@ async def report_all_objects():
     try:
         # content = {"msg": "Success", "count": 111111}
         async with async_session_maker() as session:
-            #  НГП
+
             res = await session.scalars(
                 select(M_REPORT_TGF)
                 # .order_by(M_REPORT_TGF.name_ru)
