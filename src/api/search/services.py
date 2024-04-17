@@ -7,9 +7,8 @@ from sqlalchemy import text, insert, select
 
 from src import cfg
 from src.db.db import async_session_maker
-from src.log import set_logger
 from src.models import M_NSI_NGR, M_FILE
-from sqlalchemy.sql.expression import func
+# from sqlalchemy.sql.expression import func
 
 
 # M_NSI_NGR
@@ -25,13 +24,14 @@ async def index_create():
             print(res)
 
             print(f"Создаем TSVector ...")
-            stmt = text(f"UPDATE FILE SET {M_FILE.file_path_fts.key} = TO_TSVECTOR(COALESCE({M_FILE.f_path.key},''));")
+            stmt = text(f"UPDATE {M_FILE.__tablename__} SET {M_FILE.file_path_fts.key} = TO_TSVECTOR(COALESCE({M_FILE.f_path.key},''));")
             res = await session.execute(stmt)
             print(res)
 
             print(f"Создаем индекс ...")
             stmt = text(
                 f"CREATE INDEX IF NOT EXISTS {cfg.FILE_FTS_INDEX} ON {M_FILE.__tablename__} USING GIN ({M_FILE.file_path_fts.key});")
+            print(stmt)
             res = await session.execute(stmt)
             print(res)
 

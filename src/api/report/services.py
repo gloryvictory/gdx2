@@ -1406,3 +1406,38 @@ async def report_get_model_vid_rab_count():
     content = await report_get_model_all_count(M_R_VID_RAB)
     return content
 
+
+
+async def report_index_create():
+    content = {"msg": "Fail"}
+
+    try:
+        async with async_session_maker() as session:
+            print(f"Удаляем индекс {cfg.REPORT_FTS_INDEX}")
+            stmt = text(f"DROP INDEX IF EXISTS {cfg.REPORT_FTS_INDEX};")
+            res = await session.execute(stmt)
+            print(res)
+
+            print(f"Создаем TSVector ...")
+            stmt = text(f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR(COALESCE({M_REPORT_TGF.report_name.key},''));")
+            res = await session.execute(stmt)
+            print(res)
+
+            print(f"Создаем индекс ...")
+            stmt = text(
+                f"CREATE INDEX IF NOT EXISTS {cfg.REPORT_FTS_INDEX} ON {M_REPORT_TGF.__tablename__} USING GIN (TO_TSVECTOR('russian',{M_REPORT_TGF.report_name.key}));")
+            print(stmt)
+            res = await session.execute(stmt)
+            print(res)
+
+        print("OK")
+        content = {"msg": "Success", "count": 0}
+
+    except Exception as e:
+        content = {"msg": f"can't create index {cfg.REPORT_FTS_INDEX}"}
+        print("Exception occurred " + str(e))
+        return content
+    finally:
+        if session is not None:
+            await session.close()
+    return content
