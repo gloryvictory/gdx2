@@ -11,7 +11,8 @@ from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
     str_get_last_folder, str_get_folder_src, str_get_rgf, list_str_clean
 from src.db.db import async_session_maker
-from src.models import M_REPORT_TGF, M_R_AUTHOR, M_R_LIST, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_FIELD, M_R_LU, M_R_PI, M_R_VID_RAB
+from src.models import M_REPORT_TGF, M_R_AUTHOR, M_R_LIST, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_FIELD, M_R_LU, M_R_PI, \
+    M_R_VID_RAB
 from src.utils.mystrings import str_cleanup
 
 
@@ -1172,7 +1173,8 @@ async def report_get_author():
         # fastapi_logger.exception("update_user_password")
         return content
 
-async def report_get_author_by_id(id:int):
+
+async def report_get_author_by_id(id: int):
     content = {"msg": "Fail"}
     try:
         async with async_session_maker() as session:
@@ -1407,6 +1409,7 @@ async def report_get_model_vid_rab_count():
     return content
 
 
+# https://xata.io/blog/postgres-full-text-search-engine
 
 async def report_index_create():
     content = {"msg": "Fail"}
@@ -1419,13 +1422,14 @@ async def report_index_create():
             print(res)
 
             print(f"Создаем TSVector ...")
-            stmt = text(f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR(COALESCE({M_REPORT_TGF.report_name.key},''));")
+            stmt = text(
+                f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR({M_REPORT_TGF.report_name.key} ||' '|| {M_REPORT_TGF.org_name.key} ) ;")
             res = await session.execute(stmt)
             print(res)
 
             print(f"Создаем индекс ...")
             stmt = text(
-                f"CREATE INDEX IF NOT EXISTS {cfg.REPORT_FTS_INDEX} ON {M_REPORT_TGF.__tablename__} USING GIN (TO_TSVECTOR('russian',{M_REPORT_TGF.report_name.key}));")
+                f"CREATE INDEX IF NOT EXISTS {cfg.REPORT_FTS_INDEX} ON {M_REPORT_TGF.__tablename__} USING GIN ({M_REPORT_TGF.report_fts.key});")
             print(stmt)
             res = await session.execute(stmt)
             print(res)
@@ -1435,6 +1439,30 @@ async def report_index_create():
 
     except Exception as e:
         content = {"msg": f"can't create index {cfg.REPORT_FTS_INDEX}"}
+        print("Exception occurred " + str(e))
+        return content
+    finally:
+        if session is not None:
+            await session.close()
+    return content
+
+
+async def report_fulltext_search(search_str: str):
+    content = {"msg": "Success"}
+    str_query_local = search_str.strip().lower().replace(" ", "&")
+    try:
+        async with async_session_maker() as session:
+            print(str_query_local)
+            res = await session.scalars(
+                select(M_REPORT_TGF)
+                .where(M_REPORT_TGF.report_fts.match(str_query_local, postgresql_regconfig='russian'))
+            )
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+
+    except Exception as e:
+        content = {"msg": f"can't search in index {cfg.REPORT_FTS_INDEX}"}
         print("Exception occurred " + str(e))
         return content
     finally:

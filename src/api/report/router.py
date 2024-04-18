@@ -12,7 +12,8 @@ from src.api.report.services import (
     report_get_list, report_get_subrf, report_get_org, report_get_area, report_get_field, report_get_lu, report_get_pi,
     report_get_vid_rab, report_get_model_author_count, report_get_model_list_count, report_get_model_subrf_count,
     report_get_model_org_count, report_get_model_area_count, report_get_model_field_count, report_get_model_lu_count,
-    report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id, report_index_create
+    report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id, report_index_create,
+    report_fulltext_search
 )
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
@@ -627,4 +628,15 @@ async def get_model_vid_rab_count():
                 description='Создать Полнотекстовый по отчетам')
 async def get_report_index_create():
     content = await report_index_create()
+    return content
+
+
+@report_router.get(path='/{search_str}',
+                status_code=200,
+                # response_model=List[s_ngr],
+                name='Полнотекстовый поиск по отчетам',
+                tags=['Отчеты'],
+                description='Полнотекстовый поиск по отчетам')
+async def get_report_fulltext_search(search_str):
+    content = await report_fulltext_search(search_str)
     return content
