@@ -1,5 +1,7 @@
 import os
 import re
+import shutil
+from datetime import datetime
 
 import openpyxl
 import sqlalchemy
@@ -60,6 +62,35 @@ async def report_update():
         content = {"msg": "Success", "count": 1}
         file_report_in = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_UPLOAD, cfg.FILE_REPORT_NAME)
         await report_excel_file_read(str(file_report_in))
+        return content
+    except Exception as e:
+        content = {"msg": f"reload fail. can't... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+async def report_update_from_file():
+    content = {"msg": "Fail"}
+    try:
+        time1 = datetime.now()
+        file_report_in = os.path.join(cfg.FOLDER_REPORT, cfg.FILE_REPORT_NAME)
+        file_report_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_UPLOAD, cfg.FILE_REPORT_NAME)
+        shutil.copyfile(file_report_in, file_report_out)
+        print(f"{file_report_in} is copied to {file_report_out} - OK.")
+        await report_excel_file_read(str(file_report_out))
+        await report_get_update_author()
+        await report_get_update_subrf()
+        await report_get_update_org()
+        await report_get_update_area()
+        await report_get_update_list()
+        await report_get_update_field()
+        await report_get_update_lu()
+        await report_get_update_pi()
+        await report_get_update_vid_rab()
+        await report_index_create()
+        time2 = datetime.now()
+        print(f"Обработано: {file_report_out}. Total time:  + {str(time2 - time1)}")
+        content = {"msg": "Success", "count": 1}
         return content
     except Exception as e:
         content = {"msg": f"reload fail. can't... "}

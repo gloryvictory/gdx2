@@ -43,9 +43,14 @@ DATETIME_CURRENT = str(strftime("%Y-%m-%d-%H-%M-%S"))
 FILE_LOG_NAME = 'gdx2'
 FILE_LOG = DATETIME_CURRENT + '_' + FILE_LOG_NAME + '.log'
 FILE_LOG_FORMAT = '%(asctime)s %(levelname)s %(message)s'
+FILE_REPORT_NAME = 'КАТАЛОГ_ОТЧЕТОВ.xlsx'
+FILE_REPORT_SRC_NAME_PART = 'volarch'
+
+
 FOLDER_OUT = 'log'
 FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")
 FOLDER_UPLOAD = 'upload'
+FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\")
 
 FOLDER_GEOJSON_OUT = 'geojson'
 FOLDER_DATA = 'data'
@@ -107,5 +112,3 @@ AREA_FILE_GEOJSON_OUT = 'AREA.geojson'
 FILE_FTS_INDEX = 'file_path_fts_idx'
 REPORT_FTS_INDEX = 'report_path_fts_idx'
 
-FILE_REPORT_NAME = 'КАТАЛОГ_ОТЧЕТОВ.xlsx'
-FILE_REPORT_SRC_NAME_PART = 'volarch'
