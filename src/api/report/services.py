@@ -1454,7 +1454,7 @@ async def report_index_create():
 
             print(f"Создаем TSVector ...")
             stmt = text(
-                f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR({M_REPORT_TGF.report_name.key} ||' '|| {M_REPORT_TGF.org_name.key} ) ;")
+                f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR('russian', {M_REPORT_TGF.report_name.key} ||' '|| {M_REPORT_TGF.org_name.key} ) ;")
             res = await session.execute(stmt)
             print(res)
 
@@ -1464,7 +1464,7 @@ async def report_index_create():
             print(stmt)
             res = await session.execute(stmt)
             print(res)
-
+            await session.commit()
         print("OK")
         content = {"msg": "Success", "count": 0}
 

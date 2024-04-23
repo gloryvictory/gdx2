@@ -48,10 +48,17 @@ FILE_REPORT_SRC_NAME_PART = 'volarch'
 
 
 FOLDER_OUT = 'log'
-FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")
-FOLDER_UPLOAD = 'upload'
-FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\")
 
+if DEVENV.startswith("dev"):
+    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src") # C:\\zsniigg\\gdx2\\src
+    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\")  # \\\\r57-vfs02\\archiv002
+else:
+    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\zsniigg\\gdx2\\src") #
+    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "\\\\r57-vfs02\\archiv002")  #
+# FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src") # C:\\zsniigg\\gdx2\\src
+# FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\") # \\\\r57-vfs02\\archiv002
+
+FOLDER_UPLOAD = 'upload'
 FOLDER_GEOJSON_OUT = 'geojson'
 FOLDER_DATA = 'data'
 

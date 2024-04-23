@@ -26,6 +26,7 @@ async def index_create():
             print(f"Создаем TSVector ...")
             stmt = text(f"UPDATE {M_FILE.__tablename__} SET {M_FILE.file_path_fts.key} = TO_TSVECTOR(COALESCE({M_FILE.f_path.key},''));")
             res = await session.execute(stmt)
+
             print(res)
 
             print(f"Создаем индекс ...")
@@ -34,7 +35,7 @@ async def index_create():
             print(stmt)
             res = await session.execute(stmt)
             print(res)
-
+            await session.commit()
         print("OK")
         content = {"msg": "Success", "count": 0}
 
@@ -61,17 +62,7 @@ async def fulltext_search(search_str: str):
             _all = res.all()
             cnt = len(_all)
             content = {"msg": "Success", "count": cnt, "data": _all}
-            # stmt = text(f"SELECT *\
-            # FROM {M_FILE.__tablename__}\
-            # WHERE {M_FILE.file_path_fts.key} @@ to_tsquery('{str_query_local}')\
-            # ORDER BY ts_rank({M_FILE.file_path_fts.key}, plainto_tsquery('{str_query_local}'));")
-            # # ORDER BY rank;
-            # print(stmt)
-            # res = await session.execute(stmt)
-            # result = res.all()
-            # _len = len(result)
-            # print(result)
-            # content = {"msg": "Success", "count": _len, "data": result}
+
 
     except Exception as e:
         content = {"msg": f"can't search in index {cfg.FILE_FTS_INDEX}"}
