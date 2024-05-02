@@ -640,7 +640,7 @@ async def get_report_index_create():
     return content
 
 
-@report_router.get(path='/{search_str}',
+@report_router.get(path='/search/{search_str}',
                 status_code=200,
                 # response_model=List[s_ngr],
                 name='Полнотекстовый поиск по отчетам',

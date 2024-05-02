@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 
 from src.api.all.services import get_all_objects
-from src.api.search.services import index_create, fulltext_search, fulltext_search_limit_offset
 
 all_router = APIRouter(prefix="/all", tags=["Все объекты"])
 

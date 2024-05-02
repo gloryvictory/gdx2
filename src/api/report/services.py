@@ -1480,7 +1480,16 @@ async def report_index_create():
 
 async def report_fulltext_search(search_str: str):
     content = {"msg": "Success"}
-    str_query_local = search_str.strip().lower().replace(" ", "&")
+    str_query_local = ''
+    str_arr = search_str.split(" ")
+    print(f"len of str_arr {len(str_arr)}")
+
+    if len(str_arr) > 1:
+        str_query_local = search_str.strip().lower().replace(" ", "&")
+    else:
+        str_query_local = f"{search_str.strip().lower()}:*"
+
+    # str_query_local = search_str.strip().lower().replace(" ", "&")
     try:
         async with async_session_maker() as session:
             print(str_query_local)
@@ -1491,7 +1500,7 @@ async def report_fulltext_search(search_str: str):
             _all = res.all()
             cnt = len(_all)
             content = {"msg": "Success", "count": cnt, "data": _all}
-
+        return content
     except Exception as e:
         content = {"msg": f"can't search in index {cfg.REPORT_FTS_INDEX}"}
         print("Exception occurred " + str(e))
@@ -1499,4 +1508,4 @@ async def report_fulltext_search(search_str: str):
     finally:
         if session is not None:
             await session.close()
-    return content
+

@@ -1,13 +1,12 @@
-import json
-import os
-import hashlib
-
-import geopandas
+# import json
+# import os
+# import hashlib
+# import geopandas
 from sqlalchemy import text, insert, select
 
 from src import cfg
 from src.db.db import async_session_maker
-from src.models import M_NSI_NGR, M_FILE
+from src.models import M_FILE
 # from sqlalchemy.sql.expression import func
 
 
