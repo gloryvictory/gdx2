@@ -1493,10 +1493,15 @@ async def report_fulltext_search(search_str: str):
     try:
         async with async_session_maker() as session:
             print(str_query_local)
-            res = await session.scalars(
-                select(M_REPORT_TGF)
-                .where(M_REPORT_TGF.report_fts.match(str_query_local, postgresql_regconfig='russian'))
-            )
+            stmt = text(f"SELECT * FROM {M_REPORT_TGF.__tablename__} WHERE report_tgf.report_fts @@ to_tsquery('russian', '{str_query_local}');")
+            # res = await session.execute(stmt)
+            res = await session.scalars(select(M_REPORT_TGF).from_statement(stmt))
+            # print(res)
+
+            # res = await session.scalars(
+            #     select(M_REPORT_TGF)
+            #     .where(M_REPORT_TGF.report_fts.match(str_query_local, postgresql_regconfig='russian'))
+            # )
             _all = res.all()
             cnt = len(_all)
             content = {"msg": "Success", "count": cnt, "data": _all}
