@@ -24,6 +24,7 @@ config = context.config
 config.set_main_option("sqlalchemy.url", DB_DSN)
 print(DB_DSN)
 # DATABASE_URL = f"postgresql://gdx2:gdx2pwd@localhost:5432/gdx2"
+# DATABASE_URL = f"postgresql+asyncpg://gdx2:gdx2pwd@localhost:5432/gdx2"
 # print(DATABASE_URL)
 DATABASE_URL = DB_DSN
 

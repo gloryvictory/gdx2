@@ -11,10 +11,13 @@ SERVER_PORT = os.getenv("SERVER_PORT", 8001)
 
 DEVENV = os.getenv("DEVENV", "dev")
 
+print(f"DEVENV: {DEVENV}")
+
 if DEVENV.startswith("dev"):
     DB_HOST = os.getenv("DB_HOST", "localhost")
 else:
     DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
+# DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
 DB_PORT = os.getenv("DB_PORT", 5432)
 DB_NAME = os.getenv("DB_NAME", "gdx2")
 DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")

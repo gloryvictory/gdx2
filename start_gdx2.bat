@@ -1,3 +1,4 @@
+set DEVENV=prod
 set DB_HOST=r48-vldb02.zsniigg.local
 set DB_NAME=gdx2
 set DB_SCHEMA=gdx2
