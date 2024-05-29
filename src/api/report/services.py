@@ -16,6 +16,9 @@ from src.db.db import async_session_maker
 from src.models import M_REPORT_TGF, M_R_AUTHOR, M_R_LIST, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_FIELD, M_R_LU, M_R_PI, \
     M_R_VID_RAB
 from src.utils.mystrings import str_cleanup
+from src.api.celery.tasks import report_update_author, report_update_subrf, report_update_org, report_update_area, \
+    report_update_list, report_update_field, report_update_lu, report_update_pi, report_update_vid_rab, \
+    report_index_create_task
 
 
 async def report_upload_file(file: UploadFile = File(...)):
@@ -88,6 +91,37 @@ async def report_update_from_file():
         await report_get_update_pi()
         await report_get_update_vid_rab()
         await report_index_create()
+        time2 = datetime.now()
+        print(f"Обработано: {file_report_out}. Total time:  + {str(time2 - time1)}")
+        content = {"msg": "Success", "count": 1}
+        return content
+    except Exception as e:
+        content = {"msg": f"reload fail. can't... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+
+# обновляем через Celery
+async def report_update_from_file_with_task():
+    content = {"msg": "Fail"}
+    try:
+        time1 = datetime.now()
+        file_report_in = os.path.join(cfg.FOLDER_REPORT, cfg.FILE_REPORT_NAME)
+        file_report_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_UPLOAD, cfg.FILE_REPORT_NAME)
+        shutil.copyfile(file_report_in, file_report_out)
+        print(f"{file_report_in} is copied to {file_report_out} - OK.")
+        await report_excel_file_read(str(file_report_out))
+        report_update_author.delay()
+        report_update_subrf.delay()
+        report_update_org.delay()
+        report_update_area.delay()
+        report_update_list.delay()
+        report_update_field.delay()
+        report_update_lu.delay()
+        report_update_pi.delay()
+        report_update_vid_rab.delay()
+        report_index_create_task.delay()
+
         time2 = datetime.now()
         print(f"Обработано: {file_report_out}. Total time:  + {str(time2 - time1)}")
         content = {"msg": "Success", "count": 1}

@@ -13,7 +13,7 @@ from src.api.report.services import (
     report_get_vid_rab, report_get_model_author_count, report_get_model_list_count, report_get_model_subrf_count,
     report_get_model_org_count, report_get_model_area_count, report_get_model_field_count, report_get_model_lu_count,
     report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id, report_index_create,
-    report_fulltext_search, report_update_from_file
+    report_fulltext_search, report_update_from_file, report_update_from_file_with_task
 )
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
@@ -45,6 +45,16 @@ async def get_update():
                    description='Обновить все скопом из файла')
 async def get_update_from_file():
     content = await report_update_from_file()
+    return content
+
+
+@report_router.get(path='/updatefromfiletask',
+                   status_code=200,
+                   name='Обновить все скопом из файла при помощи Celery',
+                   tags=['Отчеты'],
+                   description='Обновить все скопом из файла  при помощи Celery')
+async def get_update_from_file_task():
+    content = await report_update_from_file_with_task()
     return content
 
 
