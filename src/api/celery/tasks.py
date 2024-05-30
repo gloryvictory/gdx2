@@ -1,3 +1,4 @@
+import json
 import re
 import time
 from datetime import datetime
@@ -6,10 +7,12 @@ from sqlalchemy.orm import Session
 
 from celery import Celery
 from sqlalchemy import update, text, insert, select, func
+from starlette.requests import Request
+
 from src import cfg
 from src.api.report.utils import str_clean, list_str_clean
 from src.models import M_FILE, M_HISTORY_TASK, M_R_AUTHOR, M_REPORT_TGF, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_LIST, \
-    M_R_FIELD, M_R_LU, M_R_PI, M_R_VID_RAB
+    M_R_FIELD, M_R_LU, M_R_PI, M_R_VID_RAB, M_HISTORY
 
 # import asyncio
 # from src.db.db import async_session_maker
@@ -793,3 +796,20 @@ def report_index_create_task():
         if session is not None:
             session.close()
     return content
+
+@celery.task(name="report_update_history")
+def report_update_history(query_str: str, client_host: str):
+    try:
+
+        engine = sqlalchemy.create_engine(cfg.DB_DSN2)
+        with Session(engine) as session:
+            stmt = insert(M_HISTORY).values(
+                search_str=query_str,
+                addr_ip=client_host
+            )
+            session.execute(stmt)
+            session.commit()
+    except Exception as e:
+        str_err = "Exception occurred " + str(e)
+        content = {"msg": f"ERROR in report_update_history!!!", "err": str(e)}
+        print(str_err)

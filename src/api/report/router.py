@@ -1,19 +1,20 @@
 from fastapi import APIRouter, UploadFile
+from starlette.requests import Request
+
 from src.api.report.services import (
     report_all_objects, report_upload_file, report_update, report_get_all_count,
     report_all_no_folder, report_all_rgf, report_all_tgf_hmao, report_all_tgf_ynao, report_all_tgf_kras,
     report_all_tgf_ekat, report_all_tgf_omsk, report_all_tgf_novo, report_all_tgf_tomsk, report_all_tgf_more,
-    report_all_tgf_tmn, report_all_tgf_kurgan, report_all_tgf, report_all_year, report_get_update_author,
+    report_all_tgf_tmn, report_all_tgf_kurgan, report_all_tgf, report_all_year,
     report_report_by_author, report_get_all_by_year, report_all_by_rgf, report_all_by_tgf_hmao, report_all_by_tgf_ynao,
     report_all_by_tgf_kras, report_all_by_tgf_ekat, report_all_by_tgf_omsk, report_all_by_tgf_novo,
     report_all_by_tgf_tomsk, report_all_by_tgf_more, report_all_by_tgf_tmn, report_all_by_tgf_kurgan,
-    report_get_update_list, report_get_update_subrf, report_get_update_org, report_get_update_area,
-    report_get_update_field, report_get_update_lu, report_get_update_pi, report_get_update_vid_rab, report_get_author,
+    report_get_author,
     report_get_list, report_get_subrf, report_get_org, report_get_area, report_get_field, report_get_lu, report_get_pi,
     report_get_vid_rab, report_get_model_author_count, report_get_model_list_count, report_get_model_subrf_count,
     report_get_model_org_count, report_get_model_area_count, report_get_model_field_count, report_get_model_lu_count,
-    report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id, report_index_create,
-    report_fulltext_search, report_update_from_file, report_update_from_file_with_task
+    report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id,
+    report_fulltext_search, report_update_from_file_with_task, report_index_create
 )
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
@@ -37,15 +38,15 @@ async def upload_file(file: UploadFile):
 async def get_update():
     content = await report_update()
     return content
-
-@report_router.get(path='/updatefromfile',
-                   status_code=200,
-                   name='Обновить все скопом из файла',
-                   tags=['Отчеты'],
-                   description='Обновить все скопом из файла')
-async def get_update_from_file():
-    content = await report_update_from_file()
-    return content
+#
+# @report_router.get(path='/updatefromfile',
+#                    status_code=200,
+#                    name='Обновить все скопом из файла',
+#                    tags=['Отчеты'],
+#                    description='Обновить все скопом из файла')
+# async def get_update_from_file():
+#     content = await report_update_from_file()
+#     return content
 
 
 @report_router.get(path='/updatefromfiletask',
@@ -368,14 +369,14 @@ async def get_report_by_author(author: str):
     return content
 
 
-@report_router.get(path='/author/update',
-                   status_code=200,
-                   name='Обновить авторов',
-                   tags=['Отчеты'],
-                   description='Обновить авторов')
-async def get_update_author():
-    content = await report_get_update_author()
-    return content
+# @report_router.get(path='/author/update',
+#                    status_code=200,
+#                    name='Обновить авторов',
+#                    tags=['Отчеты'],
+#                    description='Обновить авторов')
+# async def get_update_author():
+#     content = await report_get_update_author()
+#     return content
 
 
 @report_router.get(path='/author/count',
@@ -400,14 +401,14 @@ async def get_list():
     return content
 
 
-@report_router.get(path='/list/update',
-                   status_code=200,
-                   name='Обновить листы карты',
-                   tags=['Отчеты'],
-                   description='Обновить листы карты')
-async def get_update_list():
-    content = await report_get_update_list()
-    return content
+# @report_router.get(path='/list/update',
+#                    status_code=200,
+#                    name='Обновить листы карты',
+#                    tags=['Отчеты'],
+#                    description='Обновить листы карты')
+# async def get_update_list():
+#     content = await report_get_update_list()
+#     return content
 
 @report_router.get(path='/list/count',
                    status_code=200,
@@ -430,14 +431,14 @@ async def get_subrf():
     return content
 
 
-@report_router.get(path='/subrf/update',
-                   status_code=200,
-                   name='Обновить Субъекты РФ',
-                   tags=['Отчеты'],
-                   description='Обновить Субъекты РФ')
-async def get_update_subrf():
-    content = await report_get_update_subrf()
-    return content
+# @report_router.get(path='/subrf/update',
+#                    status_code=200,
+#                    name='Обновить Субъекты РФ',
+#                    tags=['Отчеты'],
+#                    description='Обновить Субъекты РФ')
+# async def get_update_subrf():
+#     content = await report_get_update_subrf()
+#     return content
 
 
 @report_router.get(path='/subrf/count',
@@ -462,14 +463,14 @@ async def get_org():
     return content
 
 
-@report_router.get(path='/org/update',
-                   status_code=200,
-                   name='Обновить Организации',
-                   tags=['Отчеты'],
-                   description='Обновить Организации')
-async def get_update_org():
-    content = await report_get_update_org()
-    return content
+# @report_router.get(path='/org/update',
+#                    status_code=200,
+#                    name='Обновить Организации',
+#                    tags=['Отчеты'],
+#                    description='Обновить Организации')
+# async def get_update_org():
+#     content = await report_get_update_org()
+#     return content
 
 
 @report_router.get(path='/org/count',
@@ -493,14 +494,14 @@ async def get_area():
     return content
 
 
-@report_router.get(path='/area/update',
-                   status_code=200,
-                   name='Обновить Площади',
-                   tags=['Отчеты'],
-                   description='Обновить Площади')
-async def get_update_area():
-    content = await report_get_update_area()
-    return content
+# @report_router.get(path='/area/update',
+#                    status_code=200,
+#                    name='Обновить Площади',
+#                    tags=['Отчеты'],
+#                    description='Обновить Площади')
+# async def get_update_area():
+#     content = await report_get_update_area()
+#     return content
 
 
 @report_router.get(path='/area/count',
@@ -526,14 +527,14 @@ async def get_field():
     return content
 
 
-@report_router.get(path='/field/update',
-                   status_code=200,
-                   name='Обновить Месторождения',
-                   tags=['Отчеты'],
-                   description='Обновить Месторождения')
-async def get_update_field():
-    content = await report_get_update_field()
-    return content
+# @report_router.get(path='/field/update',
+#                    status_code=200,
+#                    name='Обновить Месторождения',
+#                    tags=['Отчеты'],
+#                    description='Обновить Месторождения')
+# async def get_update_field():
+#     content = await report_get_update_field()
+#     return content
 
 
 @report_router.get(path='/field/count',
@@ -557,14 +558,14 @@ async def get_lu():
     return content
 
 
-@report_router.get(path='/lu/update',
-                   status_code=200,
-                   name='Обновить ЛУ',
-                   tags=['Отчеты'],
-                   description='Обновить ЛУ')
-async def get_update_lu():
-    content = await report_get_update_lu()
-    return content
+# @report_router.get(path='/lu/update',
+#                    status_code=200,
+#                    name='Обновить ЛУ',
+#                    tags=['Отчеты'],
+#                    description='Обновить ЛУ')
+# async def get_update_lu():
+#     content = await report_get_update_lu()
+#     return content
 
 
 @report_router.get(path='/lu/count',
@@ -588,14 +589,14 @@ async def get_pi():
     return content
 
 
-@report_router.get(path='/pi/update',
-                   status_code=200,
-                   name='Обновить ПИ',
-                   tags=['Отчеты'],
-                   description='Обновить ПИ')
-async def get_update_pi():
-    content = await report_get_update_pi()
-    return content
+# @report_router.get(path='/pi/update',
+#                    status_code=200,
+#                    name='Обновить ПИ',
+#                    tags=['Отчеты'],
+#                    description='Обновить ПИ')
+# async def get_update_pi():
+#     content = await report_get_update_pi()
+#     return content
 
 
 @report_router.get(path='/pi/count',
@@ -620,14 +621,14 @@ async def get_vid_rab():
     return content
 
 
-@report_router.get(path='/vid_rab/update',
-                   status_code=200,
-                   name='Обновить Вид работ',
-                   tags=['Отчеты'],
-                   description='Обновить Вид работ')
-async def get_update_vid_rab():
-    content = await report_get_update_vid_rab()
-    return content
+# @report_router.get(path='/vid_rab/update',
+#                    status_code=200,
+#                    name='Обновить Вид работ',
+#                    tags=['Отчеты'],
+#                    description='Обновить Вид работ')
+# async def get_update_vid_rab():
+#     content = await report_get_update_vid_rab()
+#     return content
 
 
 @report_router.get(path='/vid_rab/count',
@@ -656,6 +657,7 @@ async def get_report_index_create():
                 name='Полнотекстовый поиск по отчетам',
                 tags=['Отчеты'],
                 description='Полнотекстовый поиск по отчетам')
-async def get_report_fulltext_search(search_str):
-    content = await report_fulltext_search(search_str)
+async def get_report_fulltext_search(search_str, request: Request ):
+    client_host = request.client.host
+    content = await report_fulltext_search(search_str, client_host )
     return content
