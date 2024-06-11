@@ -53,19 +53,19 @@ app.include_router(api_router)
 #     app.include_router(router)
 
 
-@app.on_event("startup")
-async def startup() -> None:
-    pass
-    # redis = aioredis.from_url("redis://localhost", encoding="utf8", decode_responses=True)
-    # FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-
-
-@app.on_event("shutdown")
-async def shutdown() -> None:
-    pass
-    session = get_async_session()
-    await session.aclose()
-    await engine.dispose()
+# @app.on_event("startup")
+# async def startup() -> None:
+#     pass
+#     # redis = aioredis.from_url("redis://localhost", encoding="utf8", decode_responses=True)
+#     # FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+#
+#
+# @app.on_event("shutdown")
+# async def shutdown() -> None:
+#     pass
+#     session = get_async_session()
+#     await session.aclose()
+#     await engine.dispose()
 
 
 
@@ -76,4 +76,4 @@ async def shutdown() -> None:
 
 if __name__ == "__main__":
     # set_logger()
-    uvicorn.run("main:app", host=cfg.SERVER_HOST, port=int(cfg.SERVER_PORT), reload=True)
+    uvicorn.run("main:app", host=cfg.SERVER_HOST, port=int(cfg.SERVER_PORT), reload=True, workers=4)

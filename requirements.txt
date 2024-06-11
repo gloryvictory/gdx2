@@ -13,3 +13,5 @@ psycopg2-binary
 celery
 flower
 redis
+pyinstaller
+pywin32
