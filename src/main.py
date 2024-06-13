@@ -73,7 +73,39 @@ app.include_router(api_router)
 #     if database_.is_connected:
 #         await database_.disconnect()
 
+class Server():
+    def __init__(self, as_service=False):
+        self._srv = None
+        self._svc = None
+        self.as_service = as_service
+
+    def start(self):
+
+        # Здесь можно настроить параметры хоста, порта, логирования
+        config = uvicorn.Config(app)
+        config.host = cfg.SERVER_HOST
+        config.port = int(cfg.SERVER_PORT)
+        config.reload = True
+        config.workers = 4
+        
+        self._srv = uvicorn.Server(config=config)
+
+        if self.as_service:
+            self._srv.install_signal_handlers = lambda: None
+
+        self._srv.run()
+
+    def stop(self):
+        if self._srv is not None:
+            self._srv.should_exit = True
+
+
+def run():
+    srv = Server()
+    srv.start()
+
 
 if __name__ == "__main__":
+    run()
     # set_logger()
-    uvicorn.run("main:app", host=cfg.SERVER_HOST, port=int(cfg.SERVER_PORT), reload=True, workers=4)
+    # uvicorn.run("main:app", host=cfg.SERVER_HOST, port=int(cfg.SERVER_PORT), reload=True, workers=4)
