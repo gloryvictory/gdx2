@@ -14,8 +14,9 @@ from src.api.report.services import (
     report_get_vid_rab, report_get_model_author_count, report_get_model_list_count, report_get_model_subrf_count,
     report_get_model_org_count, report_get_model_area_count, report_get_model_field_count, report_get_model_lu_count,
     report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id,
-    report_fulltext_search, report_update_from_file_with_task, report_index_create
+    report_fulltext_search, report_update_from_file_with_task, report_index_create, report_message_create
 )
+from src.schemas import S_R_MESSAGE, S_R_MESSAGE_POST
 
 report_router = APIRouter(prefix="/report", tags=["Отчеты"])
 
@@ -661,3 +662,18 @@ async def get_report_fulltext_search(search_str, request: Request ):
     client_host = request.client.host
     content = await report_fulltext_search(search_str, client_host )
     return content
+
+@report_router.post(path='/message',
+                status_code=200,
+                name='Создать Сообщение',
+                tags=['Отчеты'],
+                description='Создать Сообщение')
+# async def post_report_message_create(fio:str, email:str, message:str):
+async def post_report_message_create(message: S_R_MESSAGE_POST):
+    # content = await report_message_create(fio, email, message)
+    content = await report_message_create(message)
+    return content
+
+# async def post_report_message_create(fio:str, email:str, message:str):
+#     content = await report_message_create(fio, email, message)
+#     return content

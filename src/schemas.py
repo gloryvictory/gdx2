@@ -229,3 +229,7 @@ class S_R_MESSAGE(BaseTable):
     name_ru: str
     is_done:bool
     lastupdate: datetime
+class S_R_MESSAGE_POST(BaseTable):
+    fio:str
+    email:str
+    name_ru: str

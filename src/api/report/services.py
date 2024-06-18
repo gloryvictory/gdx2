@@ -15,7 +15,8 @@ from src.api.report.utils import str_get_folder, str_get_full_path_with_format, 
     str_get_last_folder, str_get_folder_src, str_get_rgf, list_str_clean
 from src.db.db import async_session_maker
 from src.models import M_REPORT_TGF, M_R_AUTHOR, M_R_LIST, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_FIELD, M_R_LU, M_R_PI, \
-    M_R_VID_RAB, M_HISTORY
+    M_R_VID_RAB, M_HISTORY, M_R_MESSAGE
+from src.schemas import S_R_MESSAGE, S_R_MESSAGE_POST
 from src.utils.mystrings import str_cleanup
 from src.api.celery.tasks import report_update_author, report_update_subrf, report_update_org, report_update_area, \
     report_update_list, report_update_field, report_update_lu, report_update_pi, report_update_vid_rab, \
@@ -1104,3 +1105,29 @@ async def report_fulltext_search(search_str: str, client_host: str):
     #     str_err = "Exception occurred " + str(e)
     #     content = {"msg": f"ERROR in report_update_history!!!", "err": str(e)}
     #     print(str_err)
+
+
+
+# async def report_message_create(fio:str, email:str, message:str):
+async def report_message_create(message: S_R_MESSAGE_POST):
+    content = {"msg": "Success"}
+    try:
+        async with async_session_maker() as session:
+            stmt = insert(M_R_MESSAGE).values(
+                fio=message.fio,
+                email=message.email,
+                name_ru=message.name_ru,
+            )
+            res = await session.execute(stmt)
+            await session.commit()
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": "Success", "count": cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": f"can't insert into  {M_R_MESSAGE.__tablename__}"}
+        print("Exception occurred " + str(e))
+        return content
+    finally:
+        if session is not None:
+            await session.close()
