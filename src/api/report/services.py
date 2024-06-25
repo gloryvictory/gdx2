@@ -1131,3 +1131,22 @@ async def report_message_create(message: S_R_MESSAGE_POST):
     finally:
         if session is not None:
             await session.close()
+
+
+async def report_get_message():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_R_MESSAGE)
+                .order_by(M_R_MESSAGE.id)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all from {M_R_MESSAGE.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
