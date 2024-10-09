@@ -2,11 +2,11 @@
 
 
 a = Analysis(
-    ['service.py'],
+    ['src\\main.py'],
     pathex=[],
     binaries=[],
     datas=[],
-    hiddenimports=['uvicorn', 'asyncpg.pgproto.pgproto', 'celery.fixups', 'celery.fixups.django', 'win32timezone'],
+    hiddenimports=['uvicorn', 'asyncpg.pgproto.pgproto', 'celery.fixups', 'celery.fixups.django', 'celery.app.amqp', 'celery.backends', 'kombu.transport.redis', 'win32timezone'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

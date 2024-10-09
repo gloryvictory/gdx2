@@ -1,4 +1,9 @@
+import os
+import sys
 from fastapi import APIRouter
+
+sys.path.insert(1, 'src')
+os.environ['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + ';' + os.getcwd()
 
 from src.api.all.router import all_router
 from src.api.area.router import area_router
@@ -14,10 +19,6 @@ from src.api.report.router import report_router
 from src.api.search.router import search_router
 from src.api.update.router import update_router
 from src.api.well.router import well_router
-
-# from src.db.router import router_db
-# from src.ext.router import router_ext
-# from src.file.router import router_files
 
 api_router = APIRouter(prefix='/api/v1')
 

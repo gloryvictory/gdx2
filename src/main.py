@@ -1,13 +1,23 @@
 # uvicorn main:app --reload
 # https://habr.com/ru/articles/705752/
+import os
+import sys
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+
+
+sys.path.insert(1, 'src')
+os.environ['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + ';' + os.getcwd()
+
+# import cfg
 from src import cfg
-from src.db.db import get_async_session, engine
-from src.routers import api_router
+from src import routers
+
+# from src.db.db import get_async_session, engine
+
 
 app = FastAPI(title="GDX2 App")
 
@@ -47,7 +57,8 @@ def root() -> JSONResponse:
                             "Swagger Documentation": url_swagger})
 
 
-app.include_router(api_router)
+app.include_router(routers.api_router)
+
 
 # for router in all_routers:
 #     app.include_router(router)
@@ -68,7 +79,6 @@ app.include_router(api_router)
 #     await engine.dispose()
 
 
-
 #     database_ = app.state.database
 #     if database_.is_connected:
 #         await database_.disconnect()
@@ -87,7 +97,7 @@ class Server():
         config.port = int(cfg.SERVER_PORT)
         config.reload = True
         config.workers = 4
-        
+
         self._srv = uvicorn.Server(config=config)
 
         if self.as_service:

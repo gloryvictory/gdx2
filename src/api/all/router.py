@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.api.all.services import get_all_objects
+from .services import get_all_objects
 
 all_router = APIRouter(prefix="/all", tags=["Все объекты"])
 
