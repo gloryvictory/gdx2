@@ -1,6 +1,7 @@
 venv\Scripts\pyinstaller -y  ^
 --clean  ^
---onefile ^
+--additional-hooks-dir extra-hooks  ^
+--onefile  ^
 --hidden-import=uvicorn ^
 --hidden-import=asyncpg.pgproto.pgproto ^
 --hidden-import=celery.fixups ^
@@ -8,6 +9,7 @@ venv\Scripts\pyinstaller -y  ^
 --hidden-import=celery.app.amqp ^
 --hidden-import=celery.backends ^
 --hidden-import=celery.backends.redis ^
+--hidden-import=celery.app.events ^
 --hidden-import=kombu.transport.redis ^
 --hidden-import=win32timezone ^
 --name=gdx2 ^
