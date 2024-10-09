@@ -1026,7 +1026,24 @@ async def report_index_create():
 
             print(f"Создаем TSVector ...")
             stmt = text(
-                f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR('russian', {M_REPORT_TGF.report_name.key} ||' '|| {M_REPORT_TGF.org_name.key} ) ;")
+                f"UPDATE {M_REPORT_TGF.__tablename__} SET {M_REPORT_TGF.report_fts.key} = TO_TSVECTOR('russian', "
+                f"{M_REPORT_TGF.report_name.key} ||' '|| "
+                f"{M_REPORT_TGF.org_name.key} ||' '|| "
+                f"{M_REPORT_TGF.author_name.key} ||' '|| "
+                f"{M_REPORT_TGF.folder_link.key} ||' '|| "
+                f"{M_REPORT_TGF.list_name.key} ||' '|| "
+                f"{M_REPORT_TGF.part_name.key} ||' '|| "
+                f"{M_REPORT_TGF.org_name.key} ||' '|| "
+                f"{M_REPORT_TGF.areaoil.key} ||' '|| "
+                f"{M_REPORT_TGF.field.key} ||' '|| "
+                f"{M_REPORT_TGF.comments.key} ||' '|| "
+                f"{M_REPORT_TGF.lu.key} ||' '|| "
+                f"{M_REPORT_TGF.pi_name.key} ||' '|| "
+                f"{M_REPORT_TGF.subrf_name.key} ||' '|| "
+                f"{M_REPORT_TGF.territory_name.key} ||' '|| "
+                f"{M_REPORT_TGF.tgf.key} ||' '|| "
+                f"{M_REPORT_TGF.fin_name.key}) "
+                f";")
             res = await session.execute(stmt)
             print(res)
 
