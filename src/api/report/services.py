@@ -242,6 +242,7 @@ async def report_excel_file_read(file_in: str):
                 #
                 if value[15]:  # Год
                     year_str = str(value[15]).strip()
+                    year_str = year_str.replace(',', ' ')
                     year_tmp = year_str.split()
                     if len(year_tmp):  # разбираем такое 2009   2009   2010
                         year_int = int(year_tmp[0])  # забираем первый год
