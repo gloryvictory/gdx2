@@ -6,27 +6,24 @@ load_dotenv()
 
 API_VERSION = "/api/v1"
 
-SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
-SERVER_PORT = os.getenv("SERVER_PORT", 8001)
+SERVER_HOST = os.getenv("GDX2_SERVER_HOST", "0.0.0.0")
+SERVER_PORT = os.getenv("GDX2_SERVER_PORT", 8001)
 
 DEVENV = os.getenv("DEVENV", "dev")
 
-print(f"DEVENV: {DEVENV}")
-
+DB_DSN_ENV = ""
 if DEVENV.startswith("dev"):
-    DB_HOST = os.getenv("DB_HOST", "localhost")
+    DB_DSN_ENV = os.getenv("GDX2_DB_DSN", "postgresql://gdx2:gdx2pwd@localhost:5432/gdx2?sslmode=disable")
+    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src")  # C:\\zsniigg\\gdx2\\src
+    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\")  # \\\\r57-vfs02\\archiv002
 else:
-    DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
-# DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
-DB_PORT = os.getenv("DB_PORT", 5432)
-DB_NAME = os.getenv("DB_NAME", "gdx2")
-DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")
-DB_USER = os.getenv("DB_USER", "gdx2")
-DB_PASS = os.getenv("DB_PASS", "gdx2pwd")
-DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-# DB_DSN_ASYNCIO = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-DB_DSN2 = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-# print(DATABASE_URL)
+    DB_DSN_ENV = os.getenv("GDX2_DB_DSN", "postgresql://gdx2:gdx2pwd@r48-vldb02.zsniigg.local:5432/gdx2?sslmode=disable")
+    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\zsniigg\\gdx2\\src")  #
+    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "\\\\r57-vfs02\\archiv002")  #
+
+DB_SCHEMA = os.getenv("GDX2_SCHEMA", "gdx2map")
+DB_DSN = DB_DSN_ENV.replace("postgresql://", "postgresql+asyncpg://")
+DB_DSN2 = DB_DSN_ENV.replace("postgresql://", "postgresql+psycopg2://")
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
@@ -34,9 +31,6 @@ REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 REDIS_DB = f"{REDIS_URL}/0"
 REDIS_BACKEND = REDIS_DB
 REDIS_BROKER = REDIS_DB
-
-# redis://username:password@hostname:port/db
-
 
 
 NUMBER_PROCESS = os.getenv("NUMBER_PROCESS", "1")
@@ -51,15 +45,6 @@ FILE_REPORT_SRC_NAME_PART = 'volarch'
 
 
 FOLDER_OUT = 'log'
-
-if DEVENV.startswith("dev"):
-    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src") # C:\\zsniigg\\gdx2\\src
-    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\")  # \\\\r57-vfs02\\archiv002
-else:
-    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\zsniigg\\gdx2\\src") #
-    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "\\\\r57-vfs02\\archiv002")  #
-# FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src") # C:\\zsniigg\\gdx2\\src
-# FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\") # \\\\r57-vfs02\\archiv002
 
 FOLDER_UPLOAD = 'upload'
 FOLDER_GEOJSON_OUT = 'geojson'
@@ -122,3 +107,41 @@ AREA_FILE_GEOJSON_OUT = 'AREA.geojson'
 FILE_FTS_INDEX = 'file_path_fts_idx'
 REPORT_FTS_INDEX = 'report_path_fts_idx'
 
+MSG_OK = "OK"
+MSG_ERROR = "ERROR"
+
+print(f"DEVENV: {DEVENV}")
+print(f"SERVER_HOST: {SERVER_HOST}")
+print(f"SERVER_PORT: {SERVER_PORT}")
+print(f"DB_DSN: {DB_DSN}")
+print(f"DB_DSN2 for alembic: {DB_DSN2}")
+print(f"http://{SERVER_HOST}:{SERVER_PORT}/docs")
+
+
+
+
+
+# print(f"DEVENV: {DEVENV}")
+
+# if DEVENV.startswith("dev"):
+#     DB_HOST = os.getenv("DB_HOST", "localhost")
+# else:
+#     DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
+# # DB_HOST = os.getenv("DB_HOST", "r48-vldb02.zsniigg.local")
+#
+# DB_PORT = os.getenv("DB_PORT", 5432)
+# DB_NAME = os.getenv("DB_NAME", "gdx2")
+# DB_SCHEMA = os.getenv("DB_SCHEMA", "gdx2")
+# DB_USER = os.getenv("DB_USER", "gdx2")
+# DB_PASS = os.getenv("DB_PASS", "gdx2pwd")
+# DB_DSN = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# # DB_DSN_ASYNCIO = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# DB_DSN2 = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+# print(DATABASE_URL)
+# FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\Glory\\Projects\\Python\\zsniigg\\gdx2\\src") # C:\\zsniigg\\gdx2\\src
+# FOLDER_REPORT = os.getenv("FOLDER_REPORT", "D:\\zsniigg\\") # \\\\r57-vfs02\\archiv002
+# redis://username:password@hostname:port/db
+
+# if DEVENV.startswith("dev"):
+#
+# else:

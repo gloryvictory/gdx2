@@ -664,6 +664,18 @@ async def get_report_fulltext_search(search_str, request: Request ):
     content = await report_fulltext_search(search_str, client_host )
     return content
 
+@report_router.get(path='/query',
+                status_code=200,
+                # response_model=List[s_ngr],
+                name='Полнотекстовый поиск по отчетам',
+                tags=['Отчеты'],
+                description='Полнотекстовый поиск по отчетам по параметрам')
+async def get_report_fulltext_search(request: Request , q: str = None):
+    client_host = request.client.host
+    content = await report_fulltext_search(q, client_host)
+    return content
+
+
 @report_router.post(path='/message',
                 status_code=200,
                 name='Создать Пожелание',
