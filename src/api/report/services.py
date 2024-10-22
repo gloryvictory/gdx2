@@ -1090,8 +1090,10 @@ async def report_fulltext_search(search_str: str, client_host: str):
             stmt = text(
                 f"SELECT * FROM {M_REPORT_TGF.__tablename__} WHERE report_tgf.report_fts @@ to_tsquery('russian', '{str_query_local}');")
             # res = await session.execute(stmt)
+            print(stmt)
+
             res = await session.scalars(select(M_REPORT_TGF).from_statement(stmt))
-            # print(res)
+            print(res)
 
             # res = await session.scalars(
             #     select(M_REPORT_TGF)
