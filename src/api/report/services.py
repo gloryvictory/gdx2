@@ -1043,6 +1043,7 @@ async def report_index_create():
                 f"{M_REPORT_TGF.subrf_name.key} ||' '|| "
                 f"{M_REPORT_TGF.territory_name.key} ||' '|| "
                 f"{M_REPORT_TGF.tgf.key} ||' '|| "
+                f"{M_REPORT_TGF.year_str.key} ||' '|| "
                 f"{M_REPORT_TGF.fin_name.key}) "
                 f";")
             res = await session.execute(stmt)
