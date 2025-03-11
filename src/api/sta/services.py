@@ -114,3 +114,30 @@ async def sta_get_count_by_rosg(rosg: str = ''):
             await session.close()
         #     session.close()
     return content
+
+# Получаем методы
+async def sta_get_all_method():
+    content = {"msg": cfg.MSG_ERROR}
+    # log = set_logger(cfg.AREA_FILE_LOG)
+
+    try:
+        async with async_session_maker() as session:
+            res = await session.scalars(
+                select(M_STA.method)
+                .where(M_STA.method.is_not(None))  # Фильтруем NOT NULL
+                .distinct()  # Добавляем distinct для получения уникальных значений
+                .order_by(M_STA.method)
+            )
+            _all = res.all()
+            cnt = len(_all)
+            content = {"msg": cfg.MSG_OK, "count": cnt, "data": _all}
+            # log.info("ngp load successfully")
+            return content
+    except Exception as e:
+        cont_err = f"fail. can't read table ({M_STA.__tablename__})"
+        content = {"msg": cfg.MSG_ERROR, "data": f"Exception occurred {str(e)} . {cont_err}"}
+        print(content)
+    finally:
+        if session is not None:
+            await session.close()
+    return content

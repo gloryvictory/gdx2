@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 from src.api.stp.services import stp_get_all, stp_get_all_count, stp_get_by_id, stp_get_by_rosg, stp_get_count_by_rosg
 
-stp_router = APIRouter(prefix="/stp", tags=["Полигоны"])
+stp_router = APIRouter(prefix="/stp", tags=["Точки"])
 
 #
 @stp_router.get(path='/all',
                 status_code=200,
-                name='Получить все Отчеты - Полигоны',
-                tags=['Полигоны'],
-                description='Получает все Отчеты - Полигоны')
+                name='Получить все Отчеты - Точки',
+                tags=['Точки'],
+                description='Получает все Отчеты - Точки')
 async def get_stp_get_all():
     content = await stp_get_all()
     return content
@@ -18,7 +18,7 @@ async def get_stp_get_all():
 @stp_router.get(path='/count',
                 status_code=200,
                 name='Получить количество Отчетов',
-                tags=['Полигоны'],
+                tags=['Точки'],
                 description='Получает количество Отчетов')
 async def get_stp_get_all_count():
     content = await stp_get_all_count()
@@ -29,7 +29,7 @@ async def get_stp_get_all_count():
 @stp_router.get(path='/{id}',
                   status_code=200,
                   name='Получить Отчеты по ID',
-                  tags=['Полигоны'],
+                  tags=['Точки'],
                   description='Получить Отчеты по ID')
 async def get_stp_by_id(id: int):
     content = await stp_get_by_id(id)
@@ -40,7 +40,7 @@ async def get_stp_by_id(id: int):
 @stp_router.get(path='/rosg/{rosg}',
                   status_code=200,
                   name='Получить Отчеты по ROSG',
-                  tags=['Полигоны'],
+                  tags=['Точки'],
                   description='Получить Отчеты по ROSG')
 async def get_stp_by_rosg(rosg: str):
     content = await stp_get_by_rosg(rosg)
@@ -49,7 +49,7 @@ async def get_stp_by_rosg(rosg: str):
 @stp_router.get(path='/rosg/count/{rosg}',
                   status_code=200,
                   name='Получить кол-во Отчетов по ROSG',
-                  tags=['Полигоны'],
+                  tags=['Точки'],
                   description='Получить кол-во Отчетов по ROSG')
 async def get_count_stp_by_rosg(rosg: str):
     content = await stp_get_count_by_rosg(rosg)
