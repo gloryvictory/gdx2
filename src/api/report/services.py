@@ -219,11 +219,11 @@ async def report_excel_file_read(file_in: str):
                     tgf_kurgan = str_tgf_format(str(value[11]))
                     # print(tgf_kurgan)
                 if value[12]:
-                    # tgf = str_tgf_format(str(value[12]))
-                    tgf = str_get_rgf(
-                        tgf_kurgan, tgf_tmn, tgf_more, tgf_tomsk, tgf_novo, tgf_omsk, tgf_ekat, tgf_kras, tgf_ynao,
-                        tgf_hmao, rgf)
-                    print(tgf)
+                    tgf = str_tgf_format(str(value[12]))
+                    # tgf = str_get_rgf(
+                    #     tgf_kurgan, tgf_tmn, tgf_more, tgf_tomsk, tgf_novo, tgf_omsk, tgf_ekat, tgf_kras, tgf_ynao,
+                    #     tgf_hmao, rgf)
+                    # print(tgf)
 
                 if value[13]:  # Отчет
                     str_tmp1 = str(value[13]).strip().replace("_x001E_", "")

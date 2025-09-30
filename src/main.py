@@ -32,13 +32,39 @@ app = FastAPI(title="GDX2 App")
 #     "https://localhost:8080",
 # ]
 
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+#     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
+#                    "Authorization"],
+# )
+
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins = [
+#         "http://r48-vgeohub01.zsniigg.ru",
+#         "https://r48-vgeohub01.zsniigg.ru",
+#         "http://r48-vgeohub01.zsniigg.local:8001"
+#         "https://r48-vgeohub01.zsniigg.local:8001"
+#         "http://localhost",
+#         "https://localhost",
+#         "http://localhost:8080",
+#         "https://localhost:8080",
+#     ],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins = ["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
-    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
-                   "Authorization"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
