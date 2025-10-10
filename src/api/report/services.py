@@ -175,11 +175,18 @@ async def report_excel_file_read(file_in: str):
                 comments = ''
 
                 if value[0]:  # Путь полный
-                    folder_root = str_get_full_path_with_format(str(value[0]))
-                    folder_link = str_get_folder_src(folder_root)  # Гиперссылка
-                    folder_short = str_get_folder(folder_root)
-                    folder_name = str_get_last_folder(folder_root)
-                    print(folder_root)
+                    str_tmp = str(value[0])
+                    if str_tmp.startswith('\\'):
+                        folder_root = str_get_full_path_with_format(str(value[0]))
+                        folder_link = str_get_folder_src(folder_root)  # Гиперссылка
+                        folder_short = str_get_folder(folder_root)
+                        folder_name = str_get_last_folder(folder_root)
+                    else:
+                        folder_root = str_tmp.strip()
+                        folder_link = ''
+                        folder_short = ''
+                        folder_name = ''
+                        print(folder_root)
 
                 if value[1]:  # Инв. номер РГФ
                     tmp_str = str(value[1])
