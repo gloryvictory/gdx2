@@ -1,0 +1,35 @@
+[Unit]
+Description=GDX2 Celery Flower
+After=network.target
+
+[Service]
+Type=simple
+User=gdx2
+Group=gdx2
+WorkingDirectory=/opt/gdx2
+
+StartLimitBurst=3
+# Активация virtualenv и запуск celery
+#ExecStart=/opt/gdx2/celery_start.sh
+ExecStart=/usr/local/bin/celery -A src.api.celery.tasks:celery flower --port=5555 
+
+Restart=always
+RestartSec=5
+
+# Указываем путь к Python-окружению, если нужно
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/gdx2
+Environment=REDIS_HOST=localhost
+Environment=REDIS_PORT=6379
+Environment=DEVENV=prod
+Environment=GDX2_DB_DSN=postgresql://gdx2:gdx2pwd@r48-vpg01.zsniigg.local:5432/gdx2
+
+# Логирование
+StandardOutput=journal
+StandardError=journal
+
+# Ограничения (опционально)
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

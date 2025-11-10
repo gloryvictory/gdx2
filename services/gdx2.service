@@ -1,0 +1,38 @@
+[Unit]
+Description=GDX2 Service
+After=network.target
+
+[Service]
+Type=simple
+User=gdx2
+Group=gdx2
+WorkingDirectory=/opt/gdx2
+
+StartLimitBurst=3
+# Активация virtualenv и запуск celery
+#ExecStart=/opt/gdx2/celery_start.sh
+ExecStart=/usr/bin/python3 src/main.py  
+
+Restart=always
+RestartSec=5
+
+# Указываем путь к Python-окружению, если нужно
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/gdx2
+Environment=DEVENV=prod
+Environment=GDX2_SERVER_HOST=0.0.0.0
+Environment=GDX2_SERVER_PORT=8001
+Environment=GDX2_SCHEMA=gdx2
+Environment=GDX2_DB_DSN=postgresql://gdx2:gdx2pwd@r48-vpg01.zsniigg.local:5432/gdx2
+Environment=REDIS_HOST=localhost
+Environment=REDIS_PORT=6379
+
+# Логирование
+StandardOutput=journal
+StandardError=journal
+
+# Ограничения (опционально)
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,30 @@
+[Unit]
+Description=pg_tileserv - PostgreSQL to Vector Tiles server
+After=network.target
+
+[Service]
+Type=simple
+User=gdx2                 
+Group=gdx2
+ExecStart=/opt/pg_tileserv/pg_tileserv
+Restart=always
+RestartSec=5
+
+# Переменные окружения (если нужно)
+#Environment=PGHOST=r48-vldb02.zsniigg.local
+#Environment=PGPORT=5432
+#Environment=PGUSER=gdx2
+#Environment=PGPASSWORD=gdx2pwd
+#Environment=PGDATABASE=gdx2
+#Environment=TILESERV_HOST=0.0.0.0
+#Environment=TILESERV_PORT=8001
+
+# Опционально: рабочая директория
+WorkingDirectory=/opt/pg_tileserv
+
+# Логирование
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

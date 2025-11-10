@@ -19,8 +19,10 @@ if DEVENV.startswith("dev"):
 else:
     # DB_DSN_ENV = os.getenv("GDX2_DB_DSN", "postgresql://gdx2:gdx2pwd@r48-vldb02.zsniigg.local:5432/gdx2?sslmode=disable")
     DB_DSN_ENV = os.getenv("GDX2_DB_DSN", "postgresql://gdx2:gdx2pwd@r48-vpg01.zsniigg.local:5432/gdx2?sslmode=disable")
-    FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\zsniigg\\gdx2\\src")  #
-    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "\\\\r57-vfs02\\archiv002")  #
+    FOLDER_BASE = os.getenv("FOLDER_BASE", "/opt/gdx2/")  #
+    FOLDER_REPORT = os.getenv("FOLDER_REPORT", "/opt/gdx2/upload")  #
+    # FOLDER_BASE = os.getenv("FOLDER_BASE", "C:\\zsniigg\\gdx2\\src")  #
+    # FOLDER_REPORT = os.getenv("FOLDER_REPORT", "\\\\r57-vfs02\\archiv002")  #
 
 DB_SCHEMA = os.getenv("GDX2_SCHEMA", "gdx2map")
 DB_DSN = DB_DSN_ENV.replace("postgresql://", "postgresql+asyncpg://")

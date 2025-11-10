@@ -80,8 +80,13 @@ async def report_update_from_file_with_task():
     content = {"msg": "Fail"}
     try:
         time1 = datetime.now()
+        # Получаем текущую дату и время в формате ГГГГ-ММ-ДД_ЧЧ-ММ-СС
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        # Разбиваем имя файла и расширение
+        name, ext = os.path.splitext(cfg.FILE_REPORT_NAME)
+
         file_report_in = os.path.join(cfg.FOLDER_REPORT, cfg.FILE_REPORT_NAME)
-        file_report_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_UPLOAD, cfg.FILE_REPORT_NAME)
+        file_report_out = os.path.join(cfg.FOLDER_BASE, cfg.FOLDER_UPLOAD, f"{name}_{timestamp}{ext}" )
         shutil.copyfile(file_report_in, file_report_out)
         print(f"{file_report_in} is copied to {file_report_out} - OK.")
         await report_excel_file_read(str(file_report_out))
