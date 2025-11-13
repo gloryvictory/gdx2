@@ -8,11 +8,11 @@ import sqlalchemy
 from fastapi import UploadFile, File
 from sqlalchemy import text, insert, select, func
 from sqlalchemy.orm import mapped_column
-from starlette.requests import Request
+# from starlette.requests import Request
 
 from src import cfg
 from src.api.report.utils import str_get_folder, str_get_full_path_with_format, str_tgf_format, str_clean, \
-    str_get_last_folder, str_get_folder_src, str_get_rgf, list_str_clean
+    str_get_last_folder, str_get_folder_src
 from src.db.db import async_session_maker
 from src.models import M_REPORT_TGF, M_R_AUTHOR, M_R_LIST, M_R_SUBRF, M_R_ORG, M_R_AREA, M_R_FIELD, M_R_LU, M_R_PI, \
     M_R_VID_RAB, M_HISTORY, M_R_MESSAGE
@@ -1196,3 +1196,30 @@ async def report_get_message():
         print("Exception occurred " + str(e))
         # fastapi_logger.exception("update_user_password")
         return content
+
+
+async def report_all_rgf_list():
+    content = {"msg": "Fail"}
+    try:
+        async with async_session_maker() as session:
+            # res = await session.scalars(
+            #     select(M_REPORT_TGF)
+            #     .where(M_REPORT_TGF.rgf.ilike(rgf))
+            # )
+            res = await session.scalars(
+                select(M_REPORT_TGF.rgf)
+                .where(M_REPORT_TGF.rgf.is_not(None))
+                .where(func.trim(M_REPORT_TGF.rgf) != '')
+                .distinct()
+                .order_by(M_REPORT_TGF.rgf)
+            )
+            _all = res.all()
+            _cnt = len(_all)
+            content = {"msg": "Success", "count": _cnt, "data": _all}
+        return content
+    except Exception as e:
+        content = {"msg": "Fail", "data": f"Can't get all reports from {M_REPORT_TGF.__tablename__}... "}
+        print("Exception occurred " + str(e))
+        # fastapi_logger.exception("update_user_password")
+        return content
+

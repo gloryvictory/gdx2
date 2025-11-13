@@ -15,7 +15,7 @@ from src.api.report.services import (
     report_get_model_org_count, report_get_model_area_count, report_get_model_field_count, report_get_model_lu_count,
     report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id,
     report_fulltext_search, report_update_from_file_with_task, report_index_create, report_message_create,
-    report_get_message
+    report_get_message, report_all_rgf_list
 )
 from src.schemas import S_R_MESSAGE, S_R_MESSAGE_POST
 
@@ -240,6 +240,14 @@ async def get_all_by_rgf(rgf: str):
     content = await report_all_by_rgf(rgf)
     return content
 
+@report_router.get(path='/rgf/all/list}',
+                   status_code=200,
+                   name='Все Отчеты РГФ у которых есть номер',
+                   tags=['Отчеты'],
+                   description='Все Отчеты РГФ у которых есть номер')
+async def get_all_rgf_list():
+    content = await report_all_rgf_list()
+    return content
 
 @report_router.get(path='/tgf_hmao/{tgf_hmao}',
                    status_code=200,
