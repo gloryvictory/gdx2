@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from src.cfg import DB_DSN
 from src.db.db import Base
 
-from src.models import M_FILE, M_EXT, M_NSI_FIELD, M_NSI_LU, M_NSI_NGO, M_NSI_NGP, M_NSI_NGR,M_NSI_AREA, M_NSI_WELL, M_REPORT_TGF
+from src.models import M_REPORT_TGF
 
 
 config = context.config

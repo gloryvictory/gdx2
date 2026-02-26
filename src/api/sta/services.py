@@ -17,7 +17,6 @@ async def sta_get_all():
         async with async_session_maker() as session:
             res = await session.scalars(
                 select(M_STA)
-                # .order_by(M_NSI_AREA.name_ru)
             )
             _all = res.all()
             cnt = len(_all)
