@@ -44,6 +44,6 @@ dist/
 /src/workers/db.sqlite
 /src/data/
 /src/geojson/
-/src/upload/КАТАЛОГ_ОТЧЕТОВ.xlsx
-/src/upload/КАТАЛОГ_ОТЧЕТОВ_short.xlsx
+/src/upload/*.xlsx
+/src/upload/
 

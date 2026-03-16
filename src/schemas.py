@@ -1,15 +1,25 @@
+import uuid
 from datetime import datetime
 
 from pydantic import BaseModel
 
 
 class BaseTable(BaseModel):
+    guid:  uuid.UUID
+    name_ru: str
+    created_at: datetime
+    updated_at: datetime
+
     class Config:
         from_attributes = True
 
 
+# class BaseTableData(BaseModel):
+#     class Config:
+#         from_attributes = True
+
+
 class S_REPORT_TGF(BaseTable):
-    id: int
     folder_root: str
     folder_link: str
     folder_short: str
@@ -48,92 +58,68 @@ class S_REPORT_TGF(BaseTable):
     lon: float
     is_alive: bool
     report_fts: str
-    lastupdate: datetime
 
 
 class S_HISTORY(BaseTable):
-    id: int
     url: str
     search_str: str
     addr_ip: str
     user_name: str
     user_login: str
-    lastupdate: datetime
 
 
 class S_HISTORY_TASK(BaseTable):
-    id: int
     task_id: str
     task_type: str
     task_name: str
     time_start: datetime
     time_end: datetime
     time_duration: datetime
-    lastupdate: datetime
 
 
 class S_R_AUTHOR(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 class S_R_LIST(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 class S_R_SUBRF(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 
 class S_R_ORG(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 
 class S_R_AREA(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 
 class S_R_FIELD(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 
 class S_R_LU(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 
 class S_R_PI(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
 
 
 class S_R_VID_RAB(BaseTable):
-    id: int
-    name_ru: str
-    lastupdate: datetime
+    pass
+
 
 class S_R_MESSAGE(BaseTable):
-    id: int
     fio:str
     email:str
-    name_ru: str
     is_done:bool
-    lastupdate: datetime
+
+
 class S_R_MESSAGE_POST(BaseTable):
     fio:str
     email:str
-    name_ru: str
 
 
 class S_FIELD(BaseTable):
@@ -145,7 +131,6 @@ class S_FIELD(BaseTable):
     oil: str
     gas: str
     condensat: str
-    name_ru: str
     oblast: str
     stadia: str
     note: str

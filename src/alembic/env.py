@@ -15,10 +15,10 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 
 from src.cfg import DB_DSN
-from src.db.db import Base
+from src.models import Base
 
-from src.models import M_REPORT_TGF
-
+# from src.db.db import Base
+# from src.models import M_REPORT_TGF, Base
 
 config = context.config
 config.set_main_option("sqlalchemy.url", DB_DSN)

@@ -12,3 +12,4 @@ SET search_path to gdx2;
 
 CREATE EXTENSION hstore;
 CREATE EXTENSION postgis;
+CREATE EXTENSION uuid-ossp;

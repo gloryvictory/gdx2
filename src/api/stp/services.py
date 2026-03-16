@@ -1,3 +1,4 @@
+import uuid
 from sqlalchemy import select, func
 from src import cfg
 from src.db.db import async_session_maker
