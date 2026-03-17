@@ -20,6 +20,7 @@ class BaseTable(BaseModel):
 
 
 class S_REPORT_TGF(BaseTable):
+    id: int
     folder_root: str
     folder_link: str
     folder_short: str
@@ -61,6 +62,7 @@ class S_REPORT_TGF(BaseTable):
 
 
 class S_HISTORY(BaseTable):
+    id: int
     url: str
     search_str: str
     addr_ip: str

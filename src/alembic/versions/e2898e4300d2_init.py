@@ -1,8 +1,8 @@
 """Init
 
-Revision ID: 1c226c3c7cf0
+Revision ID: e2898e4300d2
 Revises: 
-Create Date: 2026-03-17 01:10:40.832954
+Create Date: 2026-03-17 21:27:33.806782
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '1c226c3c7cf0'
+revision = 'e2898e4300d2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,7 +32,7 @@ def upgrade() -> None:
     sa.Column('note', sa.String(length=254), nullable=True, comment='Комментарий'),
     sa.Column('istochnik', sa.String(length=254), nullable=True, comment='Источник'),
     sa.Column('ftype', sa.String(length=8), nullable=True, comment='Тип2'),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -46,7 +46,7 @@ def upgrade() -> None:
     sa.Column('addr_ip', sa.String(length=255), nullable=True),
     sa.Column('user_name', sa.String(length=255), nullable=True),
     sa.Column('user_login', sa.String(length=255), nullable=True),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -66,7 +66,7 @@ def upgrade() -> None:
     sa.Column('time_start', sa.TIMESTAMP(), nullable=True),
     sa.Column('time_end', sa.TIMESTAMP(), nullable=True),
     sa.Column('time_duration', sa.TIMESTAMP(), nullable=True),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -101,7 +101,7 @@ def upgrade() -> None:
     sa.Column('nedropol', sa.String(length=100), nullable=True, comment='Недропользователь (короткое наименование)'),
     sa.Column('nom_urfo', sa.BigInteger(), nullable=True, comment='Номер в УРФО'),
     sa.Column('authority', sa.String(length=254), nullable=True, comment='Субъект РФ'),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -111,7 +111,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_lu_data_end'), 'lu', ['data_end'], unique=False)
     op.create_index(op.f('ix_lu_name_ru'), 'lu', ['name_ru'], unique=False)
     op.create_table('r_area',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -120,7 +120,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_area_name_ru'), 'r_area', ['name_ru'], unique=False)
     op.create_table('r_author',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -129,7 +129,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_author_name_ru'), 'r_author', ['name_ru'], unique=False)
     op.create_table('r_field',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -138,7 +138,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_field_name_ru'), 'r_field', ['name_ru'], unique=False)
     op.create_table('r_list',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -147,7 +147,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_list_name_ru'), 'r_list', ['name_ru'], unique=False)
     op.create_table('r_lu',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -159,7 +159,7 @@ def upgrade() -> None:
     sa.Column('fio', sa.String(length=255), nullable=True),
     sa.Column('email', sa.String(length=255), nullable=True),
     sa.Column('is_done', sa.Boolean(), nullable=True),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -170,7 +170,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_r_message_fio'), 'r_message', ['fio'], unique=False)
     op.create_index(op.f('ix_r_message_name_ru'), 'r_message', ['name_ru'], unique=False)
     op.create_table('r_org',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -179,7 +179,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_org_name_ru'), 'r_org', ['name_ru'], unique=False)
     op.create_table('r_pi',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -188,7 +188,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_pi_name_ru'), 'r_pi', ['name_ru'], unique=False)
     op.create_table('r_subrf',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -197,7 +197,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_subrf_name_ru'), 'r_subrf', ['name_ru'], unique=False)
     op.create_table('r_vid_rab',
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -206,45 +206,45 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_r_vid_rab_name_ru'), 'r_vid_rab', ['name_ru'], unique=False)
     op.create_table('report_tgf',
-    sa.Column('folder_root', sa.TEXT(), nullable=True),
-    sa.Column('folder_link', sa.TEXT(), nullable=True),
-    sa.Column('folder_short', sa.TEXT(), nullable=True),
-    sa.Column('folder_name', sa.TEXT(), nullable=True),
-    sa.Column('rgf', sa.String(length=255), nullable=True),
-    sa.Column('tgf_hmao', sa.String(length=255), nullable=True),
-    sa.Column('tgf_ynao', sa.String(length=255), nullable=True),
-    sa.Column('tgf_kras', sa.String(length=255), nullable=True),
-    sa.Column('tgf_ekat', sa.String(length=255), nullable=True),
-    sa.Column('tgf_omsk', sa.String(length=255), nullable=True),
-    sa.Column('tgf_novo', sa.String(length=255), nullable=True),
-    sa.Column('tgf_tomsk', sa.String(length=255), nullable=True),
-    sa.Column('tgf_more', sa.String(length=255), nullable=True),
-    sa.Column('tgf_tmn', sa.String(length=255), nullable=True),
-    sa.Column('tgf_kurgan', sa.String(length=255), nullable=True),
-    sa.Column('tgf', sa.String(length=255), nullable=True),
-    sa.Column('report_name', sa.TEXT(), nullable=True),
-    sa.Column('author_name', sa.TEXT(), nullable=True),
-    sa.Column('year_str', sa.String(length=255), nullable=True),
-    sa.Column('year_int', sa.Integer(), nullable=True),
-    sa.Column('territory_name', sa.TEXT(), nullable=True),
-    sa.Column('subrf_name', sa.TEXT(), nullable=True),
-    sa.Column('list_name', sa.TEXT(), nullable=True),
-    sa.Column('part_name', sa.TEXT(), nullable=True),
-    sa.Column('areaoil', sa.TEXT(), nullable=True),
-    sa.Column('field', sa.TEXT(), nullable=True),
-    sa.Column('lu', sa.TEXT(), nullable=True),
-    sa.Column('pi_name', sa.TEXT(), nullable=True),
-    sa.Column('fin_name', sa.TEXT(), nullable=True),
-    sa.Column('org_name', sa.TEXT(), nullable=True),
-    sa.Column('zsniigg_report', sa.String(length=255), nullable=True),
-    sa.Column('inf_report', sa.String(length=255), nullable=True),
-    sa.Column('vid_rab', sa.TEXT(), nullable=True),
-    sa.Column('comments', sa.TEXT(), nullable=True),
-    sa.Column('lat', sa.Float(), nullable=True),
-    sa.Column('lon', sa.Float(), nullable=True),
-    sa.Column('is_alive', sa.Boolean(), nullable=True),
-    sa.Column('report_fts', postgresql.TSVECTOR(), nullable=True),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('folder_root', sa.TEXT(), nullable=True, comment='Полный путь к отчету'),
+    sa.Column('folder_link', sa.TEXT(), nullable=True, comment='Линк на отчет'),
+    sa.Column('folder_short', sa.TEXT(), nullable=True, comment='Путь короткий'),
+    sa.Column('folder_name', sa.TEXT(), nullable=True, comment='Папка отчета'),
+    sa.Column('rgf', sa.String(length=255), nullable=True, comment='РГФ'),
+    sa.Column('tgf_hmao', sa.String(length=255), nullable=True, comment='ТГФ ХМАО'),
+    sa.Column('tgf_ynao', sa.String(length=255), nullable=True, comment='ТГФ ЯНАО'),
+    sa.Column('tgf_kras', sa.String(length=255), nullable=True, comment='ТГФ КРАС'),
+    sa.Column('tgf_ekat', sa.String(length=255), nullable=True, comment='ТГФ ЕКАТЕРИНБУРГ'),
+    sa.Column('tgf_omsk', sa.String(length=255), nullable=True, comment='ТГФ ОМСК'),
+    sa.Column('tgf_novo', sa.String(length=255), nullable=True, comment='ТГФ НОВОСИБИРСК'),
+    sa.Column('tgf_tomsk', sa.String(length=255), nullable=True, comment='ТГФ ТОМСК'),
+    sa.Column('tgf_more', sa.String(length=255), nullable=True, comment='ТГФ МОРЕ'),
+    sa.Column('tgf_tmn', sa.String(length=255), nullable=True, comment='ТГФ ТЮМЕНЬ'),
+    sa.Column('tgf_kurgan', sa.String(length=255), nullable=True, comment='ТГФ КУРГАН'),
+    sa.Column('tgf', sa.String(length=255), nullable=True, comment='ТГФ'),
+    sa.Column('report_name', sa.TEXT(), nullable=True, comment='Имя отчета'),
+    sa.Column('author_name', sa.TEXT(), nullable=True, comment='Автор отчета'),
+    sa.Column('year_str', sa.String(length=255), nullable=True, comment='Год отчета'),
+    sa.Column('year_int', sa.Integer(), nullable=True, comment='Год отчета (число)'),
+    sa.Column('territory_name', sa.TEXT(), nullable=True, comment='Територия'),
+    sa.Column('subrf_name', sa.TEXT(), nullable=True, comment='Субьект РФ'),
+    sa.Column('list_name', sa.TEXT(), nullable=True, comment='№ листа карты'),
+    sa.Column('part_name', sa.TEXT(), nullable=True, comment='№ партии'),
+    sa.Column('areaoil', sa.TEXT(), nullable=True, comment='Площадь'),
+    sa.Column('field', sa.TEXT(), nullable=True, comment='Месторождение'),
+    sa.Column('lu', sa.TEXT(), nullable=True, comment='Лицензионный участок'),
+    sa.Column('pi_name', sa.TEXT(), nullable=True, comment='Полезное ископаемое'),
+    sa.Column('fin_name', sa.TEXT(), nullable=True, comment='Источник финансирования'),
+    sa.Column('org_name', sa.TEXT(), nullable=True, comment='Организация'),
+    sa.Column('zsniigg_report', sa.String(length=255), nullable=True, comment='Отчет в ЗапСибНИИГГ'),
+    sa.Column('inf_report', sa.String(length=255), nullable=True, comment='Инф. отчет'),
+    sa.Column('vid_rab', sa.TEXT(), nullable=True, comment='Вид работ'),
+    sa.Column('comments', sa.TEXT(), nullable=True, comment='Комментарий'),
+    sa.Column('lat', sa.Float(), nullable=True, comment='Широта'),
+    sa.Column('lon', sa.Float(), nullable=True, comment='Долгота'),
+    sa.Column('is_alive', sa.Boolean(), nullable=True, comment='Признак актуальности'),
+    sa.Column('report_fts', postgresql.TSVECTOR(), nullable=True, comment='Полнотекстовый индекс'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -303,7 +303,7 @@ def upgrade() -> None:
     sa.Column('nom_1000', sa.String(length=4), nullable=True, comment='Лист'),
     sa.Column('method', sa.String(length=13), nullable=True, comment='Метод'),
     sa.Column('scale', sa.String(length=26), nullable=True, comment='Масштаб'),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -328,7 +328,7 @@ def upgrade() -> None:
     sa.Column('nom_1000', sa.String(length=4), nullable=True, comment='Лист'),
     sa.Column('method', sa.String(length=13), nullable=True, comment='Метод'),
     sa.Column('scale', sa.String(length=26), nullable=True, comment='Масштаб'),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),
@@ -353,7 +353,7 @@ def upgrade() -> None:
     sa.Column('nom_1000', sa.String(length=4), nullable=True, comment='Лист'),
     sa.Column('method', sa.String(length=13), nullable=True, comment='Метод'),
     sa.Column('scale', sa.String(length=26), nullable=True, comment='Масштаб'),
-    sa.Column('guid', sa.UUID(), nullable=False, comment='Глобальный идентификатор'),
+    sa.Column('guid', sa.UUID(), server_default=sa.text('gen_random_uuid()'), nullable=False, comment='Глобальный идентификатор'),
     sa.Column('name_ru', sa.TEXT(), nullable=True, comment='Наименование (рус)'),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата создания'),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False, comment='Дата обновления'),

@@ -4,7 +4,7 @@
 # from sqlalchemy import Table, mapped_column, Integer, String, TIMESTAMP, MetaData, TEXT, BIGINT
 import uuid
 from datetime import datetime
-from sqlalchemy import (TIMESTAMP, Boolean, Integer, String, TEXT, BigInteger, Float, func)
+from sqlalchemy import (TIMESTAMP, Boolean, Integer, String, TEXT, BigInteger, Float, func, text)
 from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncAttrs
@@ -25,7 +25,11 @@ class Base(AsyncAttrs, DeclarativeBase):
     __table_args__ = {'schema': 'gdx2'}  # <-- Добавлено
 
 
-    guid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, comment='Глобальный идентификатор')
+    guid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),
+                                            primary_key=True,
+                                            default=uuid.uuid4,
+                                            server_default=text('gen_random_uuid()'),
+                                            comment='Глобальный идентификатор')
     name_ru: Mapped[str] = mapped_column(TEXT, index=True, nullable=True, comment='Наименование (рус)')
     created_at: Mapped[datetime] = mapped_column(server_default=func.now(), comment='Дата создания')
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now(), comment='Дата обновления')
@@ -178,7 +182,6 @@ class M_HISTORY_TASK(Base):
 
     def to_read_model(self) -> S_HISTORY_TASK:
         return S_HISTORY_TASK(
-            id=self.id,
             name_ru=self.name_ru,
             task_id=self.task_id,
             task_type=self.task_type,
@@ -203,7 +206,7 @@ class M_R_AUTHOR(Base):
 
     def to_read_model(self) -> S_R_AUTHOR:
         return S_R_AUTHOR(
-            id=self.id,
+
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -222,7 +225,6 @@ class M_R_LIST(Base):
 
     def to_read_model(self) -> S_R_LIST:
         return S_R_LIST(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -241,7 +243,6 @@ class M_R_SUBRF(Base):
 
     def to_read_model(self) -> S_R_SUBRF:
         return S_R_SUBRF(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -260,7 +261,6 @@ class M_R_ORG(Base):
 
     def to_read_model(self) -> S_R_ORG:
         return S_R_ORG(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -279,7 +279,6 @@ class M_R_AREA(Base):
 
     def to_read_model(self) -> S_R_AREA:
         return S_R_AREA(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -298,7 +297,6 @@ class M_R_FIELD(Base):
 
     def to_read_model(self) -> S_R_FIELD:
         return S_R_FIELD(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -317,7 +315,6 @@ class M_R_LU(Base):
 
     def to_read_model(self) -> S_R_LU:
         return S_R_LU(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -336,7 +333,6 @@ class M_R_PI(Base):
 
     def to_read_model(self) -> S_R_PI:
         return S_R_PI(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -355,7 +351,6 @@ class M_R_VID_RAB(Base):
 
     def to_read_model(self) -> S_R_VID_RAB:
         return S_R_VID_RAB(
-            id=self.id,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -378,7 +373,6 @@ class M_R_MESSAGE(Base):
 
     def to_read_model(self) -> S_R_MESSAGE:
         return S_R_MESSAGE(
-            fio=self.fio,
             email=self.email,
             is_done=self.is_done,
             id=self.id,
