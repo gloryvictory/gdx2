@@ -6,7 +6,7 @@ from datetime import datetime
 import openpyxl
 import sqlalchemy
 from fastapi import UploadFile, File
-from sqlalchemy import text, insert, select, func
+from sqlalchemy import UUID, text, insert, select, func
 from sqlalchemy.orm import mapped_column
 # from starlette.requests import Request
 
@@ -392,7 +392,7 @@ async def report_get_all_count():
     content = {"msg": f"error"}
     try:
         async with async_session_maker() as session:
-            res = await session.scalar(select(func.count(M_REPORT_TGF.id)))
+            res = await session.scalar(select(func.count(M_REPORT_TGF.guid)))
             content = {"msg": "Success", "count": res}
             return content
     except Exception as e:
@@ -792,13 +792,13 @@ async def report_get_author():
         return content
 
 
-async def report_get_author_by_id(id: int):
+async def report_get_author_by_guid(id: UUID):
     content = {"msg": "Fail"}
     try:
         async with async_session_maker() as session:
             res = await session.scalars(
                 select(M_R_AUTHOR)
-                .where(M_R_AUTHOR.id == id)
+                .where(M_R_AUTHOR.guid == id)
                 .order_by(M_R_AUTHOR.name_ru)
 
             )
@@ -969,7 +969,7 @@ async def report_get_model_all_count(model_param):
     content = {"msg": "Fail"}
     try:
         async with async_session_maker() as session:
-            res = await session.scalar(select(func.count(model_param.id)))
+            res = await session.scalar(select(func.count(model_param.guid)))
             content = {"msg": "Success", "count": res}
             return content
     except Exception as e:
@@ -1185,7 +1185,7 @@ async def report_get_message():
         async with async_session_maker() as session:
             res = await session.scalars(
                 select(M_R_MESSAGE)
-                .order_by(M_R_MESSAGE.id)
+                .order_by(M_R_MESSAGE.guid)
             )
             _all = res.all()
             _cnt = len(_all)

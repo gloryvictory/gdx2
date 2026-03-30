@@ -1,17 +1,16 @@
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseTable(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     guid:  uuid.UUID
     name_ru: str
     created_at: datetime
     updated_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # class BaseTableData(BaseModel):
@@ -20,7 +19,7 @@ class BaseTable(BaseModel):
 
 
 class S_REPORT_TGF(BaseTable):
-    id: int
+    # id: int
     folder_root: str
     folder_link: str
     folder_short: str
@@ -62,7 +61,7 @@ class S_REPORT_TGF(BaseTable):
 
 
 class S_HISTORY(BaseTable):
-    id: int
+    # id: int
     url: str
     search_str: str
     addr_ip: str

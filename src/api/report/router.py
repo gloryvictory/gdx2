@@ -1,4 +1,6 @@
+from uuid import UUID
 from fastapi import APIRouter, UploadFile
+# from sqlalchemy import UUID
 from starlette.requests import Request
 
 from src.api.report.services import (
@@ -13,7 +15,7 @@ from src.api.report.services import (
     report_get_list, report_get_subrf, report_get_org, report_get_area, report_get_field, report_get_lu, report_get_pi,
     report_get_vid_rab, report_get_model_author_count, report_get_model_list_count, report_get_model_subrf_count,
     report_get_model_org_count, report_get_model_area_count, report_get_model_field_count, report_get_model_lu_count,
-    report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_id,
+    report_get_model_pi_count, report_get_model_vid_rab_count, report_get_author_by_guid,
     report_fulltext_search, report_update_from_file_with_task, report_index_create, report_message_create,
     report_get_message, report_all_rgf_list
 )
@@ -359,13 +361,13 @@ async def get_author():
     content = await report_get_author()
     return content
 
-@report_router.get(path='/author/id/{id}',
+@report_router.get(path='/author/guid/{id}',
                    status_code=200,
                    name='Получить автора',
                    tags=['Отчеты'],
                    description='Получить автора')
-async def get_author_by_id(id:int):
-    content = await report_get_author_by_id(id)
+async def get_author_by_guid(id:UUID):
+    content = await report_get_author_by_guid(id)
     return content
 
 

@@ -1,0 +1,71 @@
+### Health Check
+GET http://127.0.0.1:8001/api/v1/health
+
+### Get all reports
+GET http://127.0.0.1:8001/api/v1/report/all
+
+### Get all areas
+GET http://127.0.0.1:8001/api/v1/report/area
+
+### Get all fields (oil fields)
+GET http://127.0.0.1:8001/api/v1/report/field
+
+### Get all license areas (LU)
+GET http://127.0.0.1:8001/api/v1/report/lu
+
+### Get all polygons (ST-A)
+GET http://127.0.0.1:8001/api/v1/sta/all
+
+### Get all lines (ST-L)
+GET http://127.0.0.1:8001/api/v1/stl/all
+
+### Get all points (ST-P)
+GET http://127.0.0.1:8001/api/v1/stp/all
+
+### Get all authors
+GET http://127.0.0.1:8001/api/v1/report/author
+
+### Get all lists
+GET http://127.0.0.1:8001/api/v1/report/list
+
+### Get all subjects of Russian Federation
+GET http://127.0.0.1:8001/api/v1/report/subrf
+
+### Get all organizations
+GET http://127.0.0.1:8001/api/v1/report/org
+
+### Get all useful minerals (PI)
+GET http://127.0.0.1:8001/api/v1/report/pi
+
+### Get all work types
+GET http://127.0.0.1:8001/api/v1/report/vid_rab
+
+### Full-text search
+GET http://127.0.0.1:8001/api/v1/report/search/test
+
+### Get all unique methods for polygons
+GET http://127.0.0.1:8001/api/v1/sta/all/method/unique
+
+### Get all unique methods for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/method/unique
+
+### Get all unique study types for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/vid_iz/unique
+
+### Get all unique start years for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/god_nach/unique
+
+### Get all unique end years for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/god_end/unique
+
+### Get all unique TGF for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/tgf/unique
+
+### Get all unique sheets for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/nom_1000/unique
+
+### Get all unique organizations for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/org_isp/unique
+
+### Get all unique scales for all map reports
+GET http://127.0.0.1:8001/api/v1/stall/all/scale/unique

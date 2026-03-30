@@ -42,7 +42,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 class M_REPORT_TGF(Base):
     """A source table"""
     __tablename__ = "report_tgf"
-    __table_args__ = {'comment': 'Отчеты ТГФ'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Отчеты ТГФ'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     folder_root: Mapped[str] = mapped_column(TEXT, index=True, nullable=True, comment='Полный путь к отчету')
@@ -90,7 +90,7 @@ class M_REPORT_TGF(Base):
 
     def to_read_model(self) -> S_REPORT_TGF:
         return S_REPORT_TGF(
-            id=self.id,
+            guid=self.guid,
             name_ru=self.name_ru,
             folder_root=self.folder_root,
             folder_link=self.folder_link,
@@ -139,7 +139,7 @@ class M_HISTORY(Base):
     """A source table"""
 
     __tablename__: str = "history"
-    __table_args__ = {'comment': 'История запросов'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'История запросов'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     url: Mapped[str] = mapped_column(TEXT, index=True, nullable=True)
@@ -152,7 +152,7 @@ class M_HISTORY(Base):
 
     def to_read_model(self) -> S_HISTORY:
         return S_HISTORY(
-            id=self.id,
+            guid=self.guid,
             name_ru=self.name_ru,
             url=self.url,
             search_str=self.search_str,
@@ -168,7 +168,7 @@ class M_HISTORY_TASK(Base):
     """A HISTORY_TASK table"""
 
     __tablename__ = "history_task"
-    __table_args__ = {'comment': 'История задач'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'История задач'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     task_id: Mapped[str] = mapped_column(String(length=40), index=True, nullable=True)
@@ -182,6 +182,7 @@ class M_HISTORY_TASK(Base):
 
     def to_read_model(self) -> S_HISTORY_TASK:
         return S_HISTORY_TASK(
+            guid=self.guid,
             name_ru=self.name_ru,
             task_id=self.task_id,
             task_type=self.task_type,
@@ -198,7 +199,7 @@ class M_R_AUTHOR(Base):
     """A source table"""
 
     __tablename__ = "r_author"
-    __table_args__ = {'comment': 'Авторы'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Авторы'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -206,7 +207,7 @@ class M_R_AUTHOR(Base):
 
     def to_read_model(self) -> S_R_AUTHOR:
         return S_R_AUTHOR(
-
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -217,7 +218,7 @@ class M_R_LIST(Base):
     """A source table"""
 
     __tablename__ = "r_list"
-    __table_args__ = {'comment': 'Листы карты'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Листы карты'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -225,6 +226,7 @@ class M_R_LIST(Base):
 
     def to_read_model(self) -> S_R_LIST:
         return S_R_LIST(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -235,7 +237,7 @@ class M_R_SUBRF(Base):
     """A source table"""
 
     __tablename__ = "r_subrf"
-    __table_args__ = {'comment': 'Субъекты РФ'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Субъекты РФ'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -243,6 +245,7 @@ class M_R_SUBRF(Base):
 
     def to_read_model(self) -> S_R_SUBRF:
         return S_R_SUBRF(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -253,7 +256,7 @@ class M_R_ORG(Base):
     """A source table"""
 
     __tablename__ = "r_org"
-    __table_args__ = {'comment': 'Организации'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Организации'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -261,6 +264,7 @@ class M_R_ORG(Base):
 
     def to_read_model(self) -> S_R_ORG:
         return S_R_ORG(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -271,7 +275,7 @@ class M_R_AREA(Base):
     """A source table"""
 
     __tablename__ = "r_area"
-    __table_args__ = {'comment': 'Площади отчетов'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Площади отчетов'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -279,6 +283,7 @@ class M_R_AREA(Base):
 
     def to_read_model(self) -> S_R_AREA:
         return S_R_AREA(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -289,7 +294,7 @@ class M_R_FIELD(Base):
     """A source table"""
 
     __tablename__ = "r_field"
-    __table_args__ = {'comment': 'Месторождения отчетов'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Месторождения отчетов'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -297,6 +302,7 @@ class M_R_FIELD(Base):
 
     def to_read_model(self) -> S_R_FIELD:
         return S_R_FIELD(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -307,7 +313,7 @@ class M_R_LU(Base):
     """A source table"""
 
     __tablename__ = "r_lu"
-    __table_args__ = {'comment': 'ЛУ отчетов'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'ЛУ отчетов'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -315,6 +321,7 @@ class M_R_LU(Base):
 
     def to_read_model(self) -> S_R_LU:
         return S_R_LU(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -325,7 +332,7 @@ class M_R_PI(Base):
     """A source table"""
 
     __tablename__ = "r_pi"
-    __table_args__ = {'comment': 'Полезные ископаемые отчетов'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Полезные ископаемые отчетов'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -333,6 +340,7 @@ class M_R_PI(Base):
 
     def to_read_model(self) -> S_R_PI:
         return S_R_PI(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -343,7 +351,7 @@ class M_R_VID_RAB(Base):
     """A source table"""
 
     __tablename__ = "r_vid_rab"
-    __table_args__ = {'comment': 'Вид работ отчетов'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Вид работ отчетов'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     # name_ru: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -351,6 +359,7 @@ class M_R_VID_RAB(Base):
 
     def to_read_model(self) -> S_R_VID_RAB:
         return S_R_VID_RAB(
+            guid=self.guid,
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -361,7 +370,7 @@ class M_R_MESSAGE(Base):
     """A source table"""
 
     __tablename__ = "r_message"
-    __table_args__ = {'comment': 'Сообщения обратной связи'}
+    __table_args__ = {'schema': 'gdx2', 'comment': 'Сообщения обратной связи'}
 
     # id: Mapped[int] = mapped_column(Integer, primary_key=True)
     fio: Mapped[str] = mapped_column(String(length=255), index=True, nullable=True)
@@ -373,9 +382,9 @@ class M_R_MESSAGE(Base):
 
     def to_read_model(self) -> S_R_MESSAGE:
         return S_R_MESSAGE(
+            guid=self.guid,
             email=self.email,
-            is_done=self.is_done,
-            id=self.id,
+            is_done=self.is_done,            
             name_ru=self.name_ru,
             created_at=self.created_at,
             updated_at=self.updated_at
@@ -386,7 +395,7 @@ class M_R_MESSAGE(Base):
 class M_FIELD(Base):
     """Месторождения с геоданными"""
     __tablename__ = 'field'
-    __table_args__ = { 'comment': 'Месторождения'   }
+    __table_args__ = {'schema': 'gdx2',  'comment': 'Месторождения'   }
 
     id: Mapped[int] = mapped_column(primary_key=True, comment='Идентификатор (внутренний)')
     year: Mapped[int] = mapped_column(BigInteger, nullable=True, comment='Год открытия')
@@ -407,7 +416,7 @@ class M_FIELD(Base):
 class M_LU(Base):
     """Лицензионные участки с геоданными"""
     __tablename__ = 'lu'
-    __table_args__ = { 'comment': 'Лицензионные участки'  }
+    __table_args__ = { 'schema': 'gdx2', 'comment': 'Лицензионные участки'  }
 
     id: Mapped[int] = mapped_column(primary_key=True)
     areaoil: Mapped[float] = mapped_column(Float, nullable=True, comment='Площадь')
@@ -439,7 +448,7 @@ class M_LU(Base):
 class M_STA(Base):
     """Отчеты: полигоны"""
     __tablename__ = 'sta'
-    __table_args__ = { 'comment': 'Отчеты (полигоны)' }
+    __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (полигоны)' }
 
     # id: 'Идентификатор (внутренний)' - наследуется из Base
     web_uk_id: Mapped[str] = mapped_column(String(length=18), nullable=True, comment='№')
@@ -463,7 +472,7 @@ class M_STA(Base):
 class M_STL(Base):
     """Отчеты: линии"""
     __tablename__ = 'stl'
-    __table_args__ = { 'comment': 'Отчеты (линии)'  }
+    __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (линии)'  }
 
     web_uk_id: Mapped[str] = mapped_column(String(length=18), nullable=True, comment='№')
     vid_iz: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Вид')
@@ -486,7 +495,7 @@ class M_STL(Base):
 class M_STP(Base):
     """Отчеты: точки"""
     __tablename__ = 'stp'
-    __table_args__ = { 'comment': 'Отчеты (точки)'  }
+    __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (точки)'  }
 
     web_uk_id: Mapped[str] = mapped_column(String(length=18), nullable=True, comment='№')
     vid_iz: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Вид')
