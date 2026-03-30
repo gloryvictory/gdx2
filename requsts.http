@@ -69,3 +69,15 @@ GET http://127.0.0.1:8001/api/v1/stall/all/org_isp/unique
 
 ### Get all unique scales for all map reports
 GET http://127.0.0.1:8001/api/v1/stall/all/scale/unique
+
+
+### Get 
+GET http://r48-vgeohub01.zsniigg.local:8001/api/v1/stp/rosg/count/486940
+
+### Get 
+GET http://r48-vgeohub01.zsniigg.local:8001/api/v1/sta/rosg/count/486940
+
+
+
+### Get 
+GET http://r48-vgeohub01.zsniigg.local:8001/api/v1/stp/rosg/count/3220

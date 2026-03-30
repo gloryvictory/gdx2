@@ -24,7 +24,6 @@ class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
     __table_args__ = {'schema': 'gdx2'}  # <-- Добавлено
 
-
     guid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True),
                                             primary_key=True,
                                             default=uuid.uuid4,
@@ -33,6 +32,12 @@ class Base(AsyncAttrs, DeclarativeBase):
     name_ru: Mapped[str] = mapped_column(TEXT, index=True, nullable=True, comment='Наименование (рус)')
     created_at: Mapped[datetime] = mapped_column(server_default=func.now(), comment='Дата создания')
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now(), onupdate=func.now(), comment='Дата обновления')
+
+
+class BaseNoMeta(AsyncAttrs, DeclarativeBase):
+    """Базовый класс для таблиц без мета-полей (guid, name_ru, created_at, updated_at)"""
+    __abstract__ = True
+    __table_args__ = {'schema': 'gdx2'}
 
     # @declared_attr.directive
     # def __tablename__(cls) -> str:
@@ -392,7 +397,7 @@ class M_R_MESSAGE(Base):
 
 
 
-class M_FIELD(Base):
+class M_FIELD(BaseNoMeta):
     """Месторождения с геоданными"""
     __tablename__ = 'field'
     __table_args__ = {'schema': 'gdx2',  'comment': 'Месторождения'   }
@@ -430,7 +435,7 @@ class M_FIELD(Base):
         )
 
 
-class M_LU(Base):
+class M_LU(BaseNoMeta):
     """Лицензионные участки с геоданными"""
     __tablename__ = 'lu'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Лицензионные участки'  }
@@ -489,12 +494,12 @@ class M_LU(Base):
         )
 
 
-class M_STA(Base):
+class M_STA(BaseNoMeta):
     """Отчеты: полигоны"""
     __tablename__ = 'sta'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (полигоны)' }
 
-    # id: 'Идентификатор (внутренний)' - наследуется из Base
+    id: Mapped[int] = mapped_column(primary_key=True, comment='Идентификатор (внутренний)')
     web_uk_id: Mapped[str] = mapped_column(String(length=18), nullable=True, comment='№')
     vid_iz: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Вид')
     tgf: Mapped[str] = mapped_column(String(length=31), nullable=True, comment='ТГФ')
@@ -534,11 +539,12 @@ class M_STA(Base):
         )
 
 
-class M_STL(Base):
+class M_STL(BaseNoMeta):
     """Отчеты: линии"""
     __tablename__ = 'stl'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (линии)'  }
 
+    id: Mapped[int] = mapped_column(primary_key=True, comment='Идентификатор (внутренний)')
     web_uk_id: Mapped[str] = mapped_column(String(length=18), nullable=True, comment='№')
     vid_iz: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Вид')
     tgf: Mapped[str] = mapped_column(String(length=31), nullable=True, comment='ТГФ')
@@ -578,11 +584,12 @@ class M_STL(Base):
         )
 
 
-class M_STP(Base):
+class M_STP(BaseNoMeta):
     """Отчеты: точки"""
     __tablename__ = 'stp'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (точки)'  }
 
+    id: Mapped[int] = mapped_column(primary_key=True, comment='Идентификатор (внутренний)')
     web_uk_id: Mapped[str] = mapped_column(String(length=18), nullable=True, comment='№')
     vid_iz: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Вид')
     tgf: Mapped[str] = mapped_column(String(length=31), nullable=True, comment='ТГФ')
