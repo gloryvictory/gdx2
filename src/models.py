@@ -14,7 +14,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from src.schemas import S_REPORT_TGF, S_R_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_R_LIST, S_R_SUBRF, S_R_ORG, S_R_AREA, \
     S_R_FIELD, \
     S_R_LU, S_R_PI, \
-    S_R_VID_RAB, S_R_MESSAGE, S_STA, S_STL, S_STP
+    S_R_VID_RAB, S_R_MESSAGE, S_FIELD, S_LU, S_STA, S_STL, S_STP
 
 
 # import geoalchemy2
