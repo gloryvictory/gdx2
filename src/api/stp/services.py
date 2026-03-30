@@ -43,7 +43,7 @@ async def stp_get_all_count():
     return content
 
 
-async def stp_get_by_id(id: uuid.UUID = None):
+async def stp_get_by_id(int = 0):
     content = {"msg": cfg.MSG_ERROR}
     try:
         async with async_session_maker() as session:

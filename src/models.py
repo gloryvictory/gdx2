@@ -14,7 +14,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from src.schemas import S_REPORT_TGF, S_R_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_R_LIST, S_R_SUBRF, S_R_ORG, S_R_AREA, \
     S_R_FIELD, \
     S_R_LU, S_R_PI, \
-    S_R_VID_RAB, S_R_MESSAGE
+    S_R_VID_RAB, S_R_MESSAGE, S_STA, S_STL, S_STP
 
 
 # import geoalchemy2
@@ -412,6 +412,23 @@ class M_FIELD(Base):
     istochnik: Mapped[str] = mapped_column(String(length=254), nullable=True, comment='Источник')
     ftype: Mapped[str] = mapped_column(String(length=8), nullable=True, comment='Тип2')
 
+    def to_read_model(self) -> S_FIELD:
+        return S_FIELD(
+            id=self.id,
+            year=self.year,
+            tip=self.tip,
+            areaoil=self.areaoil,
+            nom=self.nom,
+            oil=self.oil,
+            gas=self.gas,
+            condensat=self.condensat,
+            oblast=self.oblast,
+            stadia=self.stadia,
+            note=self.note,
+            istochnik=self.istochnik,
+            ftype=self.ftype
+        )
+
 
 class M_LU(Base):
     """Лицензионные участки с геоданными"""
@@ -444,6 +461,33 @@ class M_LU(Base):
     nom_urfo: Mapped[int] = mapped_column(BigInteger, nullable=True, comment='Номер в УРФО')
     authority: Mapped[str] = mapped_column(String(length=254), nullable=True, comment='Субъект РФ')
 
+    def to_read_model(self) -> S_LU:
+        return S_LU(
+            id=self.id,
+            areaoil=self.areaoil,
+            area_lic=self.area_lic,
+            year=self.year,
+            nom_zsngp=self.nom_zsngp,
+            nom_list=self.nom_list,
+            nom=self.nom,
+            data_start=self.data_start,
+            data_end=self.data_end,
+            vid=self.vid,
+            ftype=self.ftype,
+            name_rus=self.name_rus,
+            anumber=self.anumber,
+            sostiyanie=self.sostiyanie,
+            priznak=self.priznak,
+            nom_lic=self.nom_lic,
+            head_nedro=self.head_nedro,
+            oblast=self.oblast,
+            zngp=self.zngp,
+            nedropolz=self.nedropolz,
+            nedropol=self.nedropol,
+            nom_urfo=self.nom_urfo,
+            authority=self.authority
+        )
+
 
 class M_STA(Base):
     """Отчеты: полигоны"""
@@ -468,6 +512,27 @@ class M_STA(Base):
     method: Mapped[str] = mapped_column(String(length=13), nullable=True, comment='Метод')
     scale: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Масштаб')
 
+    def to_read_model(self) -> S_STA:
+        return S_STA(
+            id=self.id,
+            web_uk_id=self.web_uk_id,
+            vid_iz=self.vid_iz,
+            tgf=self.tgf,
+            n_uk_tgf=self.n_uk_tgf,
+            n_uk_rosg=self.n_uk_rosg,
+            name_otch=self.name_otch,
+            name_otch1=self.name_otch1,
+            avts=self.avts,
+            god_nach=self.god_nach,
+            god_end=self.god_end,
+            org_isp=self.org_isp,
+            in_n_tgf=self.in_n_tgf,
+            in_n_rosg=self.in_n_rosg,
+            nom_1000=self.nom_1000,
+            method=self.method,
+            scale=self.scale
+        )
+
 
 class M_STL(Base):
     """Отчеты: линии"""
@@ -491,6 +556,27 @@ class M_STL(Base):
     method: Mapped[str] = mapped_column(String(length=13), nullable=True, comment='Метод')
     scale: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Масштаб')
 
+    def to_read_model(self) -> S_STL:
+        return S_STL(
+            id=self.id,
+            web_uk_id=self.web_uk_id,
+            vid_iz=self.vid_iz,
+            tgf=self.tgf,
+            n_uk_tgf=self.n_uk_tgf,
+            n_uk_rosg=self.n_uk_rosg,
+            name_otch=self.name_otch,
+            name_otch1=self.name_otch1,
+            avts=self.avts,
+            god_nach=self.god_nach,
+            god_end=self.god_end,
+            org_isp=self.org_isp,
+            in_n_tgf=self.in_n_tgf,
+            in_n_rosg=self.in_n_rosg,
+            nom_1000=self.nom_1000,
+            method=self.method,
+            scale=self.scale
+        )
+
 
 class M_STP(Base):
     """Отчеты: точки"""
@@ -513,3 +599,24 @@ class M_STP(Base):
     nom_1000: Mapped[str] = mapped_column(String(length=4), nullable=True, comment='Лист')
     method: Mapped[str] = mapped_column(String(length=13), nullable=True, comment='Метод')
     scale: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Масштаб')
+
+    def to_read_model(self) -> S_STP:
+        return S_STP(
+            id=self.id,
+            web_uk_id=self.web_uk_id,
+            vid_iz=self.vid_iz,
+            tgf=self.tgf,
+            n_uk_tgf=self.n_uk_tgf,
+            n_uk_rosg=self.n_uk_rosg,
+            name_otch=self.name_otch,
+            name_otch1=self.name_otch1,
+            avts=self.avts,
+            god_nach=self.god_nach,
+            god_end=self.god_end,
+            org_isp=self.org_isp,
+            in_n_tgf=self.in_n_tgf,
+            in_n_rosg=self.in_n_rosg,
+            nom_1000=self.nom_1000,
+            method=self.method,
+            scale=self.scale
+        )

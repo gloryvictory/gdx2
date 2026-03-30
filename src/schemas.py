@@ -123,7 +123,9 @@ class S_R_MESSAGE_POST(BaseTable):
     email:str
 
 
-class S_FIELD(BaseTable):
+class S_FIELD(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     year: int
     tip: str
@@ -139,7 +141,9 @@ class S_FIELD(BaseTable):
     ftype: str
 
 
-class S_LU(BaseTable):
+class S_LU(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     areaoil: float
     area_lic: str
@@ -165,7 +169,9 @@ class S_LU(BaseTable):
     authority: str
 
 
-class S_STA(BaseTable):
+class S_STA(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     web_uk_id: str
     vid_iz: str
@@ -185,7 +191,9 @@ class S_STA(BaseTable):
     scale: str
 
 
-class S_STL(BaseTable):
+class S_STL(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     web_uk_id: str
     vid_iz: str
@@ -205,7 +213,9 @@ class S_STL(BaseTable):
     scale: str
 
 
-class S_STP(BaseTable):
+class S_STP(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     web_uk_id: str
     vid_iz: str
