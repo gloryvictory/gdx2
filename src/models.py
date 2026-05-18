@@ -21,6 +21,26 @@ from src.schemas import S_REPORT_TGF, S_R_AUTHOR, S_HISTORY, S_HISTORY_TASK, S_R
 
 
 class Base(AsyncAttrs, DeclarativeBase):
+    """
+    Базовый абстрактный класс для всех моделей с мета-полями.
+
+    Наследует AsyncAttrs для асинхронной работы и DeclarativeBase от SQLAlchemy.
+    Определяет общие поля, которые будут присутствовать в большинстве таблиц:
+    - guid: первичный ключ UUID
+    - name_ru: наименование на русском языке
+    - created_at: дата создания записи
+    - updated_at: дата последнего обновления записи
+
+    Атрибуты:
+        __abstract__ (bool): True, класс является абстрактным и не создаст таблицу.
+        __table_args__ (dict): Аргументы таблицы, включая схему 'gdx2'.
+
+    Поля:
+        guid (Mapped[uuid.UUID]): Глобальный уникальный идентификатор.
+        name_ru (Mapped[str]): Наименование на русском языке.
+        created_at (Mapped[datetime]): Дата и время создания записи.
+        updated_at (Mapped[datetime]): Дата и время последнего обновления записи.
+    """
     __abstract__ = True
     __table_args__ = {'schema': 'gdx2'}  # <-- Добавлено
 
@@ -35,7 +55,23 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 
 class BaseNoMeta(AsyncAttrs, DeclarativeBase):
-    """Базовый класс для таблиц без мета-полей (guid, name_ru, created_at, updated_at)"""
+    """
+    Базовый абстрактный класс для таблиц без стандартных мета-полей.
+
+    Наследует AsyncAttrs и DeclarativeBase, но не включает общие поля
+    guid, name_ru, created_at, updated_at. Используется для таблиц,
+    которые имеют собственную структуру первичных ключей и не требуют
+    стандартных мета-данных.
+
+    Атрибуты:
+        __abstract__ (bool): True, класс является абстрактным и не создаст таблицу.
+        __table_args__ (dict): Аргументы таблицы, включая схему 'gdx2'.
+
+    Примечание:
+        Изначально планировалось автоматическое формирование имени таблицы
+        по имени класса (закомментированный код), но в текущей реализации
+        имя таблицы задается явно в каждом классе-наследнике.
+    """
     __abstract__ = True
     __table_args__ = {'schema': 'gdx2'}
 
@@ -45,7 +81,28 @@ class BaseNoMeta(AsyncAttrs, DeclarativeBase):
 
 
 class M_REPORT_TGF(Base):
-    """A source table"""
+    """
+    Модель таблицы отчетов Территориальных геологических фондов (ТГФ).
+
+    Содержит информацию о геологических отчетах, включая метаданные,
+    пути к файлам, географические координаты и классификационные атрибуты.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "report_tgf".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Отчеты ТГФ'.
+
+    Поля (основные группы):
+        - Пути и файлы: folder_root, folder_link, folder_short, folder_name
+        - Организационная принадлежность: rgf, tgf_hmao, tgf_ynao, tgf_kras, tgf_ekat,
+          tgf_omsk, tgf_novo, tgf_tomsk, tgf_more, tgf_tmn, tgf_kurgan, tgf
+        - Метаданные отчета: report_name, author_name, year_str, year_int, territory_name
+        - Географическая привязка: subrf_name, list_name, part_name, areaoil, field, lu
+        - Классификация: pi_name, fin_name, org_name, zsniigg_report, inf_report, vid_rab
+        - Дополнительные данные: comments, lat, lon, is_alive, report_fts
+        - Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "report_tgf"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Отчеты ТГФ'}
 
@@ -94,6 +151,15 @@ class M_REPORT_TGF(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_REPORT_TGF:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_REPORT_TGF, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных при возврате из API.
+
+        Returns:
+            S_REPORT_TGF: Объект Pydantic схемы с данными отчета.
+        """
         return S_REPORT_TGF(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -141,8 +207,26 @@ class M_REPORT_TGF(Base):
 
 
 class M_HISTORY(Base):
-    """A source table"""
+    """
+    Модель таблицы истории поисковых запросов пользователей.
 
+    Хранит информацию о запросах, выполненных пользователями в системе,
+    включая URL, поисковую строку, IP-адрес и данные пользователя.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "history".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'История запросов'.
+
+    Поля:
+        url (Mapped[str]): URL, по которому был выполнен запрос.
+        search_str (Mapped[str]): Поисковая строка, введенная пользователем.
+        addr_ip (Mapped[str]): IP-адрес пользователя.
+        user_name (Mapped[str]): Имя пользователя (если доступно).
+        user_login (Mapped[str]): Логин пользователя (если доступно).
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__: str = "history"
     __table_args__ = {'schema': 'gdx2', 'comment': 'История запросов'}
 
@@ -156,6 +240,15 @@ class M_HISTORY(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now)
 
     def to_read_model(self) -> S_HISTORY:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_HISTORY, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных истории запросов при возврате из API.
+
+        Returns:
+            S_HISTORY: Объект Pydantic схемы с данными истории запроса.
+        """
         return S_HISTORY(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -170,8 +263,27 @@ class M_HISTORY(Base):
 
 
 class M_HISTORY_TASK(Base):
-    """A HISTORY_TASK table"""
+    """
+    Модель таблицы истории выполнения задач (фоновых, асинхронных).
 
+    Хранит информацию о задачах, выполняемых в системе, включая идентификатор,
+    тип, название и временные метки начала, окончания и длительности.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "history_task".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'История задач'.
+
+    Поля:
+        task_id (Mapped[str]): Уникальный идентификатор задачи.
+        task_type (Mapped[str]): Тип задачи (например, 'import', 'export', 'report').
+        task_name (Mapped[str]): Название задачи.
+        time_start (Mapped[datetime]): Время начала выполнения задачи.
+        time_end (Mapped[datetime]): Время окончания выполнения задачи.
+        time_duration (Mapped[datetime]): Длительность выполнения задачи.
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "history_task"
     __table_args__ = {'schema': 'gdx2', 'comment': 'История задач'}
 
@@ -186,6 +298,15 @@ class M_HISTORY_TASK(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_HISTORY_TASK:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_HISTORY_TASK, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных истории задач при возврате из API.
+
+        Returns:
+            S_HISTORY_TASK: Объект Pydantic схемы с данными истории задачи.
+        """
         return S_HISTORY_TASK(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -201,8 +322,20 @@ class M_HISTORY_TASK(Base):
 
 
 class M_R_AUTHOR(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы авторов геологических отчетов.
 
+    Содержит записи об авторах, которые упоминаются в отчетах ТГФ.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_author".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Авторы'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_author"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Авторы'}
 
@@ -211,6 +344,15 @@ class M_R_AUTHOR(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_AUTHOR:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_AUTHOR, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных автора при возврате из API.
+
+        Returns:
+            S_R_AUTHOR: Объект Pydantic схемы с данными автора.
+        """
         return S_R_AUTHOR(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -220,8 +362,20 @@ class M_R_AUTHOR(Base):
 
 
 class M_R_LIST(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы листов карт.
 
+    Содержит записи о номерах листов карт, используемых в геологических отчетах.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_list".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Листы карты'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_list"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Листы карты'}
 
@@ -230,6 +384,15 @@ class M_R_LIST(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_LIST:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_LIST, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных листа карты при возврате из API.
+
+        Returns:
+            S_R_LIST: Объект Pydantic схемы с данными листа карты.
+        """
         return S_R_LIST(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -239,8 +402,20 @@ class M_R_LIST(Base):
 
 
 class M_R_SUBRF(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы субъектов Российской Федерации.
 
+    Содержит записи о субъектах РФ, упоминаемых в геологических отчетах.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_subrf".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Субъекты РФ'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_subrf"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Субъекты РФ'}
 
@@ -249,6 +424,15 @@ class M_R_SUBRF(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_SUBRF:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_SUBRF, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных субъекта РФ при возврате из API.
+
+        Returns:
+            S_R_SUBRF: Объект Pydantic схемы с данными субъекта РФ.
+        """
         return S_R_SUBRF(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -258,8 +442,20 @@ class M_R_SUBRF(Base):
 
 
 class M_R_ORG(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы организаций.
 
+    Содержит записи об организациях, участвующих в создании геологических отчетов.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_org".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Организации'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_org"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Организации'}
 
@@ -268,6 +464,15 @@ class M_R_ORG(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_ORG:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_ORG, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных организации при возврате из API.
+
+        Returns:
+            S_R_ORG: Объект Pydantic схемы с данными организации.
+        """
         return S_R_ORG(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -277,8 +482,20 @@ class M_R_ORG(Base):
 
 
 class M_R_AREA(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы площадей геологических отчетов.
 
+    Содержит записи о площадях, упоминаемых в геологических отчетах.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_area".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Площади отчетов'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_area"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Площади отчетов'}
 
@@ -287,6 +504,15 @@ class M_R_AREA(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_AREA:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_AREA, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных площади при возврате из API.
+
+        Returns:
+            S_R_AREA: Объект Pydantic схемы с данными площади.
+        """
         return S_R_AREA(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -296,8 +522,20 @@ class M_R_AREA(Base):
 
 
 class M_R_FIELD(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы месторождений, упоминаемых в отчетах.
 
+    Содержит записи о месторождениях, которые фигурируют в геологических отчетах.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_field".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Месторождения отчетов'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_field"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Месторождения отчетов'}
 
@@ -306,6 +544,15 @@ class M_R_FIELD(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_FIELD:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_FIELD, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных месторождения при возврате из API.
+
+        Returns:
+            S_R_FIELD: Объект Pydantic схемы с данными месторождения.
+        """
         return S_R_FIELD(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -315,8 +562,20 @@ class M_R_FIELD(Base):
 
 
 class M_R_LU(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы лицензионных участков (ЛУ), упоминаемых в отчетах.
 
+    Содержит записи о лицензионных участках, которые фигурируют в геологических отчетах.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_lu".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'ЛУ отчетов'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_lu"
     __table_args__ = {'schema': 'gdx2', 'comment': 'ЛУ отчетов'}
 
@@ -325,6 +584,15 @@ class M_R_LU(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_LU:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_LU, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных лицензионного участка при возврате из API.
+
+        Returns:
+            S_R_LU: Объект Pydantic схемы с данными лицензионного участка.
+        """
         return S_R_LU(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -334,8 +602,20 @@ class M_R_LU(Base):
 
 
 class M_R_PI(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы полезных ископаемых, упоминаемых в отчетах.
 
+    Содержит записи о полезных ископаемых, которые исследуются в геологических отчетах.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_pi".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Полезные ископаемые отчетов'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_pi"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Полезные ископаемые отчетов'}
 
@@ -344,6 +624,15 @@ class M_R_PI(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_PI:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_PI, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных полезного ископаемого при возврате из API.
+
+        Returns:
+            S_R_PI: Объект Pydantic схемы с данными полезного ископаемого.
+        """
         return S_R_PI(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -353,8 +642,20 @@ class M_R_PI(Base):
 
 
 class M_R_VID_RAB(Base):
-    """A source table"""
+    """
+    Модель справочной таблицы видов работ, выполняемых в геологических отчетах.
 
+    Содержит записи о видах работ (например, сейсморазведка, бурение, геофизические исследования).
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_vid_rab".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Вид работ отчетов'.
+
+    Поля:
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_vid_rab"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Вид работ отчетов'}
 
@@ -363,6 +664,15 @@ class M_R_VID_RAB(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_VID_RAB:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_VID_RAB, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных вида работ при возврате из API.
+
+        Returns:
+            S_R_VID_RAB: Объект Pydantic схемы с данными вида работ.
+        """
         return S_R_VID_RAB(
             guid=self.guid,
             name_ru=self.name_ru,
@@ -372,8 +682,23 @@ class M_R_VID_RAB(Base):
 
 
 class M_R_MESSAGE(Base):
-    """A source table"""
+    """
+    Модель таблицы сообщений обратной связи от пользователей.
 
+    Содержит записи о сообщениях, отправленных через форму обратной связи.
+    Наследует базовые мета-поля от класса Base.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "r_message".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Сообщения обратной связи'.
+
+    Поля:
+        fio (Mapped[str]): ФИО отправителя.
+        email (Mapped[str]): Электронная почта отправителя.
+        is_done (Mapped[bool]): Флаг обработки сообщения (решено/не решено).
+        Унаследованные мета-поля: guid, name_ru, created_at, updated_at
+    """
     __tablename__ = "r_message"
     __table_args__ = {'schema': 'gdx2', 'comment': 'Сообщения обратной связи'}
 
@@ -386,6 +711,15 @@ class M_R_MESSAGE(Base):
     # lastupdate: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, nullable=True)
 
     def to_read_model(self) -> S_R_MESSAGE:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_R_MESSAGE, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных сообщения обратной связи при возврате из API.
+
+        Returns:
+            S_R_MESSAGE: Объект Pydantic схемы с данными сообщения.
+        """
         return S_R_MESSAGE(
             guid=self.guid,
             email=self.email,
@@ -398,7 +732,33 @@ class M_R_MESSAGE(Base):
 
 
 class M_FIELD(BaseNoMeta):
-    """Месторождения с геоданными"""
+    """
+    Модель таблицы месторождений с геоданными.
+
+    Содержит подробные данные о месторождениях полезных ископаемых,
+    включая географические координаты, год открытия, тип, запасы и другую мета-информацию.
+    Наследует от BaseNoMeta (без стандартных мета-полей).
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "field".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Месторождения'.
+
+    Поля:
+        id (Mapped[int]): Внутренний уникальный идентификатор.
+        year (Mapped[int]): Год открытия месторождения.
+        tip (Mapped[str]): Тип месторождения.
+        areaoil (Mapped[float]): Название площади (числовое значение).
+        nom (Mapped[int]): Номер месторождения.
+        oil (Mapped[str]): Наличие нефти (описание).
+        gas (Mapped[str]): Наличие газа (описание).
+        condensat (Mapped[str]): Наличие конденсата (описание).
+        oblast (Mapped[str]): Область расположения.
+        stadia (Mapped[str]): Стадия освоения.
+        note (Mapped[str]): Комментарий.
+        istochnik (Mapped[str]): Источник данных.
+        ftype (Mapped[str]): Дополнительный тип (тип2).
+    """
     __tablename__ = 'field'
     __table_args__ = {'schema': 'gdx2',  'comment': 'Месторождения'   }
 
@@ -418,6 +778,15 @@ class M_FIELD(BaseNoMeta):
     ftype: Mapped[str] = mapped_column(String(length=8), nullable=True, comment='Тип2')
 
     def to_read_model(self) -> S_FIELD:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_FIELD, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных месторождения при возврате из API.
+
+        Returns:
+            S_FIELD: Объект Pydantic схемы с данными месторождения.
+        """
         return S_FIELD(
             id=self.id,
             year=self.year,
@@ -436,7 +805,43 @@ class M_FIELD(BaseNoMeta):
 
 
 class M_LU(BaseNoMeta):
-    """Лицензионные участки с геоданными"""
+    """
+    Модель таблицы лицензионных участков (ЛУ) с геоданными.
+
+    Содержит подробные данные о лицензионных участках, включая географические границы,
+    сроки действия лицензий, недропользователей и административную принадлежность.
+    Наследует от BaseNoMeta (без стандартных мета-полей).
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "lu".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Лицензионные участки'.
+
+    Поля (основные):
+        id (Mapped[int]): Внутренний уникальный идентификатор.
+        areaoil (Mapped[float]): Площадь участка.
+        area_lic (Mapped[str]): Площадь лицензионного участка (текстовое значение).
+        year (Mapped[int]): Год.
+        nom_zsngp (Mapped[int]): Номер по ЗСНГП.
+        nom_list (Mapped[str]): Номер листа карты.
+        nom (Mapped[int]): Номер участка.
+        data_start (Mapped[str]): Дата начала действия лицензии.
+        data_end (Mapped[str]): Дата окончания действия лицензии.
+        vid (Mapped[str]): Вид участка.
+        ftype (Mapped[str]): Дополнительный тип.
+        name_rus (Mapped[str]): Наименование участка.
+        anumber (Mapped[str]): Номер лицензии.
+        sostiyanie (Mapped[str]): Состояние участка.
+        priznak (Mapped[str]): Признак.
+        nom_lic (Mapped[str]): Полный номер лицензии.
+        head_nedro (Mapped[str]): ВИНК (вертикально интегрированная нефтяная компания).
+        oblast (Mapped[str]): Область.
+        zngp (Mapped[str]): ЗСНГП (Западно-Сибирский нефтегазоносный район).
+        nedropolz (Mapped[str]): Недропользователь (полное наименование).
+        nedropol (Mapped[str]): Недропользователь (короткое наименование).
+        nom_urfo (Mapped[int]): Номер в УРФО.
+        authority (Mapped[str]): Субъект РФ.
+    """
     __tablename__ = 'lu'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Лицензионные участки'  }
 
@@ -467,6 +872,15 @@ class M_LU(BaseNoMeta):
     authority: Mapped[str] = mapped_column(String(length=254), nullable=True, comment='Субъект РФ')
 
     def to_read_model(self) -> S_LU:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_LU, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных лицензионного участка при возврате из API.
+
+        Returns:
+            S_LU: Объект Pydantic схемы с данными лицензионного участка.
+        """
         return S_LU(
             id=self.id,
             areaoil=self.areaoil,
@@ -495,7 +909,36 @@ class M_LU(BaseNoMeta):
 
 
 class M_STA(BaseNoMeta):
-    """Отчеты: полигоны"""
+    """
+    Модель таблицы геологических отчетов в виде полигонов.
+
+    Содержит данные об отчетах, представленных в виде полигональных объектов
+    (например, контуры площадных исследований). Наследует от BaseNoMeta.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "sta".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Отчеты (полигоны)'.
+
+    Поля (основные):
+        id (Mapped[int]): Внутренний уникальный идентификатор.
+        web_uk_id (Mapped[str]): Уникальный идентификатор отчета в веб-системе.
+        vid_iz (Mapped[str]): Вид издания (отчета).
+        tgf (Mapped[str]): Территориальный геологический фонд.
+        n_uk_tgf (Mapped[str]): Номер учета ТГФ.
+        n_uk_rosg (Mapped[str]): Номер учета РГФ.
+        name_otch (Mapped[str]): Название отчета.
+        name_otch1 (Mapped[str]): Дополнительное название отчета.
+        avts (Mapped[str]): Автор(ы) отчета.
+        god_nach (Mapped[str]): Год начала работ.
+        god_end (Mapped[str]): Год окончания работ.
+        org_isp (Mapped[str]): Организация-исполнитель.
+        in_n_tgf (Mapped[str]): Инвентарный номер ТГФ.
+        in_n_rosg (Mapped[str]): Инвентарный номер РГФ.
+        nom_1000 (Mapped[str]): Номер листа карты масштаба 1:1 000 000.
+        method (Mapped[str]): Метод исследований.
+        scale (Mapped[str]): Масштаб работ.
+    """
     __tablename__ = 'sta'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (полигоны)' }
 
@@ -518,6 +961,15 @@ class M_STA(BaseNoMeta):
     scale: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Масштаб')
 
     def to_read_model(self) -> S_STA:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_STA, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных отчета (полигоны) при возврате из API.
+
+        Returns:
+            S_STA: Объект Pydantic схемы с данными отчета.
+        """
         return S_STA(
             id=self.id,
             web_uk_id=self.web_uk_id,
@@ -540,7 +992,36 @@ class M_STA(BaseNoMeta):
 
 
 class M_STL(BaseNoMeta):
-    """Отчеты: линии"""
+    """
+    Модель таблицы геологических отчетов в виде линий.
+
+    Содержит данные об отчетах, представленных в виде линейных объектов
+    (например, маршруты, профили, разломы). Наследует от BaseNoMeta.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "stl".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Отчеты (линии)'.
+
+    Поля (основные):
+        id (Mapped[int]): Внутренний уникальный идентификатор.
+        web_uk_id (Mapped[str]): Уникальный идентификатор отчета в веб-системе.
+        vid_iz (Mapped[str]): Вид издания (отчета).
+        tgf (Mapped[str]): Территориальный геологический фонд.
+        n_uk_tgf (Mapped[str]): Номер учета ТГФ.
+        n_uk_rosg (Mapped[str]): Номер учета РГФ.
+        name_otch (Mapped[str]): Название отчета.
+        name_otch1 (Mapped[str]): Дополнительное название отчета.
+        avts (Mapped[str]): Автор(ы) отчета.
+        god_nach (Mapped[str]): Год начала работ.
+        god_end (Mapped[str]): Год окончания работ.
+        org_isp (Mapped[str]): Организация-исполнитель.
+        in_n_tgf (Mapped[str]): Инвентарный номер ТГФ.
+        in_n_rosg (Mapped[str]): Инвентарный номер РГФ.
+        nom_1000 (Mapped[str]): Номер листа карты масштаба 1:1 000 000.
+        method (Mapped[str]): Метод исследований.
+        scale (Mapped[str]): Масштаб работ.
+    """
     __tablename__ = 'stl'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (линии)'  }
 
@@ -563,6 +1044,15 @@ class M_STL(BaseNoMeta):
     scale: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Масштаб')
 
     def to_read_model(self) -> S_STL:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_STL, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных отчета (линии) при возврате из API.
+
+        Returns:
+            S_STL: Объект Pydantic схемы с данными отчета.
+        """
         return S_STL(
             id=self.id,
             web_uk_id=self.web_uk_id,
@@ -585,7 +1075,37 @@ class M_STL(BaseNoMeta):
 
 
 class M_STP(BaseNoMeta):
-    """Отчеты: точки"""
+    """
+    Модель таблицы геологических отчетов в виде точек.
+
+    Содержит данные об отчетах, представленных в виде точечных объектов
+    (например, скважины, точки отбора проб, геологические обнажения).
+    Наследует от BaseNoMeta.
+
+    Атрибуты таблицы:
+        __tablename__ (str): Имя таблицы в БД - "stp".
+        __table_args__ (dict): Дополнительные аргументы таблицы, включая схему 'gdx2'
+                               и комментарий 'Отчеты (точки)'.
+
+    Поля (основные):
+        id (Mapped[int]): Внутренний уникальный идентификатор.
+        web_uk_id (Mapped[str]): Уникальный идентификатор отчета в веб-системе.
+        vid_iz (Mapped[str]): Вид издания (отчета).
+        tgf (Mapped[str]): Территориальный геологический фонд.
+        n_uk_tgf (Mapped[str]): Номер учета ТГФ.
+        n_uk_rosg (Mapped[str]): Номер учета РГФ.
+        name_otch (Mapped[str]): Название отчета.
+        name_otch1 (Mapped[str]): Дополнительное название отчета.
+        avts (Mapped[str]): Автор(ы) отчета.
+        god_nach (Mapped[str]): Год начала работ.
+        god_end (Mapped[str]): Год окончания работ.
+        org_isp (Mapped[str]): Организация-исполнитель.
+        in_n_tgf (Mapped[str]): Инвентарный номер ТГФ.
+        in_n_rosg (Mapped[str]): Инвентарный номер РГФ.
+        nom_1000 (Mapped[str]): Номер листа карты масштаба 1:1 000 000.
+        method (Mapped[str]): Метод исследований.
+        scale (Mapped[str]): Масштаб работ.
+    """
     __tablename__ = 'stp'
     __table_args__ = { 'schema': 'gdx2', 'comment': 'Отчеты (точки)'  }
 
@@ -608,6 +1128,15 @@ class M_STP(BaseNoMeta):
     scale: Mapped[str] = mapped_column(String(length=26), nullable=True, comment='Масштаб')
 
     def to_read_model(self) -> S_STP:
+        """
+        Преобразует объект модели БД в Pydantic схему для чтения.
+
+        Создает экземпляр S_STP, копируя все атрибуты текущего объекта.
+        Используется для сериализации данных отчета (точки) при возврате из API.
+
+        Returns:
+            S_STP: Объект Pydantic схемы с данными отчета.
+        """
         return S_STP(
             id=self.id,
             web_uk_id=self.web_uk_id,

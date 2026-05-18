@@ -6,6 +6,7 @@ from src.api.sta.router import sta_router
 from src.api.stall.router import stall_router
 from src.api.stl.router import stl_router
 from src.api.stp.router import stp_router
+from src.api.author.router import author_router
 
 sys.path.insert(1, 'src')
 os.environ['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + ';' + os.getcwd()
@@ -24,5 +25,6 @@ api_router.include_router(sta_router)
 api_router.include_router(stl_router)
 api_router.include_router(stp_router)
 api_router.include_router(stall_router)
+api_router.include_router(author_router)
 
 # api_router.include_router(router_db, prefix="/db", tags=["База данных"])  #

@@ -51,6 +51,7 @@ gdx2/
 │   │   ├── stl/                  # Линии
 │   │   ├── stp/                  # Точки
 │   │   ├── stall/                # Сводные данные
+│   │   ├── author/               # Авторы (справочник)
 │   │   └── celery/               # Celery задачи
 │   ├── alembic/                  # Миграции базы данных
 │   ├── data/                     # GeoJSON данные
@@ -306,6 +307,17 @@ celery -A src.api.celery.celery_app flower --port=5555
 | GET | `/api/v1/stall/all/vid_iz/unique` | Уникальные виды изученности |
 | GET | `/api/v1/stall/all/god_nach/unique` | Уникальные годы начала |
 
+### Авторы (Author)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/author/all` | Все авторы |
+| GET | `/api/v1/author/count` | Количество авторов |
+| GET | `/api/v1/author/{guid}` | Автор по GUID |
+| POST | `/api/v1/author/` | Создать автора |
+| PUT | `/api/v1/author/{guid}` | Обновить автора |
+| DELETE | `/api/v1/author/{guid}` | Удалить автора |
+
 ---
 
 ## 📝 Примеры запросов
@@ -377,20 +389,125 @@ curl -X POST \
 curl http://localhost:8001/api/v1/report/year/2023
 ```
 
-### 8. Получение авторов
+### 8. Получение всех авторов (справочник)
 
 ```bash
-curl http://localhost:8001/api/v1/report/author
+curl http://localhost:8001/api/v1/author/all
 ```
 
-### 9. Использование с авторизацией (если добавится)
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 42,
+  "data": [
+    {
+      "guid": "550e8400-e29b-41d4-a716-446655440000",
+      "name_ru": "Иванов И.И.",
+      "created_at": "2024-01-15T10:30:00",
+      "updated_at": "2024-01-15T10:30:00"
+    }
+  ]
+}
+```
+
+### 9. Получение количества авторов
+
+```bash
+curl http://localhost:8001/api/v1/author/count
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 42
+}
+```
+
+### 10. Получение автора по GUID
+
+```bash
+curl http://localhost:8001/api/v1/author/550e8400-e29b-41d4-a716-446655440000
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": {
+    "guid": "550e8400-e29b-41d4-a716-446655440000",
+    "name_ru": "Иванов И.И.",
+    "created_at": "2024-01-15T10:30:00",
+    "updated_at": "2024-01-15T10:30:00"
+  }
+}
+```
+
+### 11. Создание автора
+
+```bash
+curl -X POST "http://localhost:8001/api/v1/author/?name_ru=Петров%20П.П."
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": {
+    "guid": "660e8400-e29b-41d4-a716-446655440001",
+    "name_ru": "Петров П.П.",
+    "created_at": "2024-06-01T12:00:00",
+    "updated_at": "2024-06-01T12:00:00"
+  }
+}
+```
+
+### 12. Обновление автора
+
+```bash
+curl -X PUT "http://localhost:8001/api/v1/author/550e8400-e29b-41d4-a716-446655440000?name_ru=Иванов%20Иван%20Иванович"
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": {
+    "guid": "550e8400-e29b-41d4-a716-446655440000",
+    "name_ru": "Иванов Иван Иванович",
+    "created_at": "2024-01-15T10:30:00",
+    "updated_at": "2024-06-01T12:05:00"
+  }
+}
+```
+
+### 13. Удаление автора
+
+```bash
+curl -X DELETE http://localhost:8001/api/v1/author/550e8400-e29b-41d4-a716-446655440000
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": "Author with guid 550e8400-e29b-41d4-a716-446655440000 deleted"
+}
+```
+
+### 14. Использование с авторизацией (если добавится)
 
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
   http://localhost:8001/api/v1/report/all
 ```
 
-### 10. Python пример (httpx)
+### 15. Python пример (httpx)
 
 ```python
 import httpx
