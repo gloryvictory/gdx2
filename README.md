@@ -17,6 +17,7 @@ FastAPI-приложение для управления и публикации
 - [Celery задачи](#celery-задачи)
 - [Логирование](#логирование)
 - [Production развертывание](#production-развертывание)
+- [Docker](#-docker)
 
 ---
 
@@ -52,6 +53,14 @@ gdx2/
 │   │   ├── stp/                  # Точки
 │   │   ├── stall/                # Сводные данные
 │   │   ├── author/               # Авторы (справочник)
+│   │   ├── org/                  # Организации (справочник)
+│   │   ├── list/                 # Листы карты (справочник)
+│   │   ├── subrf/                # Субъекты РФ (справочник)
+│   │   ├── area/                 # Площади (справочник)
+│   │   ├── field/                # Месторождения (справочник)
+│   │   ├── lu/                   # Лицензионные участки (справочник)
+│   │   ├── pi/                   # Полезные ископаемые (справочник)
+│   │   ├── vid_rab/              # Виды работ (справочник)
 │   │   └── celery/               # Celery задачи
 │   ├── alembic/                  # Миграции базы данных
 │   ├── data/                     # GeoJSON данные
@@ -65,7 +74,8 @@ gdx2/
 │   ├── test_schemas.py
 │   ├── test_services.py
 │   ├── test_utils.py
-│   └── test_database.py
+│   ├── test_database.py
+│   └── test_crud_references.py
 ├── services/                     # systemd сервисы для Linux
 ├── .env                          # Переменные окружения (dev)
 ├── .env_prod                     # Переменные окружения (prod)
@@ -73,6 +83,8 @@ gdx2/
 ├── requirements-test.txt         # Тестовые зависимости
 ├── alembic.ini                   # Конфигурация Alembic
 ├── pytest.ini                    # Конфигурация pytest
+├── Dockerfile                    # Docker образ приложения
+├── docker-compose.yml            # Docker Compose конфигурация
 ├── run_windows.bat               # Скрипт запуска (Windows)
 ├── start_celery.bat              # Запуск Celery (Windows)
 ├── gdx2_start.sh                 # Скрипт запуска (Linux)
@@ -318,6 +330,94 @@ celery -A src.api.celery.celery_app flower --port=5555
 | PUT | `/api/v1/author/{guid}` | Обновить автора |
 | DELETE | `/api/v1/author/{guid}` | Удалить автора |
 
+### Организации (Org)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/org/all` | Все организации |
+| GET | `/api/v1/org/count` | Количество организаций |
+| GET | `/api/v1/org/{guid}` | Организация по GUID |
+| POST | `/api/v1/org/` | Создать организацию |
+| PUT | `/api/v1/org/{guid}` | Обновить организацию |
+| DELETE | `/api/v1/org/{guid}` | Удалить организацию |
+
+### Листы карты (List)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/list/all` | Все листы карты |
+| GET | `/api/v1/list/count` | Количество листов карты |
+| GET | `/api/v1/list/{guid}` | Лист карты по GUID |
+| POST | `/api/v1/list/` | Создать лист карты |
+| PUT | `/api/v1/list/{guid}` | Обновить лист карты |
+| DELETE | `/api/v1/list/{guid}` | Удалить лист карты |
+
+### Субъекты РФ (Subrf)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/subrf/all` | Все субъекты РФ |
+| GET | `/api/v1/subrf/count` | Количество субъектов РФ |
+| GET | `/api/v1/subrf/{guid}` | Субъект РФ по GUID |
+| POST | `/api/v1/subrf/` | Создать субъект РФ |
+| PUT | `/api/v1/subrf/{guid}` | Обновить субъект РФ |
+| DELETE | `/api/v1/subrf/{guid}` | Удалить субъект РФ |
+
+### Площади (Area)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/area/all` | Все площади |
+| GET | `/api/v1/area/count` | Количество площадей |
+| GET | `/api/v1/area/{guid}` | Площадь по GUID |
+| POST | `/api/v1/area/` | Создать площадь |
+| PUT | `/api/v1/area/{guid}` | Обновить площадь |
+| DELETE | `/api/v1/area/{guid}` | Удалить площадь |
+
+### Месторождения (Field)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/field/all` | Все месторождения |
+| GET | `/api/v1/field/count` | Количество месторождений |
+| GET | `/api/v1/field/{guid}` | Месторождение по GUID |
+| POST | `/api/v1/field/` | Создать месторождение |
+| PUT | `/api/v1/field/{guid}` | Обновить месторождение |
+| DELETE | `/api/v1/field/{guid}` | Удалить месторождение |
+
+### Лицензионные участки (LU)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/lu/all` | Все лицензионные участки |
+| GET | `/api/v1/lu/count` | Количество лицензионных участков |
+| GET | `/api/v1/lu/{guid}` | Лицензионный участок по GUID |
+| POST | `/api/v1/lu/` | Создать лицензионный участок |
+| PUT | `/api/v1/lu/{guid}` | Обновить лицензионный участок |
+| DELETE | `/api/v1/lu/{guid}` | Удалить лицензионный участок |
+
+### Полезные ископаемые (PI)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/pi/all` | Все полезные ископаемые |
+| GET | `/api/v1/pi/count` | Количество полезных ископаемых |
+| GET | `/api/v1/pi/{guid}` | Полезное ископаемое по GUID |
+| POST | `/api/v1/pi/` | Создать полезное ископаемое |
+| PUT | `/api/v1/pi/{guid}` | Обновить полезное ископаемое |
+| DELETE | `/api/v1/pi/{guid}` | Удалить полезное ископаемое |
+
+### Виды работ (VidRab)
+
+| Метод | Endpoint | Описание |
+|-------|----------|----------|
+| GET | `/api/v1/vid_rab/all` | Все виды работ |
+| GET | `/api/v1/vid_rab/count` | Количество видов работ |
+| GET | `/api/v1/vid_rab/{guid}` | Вид работ по GUID |
+| POST | `/api/v1/vid_rab/` | Создать вид работ |
+| PUT | `/api/v1/vid_rab/{guid}` | Обновить вид работ |
+| DELETE | `/api/v1/vid_rab/{guid}` | Удалить вид работ |
+
 ---
 
 ## 📝 Примеры запросов
@@ -500,14 +600,125 @@ curl -X DELETE http://localhost:8001/api/v1/author/550e8400-e29b-41d4-a716-44665
 }
 ```
 
-### 14. Использование с авторизацией (если добавится)
+### 14. Получение всех организаций (справочник)
+
+```bash
+curl http://localhost:8001/api/v1/org/all
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 15,
+  "data": [
+    {
+      "guid": "550e8400-e29b-41d4-a716-446655440000",
+      "name_ru": "ООО ГеоИнвест",
+      "created_at": "2024-01-15T10:30:00",
+      "updated_at": "2024-01-15T10:30:00"
+    }
+  ]
+}
+```
+
+### 15. Получение количества организаций
+
+```bash
+curl http://localhost:8001/api/v1/org/count
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 15
+}
+```
+
+### 16. Получение организации по GUID
+
+```bash
+curl http://localhost:8001/api/v1/org/550e8400-e29b-41d4-a716-446655440000
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": {
+    "guid": "550e8400-e29b-41d4-a716-446655440000",
+    "name_ru": "ООО ГеоИнвест",
+    "created_at": "2024-01-15T10:30:00",
+    "updated_at": "2024-01-15T10:30:00"
+  }
+}
+```
+
+### 17. Создание организации
+
+```bash
+curl -X POST "http://localhost:8001/api/v1/org/?name_ru=ООО%20ГеоСтар"
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": {
+    "guid": "660e8400-e29b-41d4-a716-446655440001",
+    "name_ru": "ООО ГеоСтар",
+    "created_at": "2024-06-01T12:00:00",
+    "updated_at": "2024-06-01T12:00:00"
+  }
+}
+```
+
+### 18. Обновление организации
+
+```bash
+curl -X PUT "http://localhost:8001/api/v1/org/550e8400-e29b-41d4-a716-446655440000?name_ru=ООО%20ГеоИнвест%20Групп"
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": {
+    "guid": "550e8400-e29b-41d4-a716-446655440000",
+    "name_ru": "ООО ГеоИнвест Групп",
+    "created_at": "2024-01-15T10:30:00",
+    "updated_at": "2024-06-01T12:05:00"
+  }
+}
+```
+
+### 19. Удаление организации
+
+```bash
+curl -X DELETE http://localhost:8001/api/v1/org/550e8400-e29b-41d4-a716-446655440000
+```
+
+**Ответ:**
+```json
+{
+  "msg": "OK",
+  "count": 1,
+  "data": "Org with guid 550e8400-e29b-41d4-a716-446655440000 deleted"
+}
+```
+
+### 20. Использование с авторизацией (если добавится)
 
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" \
   http://localhost:8001/api/v1/report/all
 ```
 
-### 15. Python пример (httpx)
+### 21. Python пример (httpx)
 
 ```python
 import httpx
@@ -557,6 +768,15 @@ pytest --cov=src --cov-report=html
 # Конкретный файл
 pytest tests/test_endpoints.py -v
 
+# CRUD тесты всех справочников
+pytest tests/test_crud_references.py -v
+
+# CRUD тесты конкретного справочника
+pytest tests/test_crud_references.py -k "author" -v
+
+# Только CRUD flow тесты (создание-чтение-обновление-удаление)
+pytest tests/test_crud_references.py -k "crud_flow" -v
+
 # Конкретная функция
 pytest tests/test_endpoints.py::test_root -v
 
@@ -569,6 +789,7 @@ pytest -m smoke
 | Файл | Описание | Статус |
 |------|----------|--------|
 | `test_endpoints.py` | Тесты API эндпоинтов | ✅ 10 тестов |
+| `test_crud_references.py` | Тесты CRUD справочников | ✅ 54 теста |
 | `test_models.py` | Тесты моделей | ⚠️ Базовые |
 | `test_schemas.py` | Тесты схем | ⚠️ Частичные |
 | `test_services.py` | Тесты сервисов | ❌ Требует реализации |
@@ -775,7 +996,84 @@ server {
 
 ---
 
-## 🔒 Безопасность
+## � Docker
+
+### Быстрый запуск
+
+```bash
+# Сборка и запуск всех сервисов
+docker-compose up -d
+
+# Просмотр логов
+docker-compose logs -f app
+
+# Остановка
+docker-compose down
+
+# Остановка с удалением томов (сброс БД)
+docker-compose down -v
+```
+
+### Сервисы в docker-compose
+
+| Сервис | Порт | Описание |
+|--------|------|----------|
+| `app` | `8001` | FastAPI приложение |
+| `db` | `5432` | PostgreSQL + PostGIS 15 |
+| `redis` | `6379` | Redis (брокер Celery) |
+| `celery-worker` | — | Celery воркер |
+| `celery-flower` | `5555` | Мониторинг Celery задач |
+
+### Запуск отдельных сервисов
+
+```bash
+# Только приложение и БД (без Celery)
+docker-compose up -d app db redis
+
+# Пересборка после изменений
+docker-compose up -d --build
+
+# Масштабирование Celery воркеров
+docker-compose up -d --scale celery-worker=3
+```
+
+### Доступ после запуска
+
+- **Swagger UI**: http://localhost:8001/docs
+- **ReDoc**: http://localhost:8001/redoc
+- **Flower (Celery)**: http://localhost:5555
+- **Health check**: http://localhost:8001/api/v1/health
+
+### Переменные окружения в Docker
+
+Основные настройки заданы в `docker-compose.yml`:
+
+| Переменная | Значение в Docker |
+|------------|-------------------|
+| `DEVENV` | `prod` |
+| `GDX2_DB_DSN` | `postgresql://gdx2:gdx2pwd@db:5432/gdx2` |
+| `REDIS_HOST` | `redis` |
+| `FOLDER_BASE` | `/opt/gdx2/` |
+| `FOLDER_REPORT` | `/opt/gdx2/upload` |
+
+### Миграции БД
+
+Миграции Alembic выполняются автоматически при старте `app`-сервиса:
+
+```bash
+# Запустить миграции вручную (если нужно)
+docker-compose exec app alembic upgrade head
+
+# Откатить миграцию
+docker-compose exec app alembic downgrade -1
+
+# Создать новую миграцию
+docker-compose exec app alembic revision --autogenerate -m "Description"
+```
+
+---
+
+## �🔒 Безопасность
 
 ### CORS
 

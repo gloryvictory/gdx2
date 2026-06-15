@@ -1,0 +1,119 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: gdx2-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: gdx2
+      POSTGRES_PASSWORD: gdx2pwd
+      POSTGRES_DB: gdx2
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gdx2 -d gdx2"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: gdx2-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build: .
+    container_name: gdx2-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DEVENV: prod
+      GDX2_SERVER_HOST: 0.0.0.0
+      GDX2_SERVER_PORT: 8001
+      GDX2_SCHEMA: gdx2
+      GDX2_DB_DSN: postgresql://gdx2:gdx2pwd@db:5432/gdx2
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      NUMBER_PROCESS: "1"
+      FOLDER_BASE: /opt/gdx2/
+      FOLDER_REPORT: /opt/gdx2/upload
+    ports:
+      - "8001:8001"
+    volumes:
+      - app_logs:/opt/gdx2/log
+      - app_upload:/opt/gdx2/upload
+      - app_geojson:/opt/gdx2/geojson
+    entrypoint: >
+      sh -c "
+        echo 'Waiting for DB...' &&
+        sleep 3 &&
+        alembic upgrade head &&
+        uvicorn src.main:app --host 0.0.0.0 --port 8001
+      "
+
+  celery-worker:
+    build: .
+    container_name: gdx2-celery-worker
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DEVENV: prod
+      GDX2_DB_DSN: postgresql://gdx2:gdx2pwd@db:5432/gdx2
+      GDX2_SCHEMA: gdx2
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      FOLDER_BASE: /opt/gdx2/
+      FOLDER_REPORT: /opt/gdx2/upload
+    volumes:
+      - app_logs:/opt/gdx2/log
+      - app_upload:/opt/gdx2/upload
+      - app_geojson:/opt/gdx2/geojson
+    command: >
+      celery -A src.api.celery.tasks:celery worker
+      --loglevel=INFO
+      --pool=solo
+      --concurrency=2
+      -n worker1@%h
+
+  celery-flower:
+    build: .
+    container_name: gdx2-celery-flower
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - celery-worker
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "5555:5555"
+    command: >
+      celery -A src.api.celery.tasks:celery flower
+      --port=5555
+
+volumes:
+  postgres_data:
+  redis_data:
+  app_logs:
+  app_upload:
+  app_geojson:
